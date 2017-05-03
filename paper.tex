@@ -37,10 +37,6 @@ Botanick\'a 68a, 602 00 Brno,
 }
 
 
-%This work was supported by Grant Agency of the Czech Technical University in Prague, grant No. SGS15/157/OHK3/2T/13.
-%Access to computing and storage facilities owned by parties and projects contributing to the National Grid Infrastructure MetaCentrum, provided under the programme "Projects of Large Infrastructure for Research, Development, and Innovations" (LM2010005), is greatly appreciated.
-%vonasek@labe.felk.cvut.cz.
-
 \def\qrand{q_{rand}}
 \def\qstart{q_{start}}
 \def\qinit{\qstart}
@@ -106,39 +102,9 @@ However, the inner void space of proteins is  very limited,
 In this paper, we propose to generate the random samples using Voronoi Diagram of the atoms.
 A subset of Voronoi vertices is dynamically maintained to support generation of samples in promising regions inside the protein.
 
-%VD provides initial information about protein void space, which helps to sample the corresponding configuration space.
-
-%While VD of the protein atoms can be easily computed, the RRT is used to cope with the protein dynamics<F12>
-%While the VD provides
-%Random samples are generated around a subset of vertices of VD 
-
-%and modifications to support searching of multiple tunnels in each frame.
-%In the comparison to existing literature on sampling using Voronoi diagrams, the proposed technique supports finding of multiple
-%tunnels even in dynamic proteins.
-%The proposed approach is compared to CAVER 3.0, one of the widely used freely available tools for protein analysis.
-%In this paper, we propose a novel sampling technique for the purpose of tunnel detection in protein structures.
-%The protein void space can be search using sampling-based
-%The classical approach to find tunnels in protein structures is based on Voronoi diagrams (VD), which is suitable
-%for tunnel detection in a single snapshot of protein's dynamics.
-%To consider protein dynamics, that is represented by a sequence of protein snapshots, correspondences between
-%VD in these snapshots need to be found, which is time and memory consuming.
-%An alternative approach is to employ motion planning methods to detect the tunnels.
-%However, VD-based computation can be time consuming when protein dynamics needs to be considered, as it
-%requires to find correspondences between VD in a sequence of frames of protein dynamics.
-%The performance of VD-based tunnel detection is decreased in the case of dynamic proteins, which requires
-%to find correspondences between VD in frames of molecular dynamics.
-%In order to apply the VD-based approach for dynamic proteins,
-%Available methods for tunnel detection assume static proteins, which allows us to detect tunnels using Voronoi Diagrams.
-%Tunnels in static proteins however  provide only a  rough idea about protein behavior.
-%Tunnels in real proteins are however influenced by dynamics of the protein.
-%In this paper, we describe tunnel detection using Rapidly Exploring Random Tree (RRT).
-%The method builds a single configuration tree describing free space of the protein. 
-%A crucial part of this novel approach is the sampling of the internal void space of the protein.
-%The nodes of the tree are pruned according to protein dynamics.
 \end{abstract}
 
 \section{Introduction}
-%{\color{red}Co bys rikala na to dat na 1. stranku nejaky obrazek tunelu?}
 
 Protein structures are essential components of all living organisms.
 Proper understanding of their structure and function is important in many fields, including drug design, agriculture, cosmetics, etc.
@@ -204,13 +170,18 @@ Such analysis however provides only a rough idea of the tunnel behavior, as impo
 %Such analysis however provides only a rough idea of the tunnel behavior, as important parts of the simulation can be easily omitted. 
 %Recently, we have proposed a novel method for tunnel detection using sampling-based motion planning [23]. In this method, RRT is used to ?nd tunnels in each frame and to consider the molecular dynamics, the tree is continuously pruned in each frame. In comparison to existing approaches [17], [18], this approach [23] handles the dynamics without need to cluster and match Voronoi diagrams from consecutive frames. 
 
-Recently, we have proposed a novel method for tunnel detection using sampling-based motion planning, namely using Rapidly Exploring Random Tree (RRT) method~\cite{vonasek2016application}.
-RRT builds a tree of collision-free configurations of a spherical probe moving in the protein. 
-%In this method, the corresponding configuration space is searched using RRT (Rapidly Exploring Random Tree)~\cite{lavalleRRT}.
-To consider the molecular dynamics, the tree is continuously pruned in each frame.
-%The proposed solution is based on RRT technique, which constructs a configuration tree separately in each frame of protein dynamics.
-In comparison to existing approaches~\cite{Petrek20071357,citeulike:6257975}, this RRT-based approach~\cite{vonasek2016application} 
-handles the dynamics without need to cluster and match Voronoi diagrams from consecutive frames.
+
+Curently available tools for protein analysis support only the tunnel detection both on single protein snapshots and sequences
+of molecular dynamics.
+The properties of tunnels like bottleneck radius, their length and the surrounding residues can be used
+to estimate suitability of the tunnel for a ligand.
+However, such estimation still involve lot of experience.
+
+\red{TODO}
+something about screeing: what is it, what's is the input and output, in which applications (research/industry) it is useful.
+
+
+
 
 
 \begin{figure}[t]
@@ -231,39 +202,21 @@ Protein 1CQW & Active site & Detected tunnels \\
 }
 \end{figure}
 
-Due to low volume of protein void space, sampling-based tunnel detection may suffer from the narrow passage problem.
-%Building a configuration tree of a spherical probe moving in a protein is however very challenging due to low volume of the protein void space.
-To cope with narrow passages, we propose to generate the samples along a subset of Voronoi vertices of the atoms.
-%a novel approach that combines VD-based techniques with sampling-based algorithms.
-%Instead of generating samples randomly in the whole configuration space, they are generated around a changing subset of vertices of Weighted Voronoi Diagram.
-The subset is automatically adapted so it always attracts the tree towards unexplored regions of the configuration space.
-The configuration tree is expanded towards the random samples and also by the Voronoi vertices.
-Construction of the configuration tree only from Voronoi vertices is not suitable, as it would result in a sparse configuration tree, that would be discontinued when switching to the next frame of protein dynamics.
-To enable tunnel detection among changing (moving) atoms, it is necessary to fill the void space by a dense configuration tree, which
-is achieved by the randomized sampling.
+\red{TODO}
+what is traversability analysis.
 
-%vertices of Voronoi diagram.
-%The set is maintained in such a way, so it attracts the tree towards unexplored parts of the Voronoi diagram.
+The goal is the traversability analysis is to estimate traversability of a tunnel with a given ligand from geometrical point of view.
 
 
-%To prevent the tree growth outside the protein, which could lead to detection of invalid (outer) tunnels, we propose
-%to block its growth using a set of blocking spheres.
-%This results in a tree representing collision-free configurations inside the protein.
-%Before the tree is used in the next frame, its nodes that collide with new positions of atoms are removed.
-%It is therefore ensured, that for each node in each frame, a path leading to the starting node in the first frame can be found in the tree.
-%a path between each node and the starting configuration can be found in the sequence of
-%trees.
-%It is therefore ensured, that all configurations in the tree are connected to the starting configuration in the first frame.
-
-%The tunnels have low volume compared to the volume of the whole protein, which may slow down sampling-based planning.
-%We propose several modifications to RRT to cope with this problem.
-
-%Moreover, RRT allows us to easily cope with additional constraints
-%As the biomolecules are densely filled with atoms, their tunnels behave like narrow passages.
-%To cope with this problem, we propose two novel modifications of RRT.
 
 
 \section{Related work}
+
+\red{TODO include}
+Recently, we have proposed a novel method for tunnel detection using sampling-based motion planning, namely using Rapidly Exploring Random Tree (RRT) method~\cite{vonasek2016application}.
+In comparison to existing approaches~\cite{Petrek20071357,citeulike:6257975}, this RRT-based approach~\cite{vonasek2016application} 
+handles the dynamics without need to cluster and match Voronoi diagrams from consecutive frames.
+
 
 The analysis of protein structure aiming to reveal the tunnels has been supported by different computational software tools which take the geometry of the protein as an input and explore the inner void space (e.g., CAVER 1.0~\cite{citeulike:6257975} or MOLE~\cite{Petrek20071357}). 
 Early methods for tunnel detection utilized a discretized 3D grid, where each cell is considered as occupied or free depending
@@ -675,6 +628,18 @@ Let $\SS \subset \mathbf{R}^3$ denote the union of all spheres, i.e., the geomet
 %We further assume that a subset of atoms located at the surface, are known. These atoms, reffered to as {\sl surface atoms} in this paper,
 %   can be detected as atoms located at $\alpha$-shape of the molecule.
 The tunnels need to be found for a spherical probe $\Sprobe$ of radius $\probe$.
+
+A tunnel is described by a sequence of collision-free spheres $T=( (t_i, r_i) )$, where $n$ denotes the number of spheres and
+$t_i=(x_i,y_i,z_i)$ is their 3D position and $r_i$ denotes the maximum collision-free radius for a spherical probe centered
+at $t_i$. 
+The tunnels can be found by tunnel-detection tools like CAVER 3.0~\cite{caver3}.
+
+Ligands are small molecules interacting with the protein. 
+Ligands are not rigid structures, they rather change due to interactions with the protein's atoms.
+Flexible ligands can be modeled as a kinematic chain with predefied degrees of freedom.
+An alternative approach, that is used in this work, is to consider a predefined set of possible conformations.
+The conformations are prepared using Rosetta software TODO. and their are denoted $c$.
+
 %We further consider a spherical probe $\Sprobe$  of radius $\probe$ encapsulating the ligand.
 Let $q=(x,y,z)\in\C$ denote the configuration (position) of the probe, where
 the configuration space $\C$ consists of all possible configurations.
@@ -732,99 +697,16 @@ Let $\VV$ contain the remaining Voronoi vertices, and let $r_v \in \VV$ denote t
 %The resulting tree is then pruned to remove collision with atoms of the next frame.
 
 
-\section{Tunnel detection}
+\section{Ligand traversability}
 
-The tunnel detection problem is defined by specifying the coordinates of the active site $\qinit \in \CF$, 
-    the radius $\probe$ of the probe, and the radius 
-$\gprobe$ that determines outer space $\CG$ of the protein.
-The dynamic proteins are searched for tunnels in a two-stage process: first, the tunnels are searched in a single frame, then the
-built configuration tree is transferred to the next frame and pruned.
-Due to space limit, this paper focuses mainly on the first stage. 
-We refer to~\cite{vonasek2016application} for detailed description of the second stage.
-
-\subsection{Sampling of configuration space of a single frame}
-
-%The configuration space is sampled using the RRT method. 
-%The tunnels detection requires to find tunnels only inside the protein, not on its surface.
-%However, proteins have jagged surface with protrusions and small cavities. 
-%The growth of the tree outside the protein needs to be prohibited.
-%Otherwise, many invalid tunnels hidden in this bumpy surface would be detected.
-%These cavities are smaller than $\Sgprobe$ but larger than $\Sprobe$, which prevents us to determine
-%configurations at the surface using simple collision detection between $\Sgprobe$ and the protein surface.
-%Therefore, simple collision detection between $\Sgprobe$ and the protein may fail to determine configurations located at the surface
-%of the protein.
+The task of the traversability study is to determine if a given ligand can traverse  a given tunnel in the protein.
+The tunnels are usually computed on proteins without ligands, which implies narrow void space.
 
 The configuration space is searched using the RRT principle~\cite{lavalleRRT}, which is extended by three main modifications.
 First, the tree expanded by several new nodes in each iteration, in order to boost growth in the narrow passages.
 The second modification is designed to block growth of the tree outside the protein, which is necessary to prevent detection of false
 tunnels. 
 The last modification is the novel VD-based sampling of configuration space.
-The proposed method is listed in Alg.~\ref{alg::tunnel}.
-
-Instead of adding only a single node in each iteration, which is done in original RRT, we expand the tree by $m$ nodes.
-This improves the growth of the tree inside the narrow passages, as these are filled by the tree in less number of iterations.
-After a node $\qnear$ for the expansion is determined, its neighborhood in the distance $\varepsilon$ is sampled.
-The collision-free samples (i.e., $r(q) \ge \probe$)  are stored in the set $N$.
-%These configurations are randomly sampled around $\qnear$ in the distance $\varepsilon$ and these are stored in the set $N$.
-%After $\qnear$ is found in the tree, its neighborhood is sampled by at most $m$ random samples in the distance $\varepsilon$. 
-%These samples are stored in the set $N$ and added to the tree if they are not too close to the protein surface.
-%Otherwise, blocking spheres are added at the corresponding configuration.
-%a sample $q$ with the maximal collision-free radius $r(q)$. % (Fig.~\ref{fig::expansion}b,c).
-The configuration $q \in N$ is added to the tree if it does not regress to the tree.
-% $r(q) \ge \probe$ and 
-A sample $q$ is regressing if its nearest neighbor in the tree is closer than $\qnear$. %parent node. % (Alg.~\ref{alg::lexp}, line 7).
-This regression test prevents the expansion to large sites, that are already filled with other nodes. 
-Without this test, the tree would densely occupy large areas, but less densely the small ones.
-Tree expansion by multiple nodes result in more dense trees. 
-%If $\qnew$ is located in a large area, i.e., $r(\qnew) > \probe$, additional $m$ samples located around $\qnew$ are added to
-%the tree. % (Alg~\ref{alg::lexp}, lines 15--22), which is depicted in Fig.~\ref{fig::expansion}d.
-%This procedure expands the tree by multiple nodes (at most $m+1$), but it guarantees that these nodes
-%are collision-free at radius at least $\probe$ and that these are not regressing towards the tree.
-
-%The active sites are typically connected with the protein's surface using multiple tunnels.
-%It is therefore desired to detect as many tunnels as possible.
-%On the other hand, not all path within the protein are considered as good tunnels, e.g. the tunnels partly located in the protrusions and 
-%small cavities of the protein surface.
-%Such tunnels, despite they are connected with the active site, are not relevant for chemists.
-
-
-The active sites are typically connected with the protein’s surface by multiple tunnels.
-It is therefore desired to detect as many tunnels as possible. 
-On the other hand, not all paths within the protein are biochemically relevant, e.g., long thin tunnels with highly curved trajectory or
-tunnels partly located on the surface of the protein.
-Such tunnels, despite they are connected with the active site, are not relevant because there is a 
-high probability that they will be closed in molecular dynamics.
-
-To prevent the growth of the tree on the bumpy surface and to boost searching of tunnels inside the protein,
- algorithm searches the configuration space in two phases.
- In the first phase, { blocking spheres} $\SB$ of radius $\gprobe$ are placed
-to configurations that are believed to be close to the surface.
-The distance of each configuration $q \in N$ from the nearest surface atom is determined and $q$ is
-added to the tree only if this distance is larger than $\ths$. 
-Otherwise, $q$ is added to $\SB$ (Alg.~\ref{alg::tunnel}, line 21), because a tunnel can exit around $q$ from the protein.
-
-%Each node $q \in N$ is therefore tested for being close to surface atoms before it is added to the tree (Alg.~\ref{alg::tunnel}, line 20).
-%If this distance is less than the threshold $\ths$, the configuration $q$ is considered as being close to the surface, which
-%indicates that a tunnel can exit from the protein around this point.
-%Therefore, new blocking sphere at this position is introduced into the set $\SB$. % (Fig.~\ref{fig::timexp}d).
-
-After a predefined fraction of iterations (parameter $\alpha$ in Alg.~\ref{alg::tunnel}, lines 32--35), the algorithm
-switches to the second phase, and the blocking atoms $\SB$ are deleted and removed from collision detection data structures.
-In this second phase, the configuration tree is allowed to exit the protein and reach the outer space.
-%This allows the tree to finally expand out of  the protein.
-%In such a case (lines 24--26 in Alg.~\ref{alg::tunnel}), $q$ is added to the set of tunnel exit-points.
-An exit from the tunnel is detected if $q \in N$ is collision-free with sphere $\Sgprobe$ (or $r(q) > \gprobe$). 
-The exit points are stored in the set $G$ (Alg.~\ref{alg::tunnel}, line 28--30).
-%The algorithm can be initialized with a non-empty set $\SB$ (line 1 in Alg.~\ref{alg::tunnel}), which allows to block the growth of the tree according to exit-points detected in the previous frame.
-
-%The second modification aims to improve the expansion step.
-%Tunnel are narrow passages and the straight-line expansion of the tree, that is often used in RRT-based planners,
-%to collision (Fig.~\ref{fig::expansion}a).
-%In RRT literature, the tree is often expanded using the straight-line expansion, i.e., $\qnew$ is constructed on a line
-%connecting $\qnear$ and $\qrand$ in the distance $\varepsilon$ from $\qnear$.
-%The protein void space is small and this type of expansion would lead to collisions. % (Fig.~\ref{fig::expansion}a).
-%To cope with this issue, it is necessary to find $\qnew$ around $\qnear$ and not only on the line 
-%from $\qnear$ to $\qrand$. % (Alg.~\ref{alg::lexp}).
 
 \linesnumbered
 \begin{algorithm}[h]
@@ -893,430 +775,17 @@ $phase=1$\;
 }
 \end{algorithm}
 
-%\begin{algorithm}[h]
-%%\setstretch{\straa}
-%{\small
-%\caption{\label{alg::lexp}expand()}
-%\KwIn{Configuration tree $\T$, configuration $\qnear$ to be expanded, 
-%    collision-geometry $\SS$
-%}
-%\KwData{num. of random samples $n$ around $\qnear$, 
-%    max. number of additional nodes $m$,
-%    resolution $\varepsilon$
-%}
-%\KwOut{Return new node $\qnew$ and its collision-free radius $r(\qnew)$ if it is added to tree, or NULL otherwise
-%}
-%\hrule
-%    $\qnew = \emptyset$; // new node to be added to the tree \\
-%    $r' = 0$; // largest collision-free radius of node $\qnew$\\
-%    \For{$i=1:n$}{
-%        $q$ = random sample around $\qnear$ in distance $\varepsilon$\;
-%        $q'$ = nearest node in $\T$ towards $q$\;
-%        $r(q)$ = collision-free radius of sample $q$ w.r.t. $\SS$\;
-%        \If{$dist(q,q') < dist(q,\qnear$) {\bf and} $r(q) > r'$}{
-%               $r' = r(q)$\; 
-%               $\qnew = q$\;
-%        }
-%    }
-%    \If{$\qnew \ne \emptyset$}{
-%        $\T$.addNode($\qnew$)\;
-%        $\T$.addEdge($\qnear, \qnew)$\;
-%        \If{$r' > \probe$}{
-%            $r_{s} = r' - \probe$\;
-%            \For{$i=1:m$}{
-%                $q$ = random sample in distance $r_s$ from $\qnew$\;
-%                $\T.$addNode($q$)\;
-%                $\T.$addEdge($\qnew, q$)\;
-%            } 
-%        }
-%        \return $(\qnew,r')$\;
-%    }
-%    \return NULL;
-%}
-%\end{algorithm}
-%
-
-\subsection{Tunnel detection in dynamic proteins}
-
-A sequence of frames of protein dynamics is searched by repeated construction of a tree and its transfer to the next frame.
-The collisions between the nodes of the actual tree and atoms of the next frame are checked and the colliding nodes are removed.
-The parents of the remaining nodes are changed to corresponding nodes from the previous tree.
-The search then continues by expanding the existing tree using Alg.~\ref{alg::tunnel}.
-This results in a sequence of trees.
-Each node in the tree points to its parent, which is either a node of the same tree, or a node of the tree in the previous frame.
-Also, the result is a set of exit points (the set $G$ in Alg.~\ref{alg::tunnel}), which contains ending points of tunnels in each frame. 
-The tunnels are then reconstructed by searching paths from each $g \in G$ to the first frame (or to other frame of interest).
-
-%The algorithm starts with the first frame at configuration $\qinit \in \CF$.
-%We assume that this position is collision-free at frame $1$, otherwise it would not be possible to construct the tree around it.
-%The result of the static tunnel detection (Alg.~\ref{alg::tunnel}) is a new configuration tree of collision-free nodes for frame $i$ and
-%tunnel exit-points $G$.
-%Further expansions from the tunnel exit-nodes have to be prohibited, otherwise the tree would fill the outer region of the molecule.
-%Similarly to the Alg.~\ref{alg::tunnel}, this is achieved using the blocking spheres $\SB$.
-%The blocking spheres have radius $\gprobe$ and they are placed at tunnel exit-points $G$ (Fig.~\ref{fig::timexp}d).
-%The result of the Alg.~\ref{alg::tunnel} is a configuration tree $\T$ representing the protein void space, together with
-%a set of tunnel exit-points $G$. 
-%The result of Alg.~\ref{alg::main} is represented by a sequence of trees $\T_0,\ldots,\T_n$, and the tunnel exit-points stored in the set $G$.
-%$t$ is represented by the sequence 
-%$t=\left((q_1,f_1), \ldots, (q_{k},f_{k})\right)$ of $k$ points $q_i$ and their corresponding frames $f_i$.
-
-%\begin{algorithm}
-%%\setstretch{\straa}
-%{\small
-%\caption{tree pruning\label{alg::copyTree}}
-%\KwIn{Geometry $\SS_{i+1}$ for frame $i+1$,
-%    configuration tree $\T_i$ constructed at frame $i$
-%}
-%\KwData{probe radius $\probe$, goal radius $\gprobe$}
-%\KwOut{Configuration tree $\T_{i+1}$ valid for frame $i+1$}
-%\hrule
-%$\SB = \emptyset $\;
-%$\T_{i+1} = $empty tree\;
-%\For{$q \in \T_i$}{
-%    $r(q)$ = largest collision-free radius at $q$ w.r.t. $\SS_{i+1}$\;
-%    \If{$r(q) \ge \probe$ {\bf and} $r(q) < \gprobe$ }{
-%        $T_{i+1}.$addNode($q$)\;
-%        set parent of $\T_{i+1}$.node($q$) to $\T_i.$node($q$)\;
-%    }
-%    \If(// $q$ is tunnel exit-point){$r(q) \ge \gprobe$}{
-%        $\SB = \SB \cup \{\Sgprobe(q)\}$\;
-%    }
-%}
-%\return $(\T_{i+1}, \SB)$\;
-%}
-%\end{algorithm}
-%
-%
 
 
-\section{Voronoi-based guided sampling}
-\label{sec::vbg}
 
-Due to limited void space of the protein, tunnel detection suffers from the narrow passage problem.
-To cope with this problem, we propose to guide the sampling in the configuration space using vertices $\VV$ of WVD of the atoms.
-To prevent stucking of the tree due to obstacles (i.e., atoms), it is necessary to generate random samples around $\VV$ only if the tree has
-a chance to grow towards the random samples.
-To achieve this, we maintain a set of {\sl active} Voronoi vertices called $\VVA$. 
-A Voronoi vertex $v \in \VV$ is considered as active, if the distance to its nearest node in the tree is less than $\da$, but larger than
-$\db$ (Fig.~\ref{fig::av}).
-The upper value $\da$ ensures, that the active Voronoi vertices are close to the boundary of the configuration tree, whilst
-the lower value $\db$ prevents to activate Voronoi vertices that have already been approached by the tree.
-This sampling process therefore automatically adapts according to the progress of the configuration tree:
-after the tree approaches a given $v \in \VVA$, this vertex is removed from $\VVA$ so its surrounding is not sampled anymore.
-Contrary, distant vertices $v \in \VV$ are not used for sampling.
-
-
-To generate a random sample $\qrand$, $v \in \VVA$ is randomly selected and $\qrand$ is generated around $v$ using Gaussian distribution with 
-$\sigma = r_v$ (Alg.~\ref{alg::tunnel}, lines 5--9).
-%This Guassian distribution is used because it allows to generate $\qrand$ also out of the sphere ce
-%so $\qrand$ can be placed also out of the sphere of the Voronoi vertex $v$.
-%which has been shown to be useful.
-The Voronoi-based sampling is used only in the first phase of the method, where the tree growth outside the protein is blocked by $\SB$.  
-In the second phase, it is desired to grow outside the protein and the VD structure is not needed, so
- $\qrand$ is randomly taken from the whole $\C$ with probability $\gb$ (Alg.~\ref{alg::tunnel}, line 10--13).
-
-%It should be noted, that Voronoi vertices alone does not necessary represent the tunnels, 
-%as they can be located too close to the atoms (closer than the radius of the probe). 
-
-Besides generating $\qrand$ around $v \in \VVA$, the Voronoi vertex $v$ is added to the tree if its distance to $\qnear$ is less than
- $\probe$ (Alg.~\ref{alg::tunnel}, lines 15--17).
-Such addition is valid as all vertices in $\VV$ (and consequently in $\VVA$) have collision-free radius at least $\probe$.
-
-The set $\VVA$ does not need to be updated in each iteration, because the tree is expanded only by the distance $\varepsilon$ in each
-iteration. 
-The update can be realized e.g. after every $k$ nodes added to the tree.
-
-%The configuration tree is expanded by several nodes in each iteration, but in the maximal distance $\varepsilon$, so several
-%terations is needed to approach a given $v \in \VVA$. 
-%Therefore, it is not necessary to update $\VVA$ in each iteration, but only after $k$ nodes is added to the tree.
-
-%As the configuration tree is extended by several spheres in each step that are at most in distance $\varepsilon$ from the expanded node $\qnear$.
-%It is therefore needed several iterations to extend the tree close enough to the nodes in $\VVA$.
-%Consequently, it is not necessary to update $\VVA$ in each iteration, but rather after every $k$ nodes added to the tree (Alg.
-
-\begin{figure}
-\centering
-%\includegraphics[width=0.23\textwidth]{fig/activevor}
-%\includegraphics[width=0.23\textwidth]{fig/activevor2}
-\includegraphics[width=0.23\textwidth]{fig/av1}
-\includegraphics[width=0.23\textwidth]{fig/av2}
-\caption{\label{fig::av}
-    Simplified example of a progress of generating random samples using WVD of a set of 2D atoms.
-    Atoms are depicted in blue, WVD edges in green.
-    Dashed circles are centered at Voronoi vertices, and the radius is given by the distance to the nearest atom.
-    Small red circles represent a partially built configuration tree.
-    Active Voronoi vertices, that are close to the tree are depicted in light yellow.
-    Random samples are generated around these active vertices.
-    The tree is attracted by samples in the yellow regions (left). 
-    Voronoi vertices, that have been already approached, are depicted in light pink (right).
-    Random samples are not generated around these vertices, so the tree is still attracted towards unexplored regions.
-}
-\end{figure}
-
-\section{Discussion}
-%+proc nepridavat rovnou koule z WVD
-%+multiple tunnels
-
-%The advantage of the proposed approach is that the sequence of protein snapshots is searched frame by frame.
-%By transferring the constructed tree to the next frame it is ensured that tunnels can be search not only within frame, but also
-%between two given frames.
-
-As each frame of protein dynamics is analyzed separately, only the actual configuration tree and frame-related data structures 
-(e.g., WVD, collision-detection structures) need to be held in the memory.
-After the frame is switched, the full tree from the previous frame can be stored.
-According to our experiments, 50--70\% of nodes are kept to the next frame.
-The amount of required memory therefore does not depend on the number of frames to be processed, but mainly on the size of the protein.
-The sampling in the next frame does not start from scratch, but it continues by adding new nodes to the tree.
-Therefore, the number of iterations $\Imax$ has to be large for the first frame in order to maximize the number of detected tunnels, but it can 
-be decreased for the subsequent frames.
-
-Detecting tunnels for spherical probes brings several advantages.
-The collision detection can be computed very fast between a spherical probe and the hard sphere model of the protein.
-Besides, simple 3D Euclidean metric can be used to measure the distance in the configuration space.
-Consequently, the nearest neighbor search can be realized using KD-trees in $\mathcal{O}(\log n)$, where $n$ is the number of 
-nodes in the tree.
-KD-trees can also be used to compute the distance $\dists$ to surface atoms 
-(line 20 in Alg.~\ref{alg::tunnel}), and for the update of set $\VVA$ (Alg.~\ref{alg::tunnel}, line 6), 
-which makes these procedures fast.
-   
-%The sampling in a given frame is terminated after $\Imax$ iterations.
-%The tree is then pruned to remove the nodes colliding with atoms of the next frame.
-%The amount of memory required to detect tunnels in a sequence of protein dynamics is given only by the number of nodes in each frame.
-
-The number of atoms in proteins, their arrangement as well as roughness of the surface may significantly vary, 
-       and the behavior of the algorithms have to be adjusted.
-The ability to detect tunnels is influenced by the parameter $\alpha$.
-The first phase should be long enough in order to build the tree inside the protein.
-According to experiments on proteins listed in Tab.~\ref{tab::results}, 
-we suggest to set $\alpha=0.7$, i.e., 70\% of iterations is performed in the first phase.
-The distance to surface atoms $\ths$ indicating tunnel exit points depends on the roughness of the protein surface and we recommend
-to set it less than $\gprobe$, e.g. $\ths=\gprobe/5$ in our case.
-The parameters of Voronoi-based sampling, $\da$ and $\db$ depend on the amount of void space and also on the probe radius $\probe$.
-We recommend to use $\db=0.5\probe$ and $\da=4\probe$.
-
-%For the purpose of visualization and further analysis, it is convenient to fill the spheres, i.e.,  to find $r(q_i)$ for each point $q_i \in t$.
 
 \section{Experimental verification}
 
-{\bf Static tunnel detection: }
-The proposed method (Alg.~\ref{alg::tunnel}), referred to as \TA, is compared to~\cite{vonasek2016application} (referred to as \TB) and
-to basic search of 3D path for sphere using the basic RRT~\cite{lavalleRRT}, denoted as \TC.
-In \TB, the Voronoi-based sampling is not used.
-%Algorithms are run with the following parameters.
-
-%Collision detection was realized using OZCollide library~\cite{ozcollide}.
-Voronoi vertices $\VV$ used in \TA\ are computed using WVD with the weight set to the radii of the atoms.
-Only Voronoi vertices located inside the alpha-shape are considered to be in the set $\VV$.
-The set $\VVA$ is updated after 1000 new nodes in the tree.
-\TA\ and \TB\ strategies are run with $\alpha=0.7$ and $\Imax=50\cdot 10^3$ iterations.
-The thresholds for Voronoi sampling in \TA\ are $\da=4r_v$ ($r_v$ is radius of a Voronoi vertex $v \in \VV$), $\db=0.5\probe$.
-\TA\ and \TB\ expand the tree by up to $m=4$ new nodes in each iteration, \TC\ only by one.
-\TC\ therefore needs more iterations, so for a fair comparison, \TC\ is run with 10 times more iterations ($\Imax=500\cdot10^3$).
-All other settings are the same for all three tested strategies:  $\varepsilon=0.1$~\AA, $\gprobe=5$~\AA, $\ths=1$~\AA.
-
-%(Alg.~\ref{alg::tunnel}), referred to as \RRTTD\ in the rest of the paper, 
-%was launched with $\Imax=50\cdot10^3$ iterations, $\alpha=0.7$, and for probes $\probe=0.8, 0.9$, and $1.1$~\AA, resolution
-%$\varepsilon=0.1$~\AA, and $\gprobe=5$~\AA, expansion parameters $n=50$, $m=3$, and $\ths=1$~\AA.
-%The resulting tunnels were compared with CAVER 3.0~\cite{caver3} analytical tool that computes tunnels using approximated Voronoi diagrams.
-
-%The proposed \RRTTD\ method was also compared with a na\"{i}ve RRT, referred to as \RRTN\ in the following text.
-%\RRTN\ was implemented according~\cite{lavalleRRT} and it generates random samples uniformly in the configuration space and expands
-%the tree using the straight-line expansion with resolution $\varepsilon=0.1$~\AA.
-%d as RRT-na\"{i}ve in the rest of the text, gienerates random samples uniformly from the whole configuration space, and it does not use the two-phase blocking mechanisms to prevent growing of the tree outside molecules. 
-%\RRTN\ builds the configuration tree slower than \RRTTD\, therefore $\Imax=500\cdot10^3$ iterations were used in \RRTN\ in order to build
-%trees with similar number of nodes~as~\RRTTD.
-
-
-
-Tunnels are searched for several proteins from the Protein Data Bank (PDB) (\url{www.pdb.org}) and compared
-to results of CAVER~3.0~\cite{caver3} tool.
-The surface atoms are detected using alpha-shapes with radius 5~\AA. 
-The resolution of all methods is set to $\varepsilon=0.1$~\AA.
-The default setting is used for CAVER, except for the shell radius which is set to $5$~\AA~and the resolution of provided tunnels is $0.1$~\AA.
-
-The performance of RRT-based methods is evaluated as the success rate of finding tunnels provided by CAVER.
-For each protein and probe radius, methods \TA, \TB\ and \TC\ are run 50 times.
-The tunnels are matched with the tunnels provided by CAVER for the same molecule and probe.
-The tunnels are represented as a sequence of 3D spheres, $t=(q_1,\ldots,q_k), q\in\CF$.
-The one-way distance between two tunnels $d'(t_1,t_2)$ is defined as the average distance between points $q_i \in t_1$ and 
-their closest points $q'_2 \in t_2$ in the tunnel $t_2$, $d'(t_1,t_2)={1\over n_1}\sum_{i=1}^{n_1} \dist(q_i, q_2')$, where $n_1$ is the
-number of points in $t_1$.
-To match tunnels of CAVER and RRT methods, the distance
-%The distance between two tunnels is computed as %that was used to match tunnels of CAVER and RRT is computed as 
-$D(t_1,t_2) = \max( d'(t_1, t_2), d'(t_2, t_1))$ is used.
-Two tunnels can be considered as the same if their distance is less or equal 
-$2.5$~\AA~(examples of same/different tunnels according this metric are depicted in Fig.~\ref{fig::pic2}c,d).
-The success rate for a given CAVER's tunnel is the percentage of RRT trials (out of 50) where this tunnel is detected.
-CAVER, depending on the size of the probe, can provide more tunnels, that are sorted according 
-to a cost function which is derived from the tunnel length, its bottleneck, and the curvature of the tunnel.
-The default sorting criteria, that prefer shorter and thicker tunnels, are used.
-We are therefore interested in the success rate of the first three tunnels, because they are 
-supposed to be the most important for further biochemical analysis.
-The examples of detected tunnels are depicted in Fig.~\ref{fig::pic2} and~\ref{fig::pic1}.
-
-
-%This distance can be interpreted as the worst mean distance between tunnel points.
-%The RRT-based tunnels end by spheres with radius $\gprobe$, while CAVER tunnels end much closer to the surface of the molecule.
-%Therefore, we compare the tunnels only using first $n'_1$ points, where $n'$ is the index of point of the first tunnel, whose distance
-%from the last point on the tunnel is $\Sprobe$.
-
-The results are summarized in Tab.~\ref{tab::results}.
-The first column (denoted {\sl T}) is the index of the CAVER's tunnel.
-The column {\sl Length} shows the length of the tunnels in~\AA.
-Columns \TA,\TB\ and \TC\ show the success rate (in percents) of finding these tunnels by the tested RRT-based strategies.
-The first three rows (starting with $1$, $2$, and $3$) in each section show success rates of finding the first three tunnels provided by CAVER.
-%The next two rows show the tunnels that were found by \RRTTD\ with high probability.
-%For example, first three tunnels of radius 0.7~\AA~in 1BL8 were found with success rates 63\%, 60\%, and 68\% by \RRTTD.
-%\RRTTD\ also found tunnel \#10 in 87\% of cases and tunnel \#18 in 84\% of cases.
-Not all three tunnels can be found in all proteins, especially with larger probes, which is indicated by the blank space 
-(e.g., protein 1CQW contains only one tunnel for probe 1.1~\AA).
-%It is not possible to find at least 3 tunnels in each molecule and probe,
-% therefore less than 5 tunnels can be reported (e.g. in 1CQW, probe 1.1~\AA).
-%On the contrary, many tunnels exist for smaller probes (0.7~\AA). % because there is more space to move amongst the atoms.
-%This gives RRT a chance to expand the configuration tree through these tunnels, but due to randomization, not all tunnels are explored in each trial and the success rate is smaller than with a larger probe.
-
-From the biochemical point of view, the most important is the first tunnel (denoted as $1$) detected by CAVER.
-Generally, the first tunnels are always found with high success rate (sometimes even 100~\%), but the success rate is lower
-for other tunnels.
-Lengths of the tunnels show that the first tunnel is typically shorter than other tunnels.
-These tunnels are more tortuous and they are not going directly to the surface.
-
-By comparing the sampling strategies, the proposed method \TA\ outperforms other strategies in most of the cases, except for the 1BL8 protein.
-The possible reason is that 1BL8 has larger internal void space (many tunnels for large spheres can be found in it), but
-the parameters $\da,\db$ have been used the same for all methods.
-It is worth to emphasize that \TC\ strategy (naive RRT sampling) is run with 10 times more iterations $\Imax$ and still it finds tunnels
-with significantly lower success rate.
-This shows that the two-phase approach for configuration space sampling used in \TA\ and \TB\ brings advantage.
-\TA\ and \TB\ perform similarly, but \TA\ has higher success rate for the tunnels of higher order, which
-is achieved by the Voronoi guided sampling.
-
-%Detection of such tunnels can be difficult for RRT-based methods and it can be increased by tuning parameters related
-%to protein properties,  such as $\da$ and $\db$. 
-%In this comparison, all settings are same for all proteins.
-
-
-
-%For the probe 0.9 and 1.1~\AA, \RRTTD\ finds the tunnel \#1 with high probability (90~\% or more) for most of the tested proteins.
-%The exception is the protein 1BL8, where the first three tunnels are found with 50--60~\% success rate with probes 0.9 and 1.1~\AA.
-%The reason is caused by the initial position, that is on the tip of the protein (Fig.~\ref{fig::pic1}c).
-%During the first phase of \RRTTD, most samples are generated inside the protein.
-%The tree is therefore attracted towards the protein, which
-%decreases the probability to expand the tree in the opposite direction, where the short tunnel can be found.
-%As \RRTTD\ generates more samples inside the molecule during the first phase, the tree is attracted towa
-%probability to find the first CAVER's tunnel. % (Fig.~\ref{fig::pic}b).
-%Therefore, other tunnels, e.g. \#8 are found by \RRTTD\ more often (Fig.~\ref{fig::pic1}d)  as these go through center of the protein.
-%Another starting position was tested (1BL8$^c$ in Tab.~\ref{tab::results}, Fig.~\ref{fig::pic1}c), where the success rates of 
-%finding the first three tunnels are significantly higher.
-
-%Experiments have also shown superior performance of \RRTTD\ over \RRTN, as \RRTTD\ provides tunnels with significantly higher probability.
-%It is worth to emphasize that \RRTN\ was run with 10 times more iterations $\Imax$ to enable the construction of trees with similar number of nodes.
-%This shows that the introduced modifications of RRT for the tunnel detection improve the planning process.
-
-\begin{table}
-\centering
-\caption{\label{tab::results}
-    Comparison of CAVER~3.0 and \TA, \TB\ and \TC\ methods. 
-        Bold font denotes the best success rate for each tunnel and probe.
-}
-{
-\footnotesize
-\renewcommand{\arraystretch}{1.1}
-\renewcommand{\tabcolsep}{2.3pt}
-%\input com-all.tex
-}
-\end{table}
-
-\begin{figure*}
-\centering
-{
-\renewcommand{\arraystretch}{0.2}
-%\renewcommand{\tabcolsep}{0pt}
-\begin{tabular}{ccccc}
-\includegraphics[width=0.22\textwidth]{fig/1akdprobe09-1} &
-\includegraphics[width=0.18\textwidth]{fig/1akdprobe09-0-label} &
-\includegraphics[width=0.12\textwidth]{fig/1akd-good} &
-\includegraphics[width=0.105\textwidth]{fig/1akd-bad}  \\
-(a) 1AKD tunnels      & (b) 1AKD tunnels only & (c) Correct tunnels (A,B)  & (d) Incorrect tunnels (C)
-\end{tabular}
-}
-\caption{\label{fig::pic2}
-    Tunnels detected in the protein 1AKD for $\probe=0.9$~\AA. 
-Tunnels detected by \TA\ are depicted in orange, green spheres show tunnels computed by CAVER 3.0.
-The protein with all tunnels detected by \TA\ method (a). 
-The comparison between tunnels detected by \TA\ (orange) and CAVER 3.0 (green) (b) with highlighted three tunnels.
-Examples of correctly detected tunnels --- green and orange spheres overlap in the most length of the tunnels (c).
-Example of a CAVER tunnel (green) that has not been detected by \TA, as its nearest runnel (orange) does not overlap (d).
-}
-\end{figure*}
-
-
-
-
-\begin{figure*}
-\centering
-{
-\renewcommand{\arraystretch}{0.2}
-%\renewcommand{\tabcolsep}{0pt}
-\begin{tabular}{ccccc}
-\includegraphics[width=0.22\textwidth]{fig/1cqw-main} &
-%\includegraphics[width=0.3\textwidth]{fig/1cqw-caver} &
-%\includegraphics[width=0.3\textwidth]{fig/1cqw-rrt} &
-\includegraphics[width=0.22\textwidth]{fig/1cqw-tunnels} &
-%\includegraphics[width=0.3\textwidth]{fig/1cqw-detailt2} \\
-\includegraphics[width=0.23\textwidth]{fig/1bl8-center} &
-\includegraphics[width=0.23\textwidth]{fig/result1bl8-comp-09-1}  \\
-%(a) Tunnels in 1CQW, probe $0.7$\AA & (b) 1CQW tunnels only & (c) Start positions in 1BL8 and 1BL8$^c$ & (d) Tunnel \#8 in 1BL8, probe 0.9~\AA
-(a) Tunnels in 1CQW,      & (b) 1CQW tunnels only & (c) Start positions in  & (d) Tunnel \#8 in 1BL8, \\
-probe 0.7~\AA            &                       & 1BL8        &     probe 0.9~\AA \\                                 
-\end{tabular}
-}
-\caption{\label{fig::pic1}
-Tunnels detected by \TA\ are depicted in orange, green spheres show tunnels computed by CAVER 3.0.
-}
-\end{figure*}
-
-
-
-{\bf Tunnel detection in dynamic protein: }
-A sequence of 1,000 frames of protein Haloalkane dehalogenase (DhaA) was analyzed with $\probe=0.9$.
-Due to protein dynamics, the tunnels change rapidly and they often disappear or merge with others.
-Each frame was analyzed with Alg.~\ref{alg::tunnel} with $\Imax=1000$ iterations.
-Fig.~\ref{fig::dyn} shows visualization of selected frames.
-In comparison to CAVER, that clusters the first tunnels found in each frame to a single 3D tunnel, the proposed
-method can compute behavior or each detected tunnel separately.
-Due to the CAVER's implicit clustering of the first tunnels, we do show any comparison of tunnels.
-The total time to process the whole sequence was $\sim\!\!2$ minutes (@ 2.9 GHz), while CAVER took $\sim\!70$ minutes.
-Due to space limits, only few images are shown in this section. 
-We refer to \url{http://mrs.felk.cvut.cz/romoco2017} for more information.
-
-\begin{figure*}
-\centering
-\begin{tabular}{cccc}
-\includegraphics[width=0.2\textwidth]{fig/dcpmld2-6-label} &
-\includegraphics[width=0.2\textwidth]{fig/dcpmld2-12} &
-\includegraphics[width=0.2\textwidth]{fig/dcpmld2-19} &
-\includegraphics[width=0.2\textwidth]{fig/dcpmld2-20} \\
-Frame 6 & Frame 12 & Frame 19 & Frame 20 \\                       
-\includegraphics[width=0.2\textwidth]{fig/dcpmld2-48} &
-\includegraphics[width=0.2\textwidth]{fig/dcpmld2-54} &
-\includegraphics[width=0.2\textwidth]{fig/dcpmld2-55} &
-\includegraphics[width=0.2\textwidth]{fig/dcpmld2-56} \\
-Frame 48 & Frame 54 & Frame 55 & Frame 56 \\                       
-\end{tabular}
-\caption{\label{fig::dyn}
-Evolution of void space in molecular dynamics of the DHA protein. 
-The active site is highlighted by the red circle in the top left image.
-In the frame 20, the single tunnel is separated into three smaller tunnels.
-Two of them temporarily connect in the frame 55, but then they remain unconnected.
-}
-\end{figure*}
 
 
 \section{Conclusion }
 
 The problem of tunnel detection in protein structures can be formulated as a path planning problem which can be solved by RRT.
-%The paper shows how to utilize the RRT planner for this task.
-%In comparison to existing techniques for tunnel detection, which are based on Voronoi Diagrams, the proposed method can find tunnels in a sequence of protein dynamics.
 The tunnels have properties of narrow passages and it is therefore challenging to find path inside the protein.
 We propose to generate random samples around a subset of Voronoi Diagram of the protein's atoms.
 The subset is maintained automatically according to the distance to the configuration tree, so only the regions not reached yet
