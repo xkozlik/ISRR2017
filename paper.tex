@@ -635,66 +635,63 @@ at $t_i$.
 The tunnels can be found by tunnel-detection tools like CAVER 3.0~\cite{caver3}.
 
 Ligands are small molecules interacting with the protein. 
-Ligands are not rigid structures, they rather change due to interactions with the protein's atoms.
-Flexible ligands can be modeled as a kinematic chain with predefied degrees of freedom.
-An alternative approach, that is used in this work, is to consider a predefined set of possible conformations.
-The conformations are prepared using Rosetta software TODO. and their are denoted $c$.
+Due to the interaction, the relative positions of the ligand's atoms can change.
+the ligands  can be modeled as a multi-link kinematic chain where the torional angles phi/psi can change in a given range~\cite{songPFpath}.
+After the torsional angles are set, 3D position of each atom of the ligand is computed.
+By changing the angles, various conformations can be generated.
+However, not all conformations are feasible, which has to be checked using potential energy, which is time consuming.
+
+To decrease the computational burgen, a set of feasible conformations $C$ is prepared.
+The conformations can be prepared using Molecular Dynamics software such as Rosetta.
+For each conformation $c\in C$ an energy potential is also calculated.
+The transition matrix $M$ defines the possible changes of conformations, i.e., $M(i,j)=1$ if the conformation $c_i \in C$
+can be switched to the confomration $c_j \in C$.
+
+The proteins are dense structures with narrow tunnels.
+Depending on the protein, the tunnel bottlenecks can be even less then $1$~\AA, which is too narrow for ligands with more than 2 atoms.
+For the purpose of traversability study, the radii of the ligands are scaled down by a factor $s$.
+
+A configuration of the pseudoflexible ligand $q=(x,y,z,r_x,r_y,r_z,c,s)$ is described
+by the 3D position $(x,y,z)$ of the reference point of the ligand (usually it's geometric center), rotation around $x$, $y$ and $z$ axes,
+index of the conformation $c$ and scale of atom radii $s$.
+All possible configurations form the configuration space $\C$. 
+Let $\CF \in \C$ denote the set of collision-free configurations. 
+A configuration is collision-free if there is no intersection between the ligand's atoms scaled by the actual scale factor and the protein atoms.
+
 
 %We further consider a spherical probe $\Sprobe$  of radius $\probe$ encapsulating the ligand.
-Let $q=(x,y,z)\in\C$ denote the configuration (position) of the probe, where
-the configuration space $\C$ consists of all possible configurations.
-For each configuration $q\in\C$ we assume, that its largest collision-free radius $r(q) \in \mathbf{R}, r(q)\ge 0$ can be computed, e.g.
-using collision detection.
+%Let $q=(x,y,z)\in\C$ denote the configuration (position) of the probe, where
+%the configuration space $\C$ consists of all possible configurations.
+%For each configuration $q\in\C$ we assume, that its largest collision-free radius $r(q) \in \mathbf{R}, r(q)\ge 0$ can be computed, e.g.
+%using collision detection.
 %using collision detection.
 %Let $L(q) \subseteq \mathbf{R}^3$ denote the geometry of the ligand at position $q \in \C$.
 %Similarly to geometry of molecule, the geometry of ligand is union of hard sphere model.
 %A probe is represented by one sphere of radius $\probe$.
-The collision-free region $\CF \subseteq \C$ is formed by configurations, where $\Sprobe$ can be placed without any collision, i.e., 
-$\CF = \{q \in \C | \Sprobe(q) \cap \SS = \emptyset\}$, where $\Sprobe(q)$ is the sphere with radius $\probe$ at configuration $q$.
-%We assume, that atoms located on the surface of the molecule are known, these are reffered to as {\sl surface atoms}.
-The distance $\dist(q_1,q_2)$  between two configurations $q_1,q_2\in\C$ is measured using 3D Euclidean metric.
+%The collision-free region $\CF \subseteq \C$ is formed by configurations, where $\Sprobe$ can be placed without any collision, i.e., 
+%$\CF = \{q \in \C | \Sprobe(q) \cap \SS = \emptyset\}$, where $\Sprobe(q)$ is the sphere with radius $\probe$ at configuration $q$.
+%The distance $\dist(q_1,q_2)$  between two configurations $q_1,q_2\in\C$ is measured using 3D Euclidean metric.
 
 %This radius can be detected using collision detection method.
-The configurations outside the protein $\CG \subseteq \C$ are collision-free with sphere $\Sgprobe$ of radius $\gprobe$, $\gprobe> \probe$,
-$\CG=\{q\in \C| \Sgprobe(q) \cap \SS = \emptyset \}$.
+%The configurations outside the protein $\CG \subseteq \C$ are collision-free with sphere $\Sgprobe$ of radius $\gprobe$, $\gprobe> \probe$,
+%$\CG=\{q\in \C| \Sgprobe(q) \cap \SS = \emptyset \}$.
 %A configuration $q \in \CG$ is referred to as {\sl goal configuration} in the rest of the paper.
-By computing $\alpha$-shape of the molecule, we can identify atoms located at the surface. 
-These atoms are referred to as {\sl surface atoms} in the rest of the paper.
-The distance between a configuration $q \in \C$ and its nearest surface atom is referred to as $\dists(q)$.
+%By computing $\alpha$-shape of the molecule, we can identify atoms located at the surface. 
+%These atoms are referred to as {\sl surface atoms} in the rest of the paper.
+%The distance between a configuration $q \in \C$ and its nearest surface atom is referred to as $\dists(q)$.
 %We assume, that for each configuration $q$, the largest collision-free radius $r(q)$ can be computed.
 %Let $r(q)$ denote the radius of the largest collision-free sphere at configuration $q$.
 
-Dynamic proteins are represented by a sequence of $n$ snapshots (frames).
-The tunnels change with the protein dynamics as well: their width and position change, they can merge with other tunnels
-or even disappear.
-The free region $\CF$ is therefore different in each frame, as positions of atoms change.
-For the sake of simplicity, a single notation $\C$ resp. $\CF$ is used in this paper and it is valid for the frame being processed.
+%Dynamic proteins are represented by a sequence of $n$ snapshots (frames).
+%The tunnels change with the protein dynamics as well: their width and position change, they can merge with other tunnels or even disappear.
+%The free region $\CF$ is therefore different in each frame, as positions of atoms change.
+%For the sake of simplicity, a single notation $\C$ resp. $\CF$ is used in this paper and it is valid for the frame being processed.
 
-Approximated WVD diagram of the atoms is computed by representing each atom using 12 balls of equal radii and computing ordinary Voronoi diagram.
-Computing WVD this way is more efficient and numerically stable and it is used also in other related tools~\cite{caver3,yaffe2008}.
-Vertices of this WVD are filtered out if their distance to an atom is less than probe radius $\probe$.
-Let $\VV$ contain the remaining Voronoi vertices, and let $r_v \in \VV$ denote the distance to the nearest atom.
+%Approximated WVD diagram of the atoms is computed by representing each atom using 12 balls of equal radii and computing ordinary Voronoi diagram.
+%Computing WVD this way is more efficient and numerically stable and it is used also in other related tools~\cite{caver3,yaffe2008}.
+%Vertices of this WVD are filtered out if their distance to an atom is less than probe radius $\probe$.
+%Let $\VV$ contain the remaining Voronoi vertices, and let $r_v \in \VV$ denote the distance to the nearest atom.
 %The remaining Voronoi vertices $\VV$ of the WVD and their distances $r_v, v\in \VV$ to the nearest atom are then used in the following method.
-
-
-%\section{Tunnel detection}
-
-%The tunnel detection using motion planning leads to search in 4-dimensional $\C\!\times\!time$ space, which can be searched using randomized sampling-based methods.
-%The task of tunnel detection is to find a collision-free path from a given starting point located inside a dynamic protein 
-%to the outer environment. %: for a probe $\Sprobe$.
-%The idea of the proposed approach is to detect tunnels in each frame separately using a novel modification of RRT algorithm.
-%The configuration tree built in a given frame is transferred to the next frame, where the search continues.
-
-%We propose to detect the tunnels in this 4D space
-%(the space consists of pairs $(q,t) \in \C \times [1,n]$, where $n$ is the number of frames) by randomized sampling.
-%where $\C$ is three-dimensional configuration space
-%of the spherical probe and $n$ is the number of frames.
-%It is not computationally feasible to discretize the space to a grid, in which a path is found using standard space-search methods.
-%Moreover, finding a collision-free path in the space does not solve the problem, because the probe cannot move back in time.
-%Tunnel detection in dynamic proteins leads to search in $\C \times time$ space. %~\cite{Kindel00kinodynamic}.
-%sometimes called state-time space~\cite{berg2005roadmap}.
-%The proposed solution samples the configuration space of each frame separately in order to detect possible tunnels in the frame.
-%The resulting tree is then pruned to remove collision with atoms of the next frame.
 
 
 \section{Ligand traversability}
@@ -708,71 +705,48 @@ The second modification is designed to block growth of the tree outside the prot
 tunnels. 
 The last modification is the novel VD-based sampling of configuration space.
 
+
+
 \linesnumbered
 \begin{algorithm}[h]
 %\setstretch{\straa}
-{\small
-\caption{\label{alg::tunnel}static tunnel detection}
-\KwIn{Initial configuration tree $\T$,
-    initial set of blocking spheres $\SB'$
+\caption{\label{alg::tunnel}traversability planning}
+\KwIn{
+    TODO
 }
-\KwData{goal-probe radius $\gprobe$,
-    probe radius $\probe$, 
-    max. number of iterations $\Imax$, 
-    phase switching threshold $\alpha$,
-    threshold $\ths$,
-    num. of new nodes $m$ in each iteration,
-    prob. $\gb$ of sampling randomly from $\C$
+\KwData{
+    todo
 }
-\KwOut{Configuration tree $\T$,
-    list of tunnel exit-points $G$
+\KwOut{
+    todo
 }
 \hrule
-$\SB = \SB'$; //blocking atoms added during phase~1 \\
-$G = \emptyset$; // list of tunnel exit-points \\
-$phase=1$\;
-\For{$iteration = 1:\Imax$}{
-    \If(// Voronoi-based sample --- Section~\ref{sec::vbg}){$phase=1$}{
-        $\VVA =$ update active Voronoi points from $\VV$\;
-        $v =$ random point from $\VVA$\;
-        $\qrand =$ random point around $v$ in the distance $r_v$\;
-%        $a_1$ = random atom on surface\;
-%        $a_2$ = random atom on surface\;
-%        $\qrand$ = random point on line $|a_1, a_2|$\;
-    }
-    \If{$rand() < \gb$}{
+$v = 0$; // index of the virtual goal\\
+$iteration = 0$\;
+\While{$iteration < \Imax$ and $v < N$}{
+    \eIf{$rand() < \gb$}{
+        $\qrand$ = random sample around $P[v]$\;
+    }{
         $\qrand$ = random sample from $\C$\;
-        $v = \emptyset$; //no Voronoi vertex used
     }
-
     $\qnear$ = nearest node in $\T$ towards $\qrand$\;
 
-    \If{$v \ne \emptyset$ {\bf and} $\dist(\qnear, v) < \probe$} {
-        add $v$ to $\T$, set its parent to $\qnear$\;
+    $S = $expandConfigurations($\qnear$)\;
+
+    \For{$q \in S$}{
+        $\T$.addNode($q$)\;
+        $\T$.addEdge($\qnear, q$)\;
     }
 
-    $N\!=\!m$ collision-free nodes around $\!\qnear$ in the distance $\!\varepsilon$\;
-%    $(\qnew,r(\qnew))$ = expand($\T$,$\qnear$, $\SS \cup \SB$)\;
-    \For{$q \in N $}{
-        \eIf{$\dists(q) < \ths $ {\bf and} $phase=1$}{
-            $\SB = \SB \cup \{\Sgprobe(q)\}$ \;
-        }{
-            $q'$ = nearest node in $\T$ towards $q$\;
-            \If{$\dist(q,q') > \dist(q,\qnear)$}{
-                add $q$ to $\T$, set its parent to $\qnear$\;
-            }
-        }
-        \If{ $r(q) > \gprobe$ }{
-            $G = G \cup \{ q \} $\;
+    \For{$i=N : v$}{
+        $d$ = nearest node in the tree to $P[i]$\;
+        \If{$d < DT$}{
+            $v = i$; // new virtual goal found\;
+            break\;
         }
     }
-    \If{$phase = 1$ {\bf and} $iteration > \alpha \Imax$}{
-        $phase = 2$\;
-        $\SB = \emptyset$; // block. atoms are not used in phase 2 \\
-    }
 }
-\return $(\T, G)$\; 
-}
+trajectory = extract from tree\;
 \end{algorithm}
 
 
