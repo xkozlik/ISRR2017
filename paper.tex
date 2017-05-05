@@ -21,7 +21,7 @@
 \SetKwInput{KwData}{Global params.}
 
 \title{
-    Analysis of protein tunnel traversability for flexible ligands
+    Analysis of protein tunnel traversability for flexible ligands using motion planning
 }
 
 \author{Vojt\v ech Von\' asek\inst{1} \and Barbora Kozl\'\i kov\'a\inst{2} \and Adam Jur\v{c}\'\i k\inst{2} \and Martin Saska\inst{1}}
@@ -87,21 +87,22 @@ Botanick\'a 68a, 602 00 Brno,
 
 
 \begin{abstract}
-Proteins are involved in many biochemical processes.
-%Behavior and properties of proteins as well as other bio-macromolecules are influenced by internal void space such as tunnels or cavities.
-Behavior of proteins is influenced by internal void space such as tunnels or cavities.
-Tunnels are paths leading from an active site inside the protein to its surface.
-Knowledge about tunnels and their evolution in time provides an insight into protein properties
-(e.g., stability).
-Sampling-based motion planning methods like Rapidly Exploring Random Tree (RRT) can be used to find the tunnels by
-sampling the corresponding configuration space.
-The main advantage of these methods is that they can be easily adapted to consider protein dynamics.
-%i.e., they can find tunnels in proteins moving in time.
-However, the inner void space of proteins is  very limited, 
-    which may decrease ability of RRT to find a solution due to the narrow passage problem.
-In this paper, we propose to generate the random samples using Voronoi Diagram of the atoms.
-A subset of Voronoi vertices is dynamically maintained to support generation of samples in promising regions inside the protein.
-
+%Proteins are involved in many biochemical processes.
+Behavior and properties of proteins as well as other bio-macromolecules are influenced by internal void space such as tunnels or cavities.
+%Behavior of proteins is influenced by internal void space such as tunnels or cavities.
+Tunnels are paths leading from an active site inside the protein to its surface and they act as transporting pathways
+to the active site.
+To achieve a desired propery of the proteins, the active sites has to be reached by small molecules (ligands).
+The widely used software tools for tunnel detection are based on Voronoi diagrams, which is suitable
+for detecting tunnel of spherical probes.
+It is however not easy to estimate if a given non-spherical ligand can pass a spherical tunnel.
+Moreover, ligands are not rigid structures, but their conformation changes due to interactions with the protein's atoms.
+In this paper, we propose to employ sampling-based motion planning techniques to analyze traversability of ligands in the spherical
+tunnels.
+To speed up the computation, the flexibility of ligands is modeled using a predefined set of conformations suitable (typical) for 
+the given ligand.
+We introduce a novel modification of RRT method, whose search in the corresponding configuration space is guided by
+the tunnel pathway.
 \end{abstract}
 
 \section{Introduction}
@@ -128,26 +129,35 @@ The active site is a specific site, usually deeply buried inside the protein,
 The importance of tunnels can be demonstrated on the study where mutations of amino acids located directly around the tunnel substantially improved the structural and kinetic stability of the studied protein, while
 surface mutations almost did not contribute to the stabilization~\cite{Koudelakova2013}.
 
-%For example, one task in protein engineering is to change selected properties of a protein, e.g. its stability under different outer conditions~\cite{Koudelakova2013} or activity of the protein towards the other molecules~\cite{Pavlova2009}.
-%This is reached by studying so called tunnels in proteins which can serve as the transportation paths for the ligand from the outside environment to the active site or vice versa.
-%The active site is a specific site, usually deeply buried inside the protein, where the chemical reaction between the protein and ligand can undergo.
-%Since the importance of the presence of tunnels in proteins was revealed, the researchers started to study them intensively.
+For example, one task in protein engineering is to change selected properties of a protein, e.g. its stability under different outer conditions~\cite{Koudelakova2013} or activity of the protein towards the other molecules~\cite{Pavlova2009}.
+This is reached by studying so called tunnels in proteins which can serve as the transportation paths for the ligand from the outside environment to the active site or vice versa.
+The active site is a specific site, usually deeply buried inside the protein, where the chemical reaction between the protein and ligand can undergo.
+Since the importance of the presence of tunnels in proteins was revealed, the researchers started to study them intensively.
 %Koudel\'{a}kov\'{a} et al.~\cite{Koudelakova2013} show that mutations of amino acids located directly around the tunnel improved the structural and kinetic stability of the studied protein substantially, while the surface mutations almost did not contribute to protein stabilization.
 %The importance of tunnel can be demonstrated on an example, 
 % where mutations of amino acids located directly around the tunnel improved the structural 
 %and kinetic stability of the studied protein substantially, while surface mutations almost did not contribute to
 %the protein stabilization~\cite{Koudelakova2013}.
 
-%On the other hand, surface mutations almost did not contribute to protein stabilization~\cite{Koudelakova2013}.
+The task of tunnel detection is to find a collision-free path leading from an active site inside the protein to its surface.
+An example is depicted in Fig.~\ref{fig::motiv}.
+As not all paths are biochemically relevant, only paths with a given minimal bottleneck have to be reported (the bottleneck is
+the radius of the smallest sphere that can traverse the whole tunnel) 
 
+Available tools for tunnel detection compute the tunnels assuming spherical ligands (probes). 
+Bio-chemicists then decide if such a tunnel can be used to transport a given ligand mainly based on the tunnel
+lengths and its bottlenect.
+Such decision is however not precise and require previous expertise with the domain.
 
-%The task of tunnel detection is to find a collision-free path leading from an active site inside the protein to its surface.
-%As not all paths are biochemically relevant, only paths with a given minimal bottleneck have to be reported (the bottleneck is
-%the radius of the smallest sphere that can traverse the whole tunnel) 
+To provide more information about the traversability of the tunnels, it is necessary to consider a non-spherical model of 
+the ligand.
+Such task can be then solved using motion planning techniques.
+It is necessary to consider translation, rotation and possibly also other degrees of freedom of the ligands, that are determined
+by the torsional angles, the related configuration space, that need to be searched, is high-dimensional. 
+Sampling-based motion planning techniques can be used to find a trajectory of the ligand.
 
 Generally, the task of tunnel detection is to find a collision-free path leading from the active site to the protein's surface. 
 The path is usually searched for a spherical probe of a given radius, which serves as a proxy geometry for a ligand. 
-An example is depicted in Fig.~\ref{fig::motiv}.
 Early solutions focused on static molecules. 
 However, from a static snapshot it is hard to assess the biochemical relevance of the tunnel as it does not
 provide information about its temporal stability. 
@@ -179,8 +189,6 @@ However, such estimation still involve lot of experience.
 
 \red{TODO}
 something about screeing: what is it, what's is the input and output, in which applications (research/industry) it is useful.
-
-
 
 
 
@@ -335,6 +343,7 @@ As the samples are generated from uniform distribution in RRT, probability of pl
    the probability of expanding the tree through a narrow passage is small~\cite{hannaWIS}.
 %Due to its low volume, the probability of expanding the nodes towards the passage is small~\cite{hannaWIS}.
 %    many iterations are needed before a tree can be built through the passage~\cite{hannaWIS}.
+
 A possible solution is to estimate the location of narrow passages from the knowledge of the workspace and generate more samples
 in the difficult areas.
 For Probabilistic Roadmaps~\cite{kavrakiPRM}, this can be achieved simply by generating more samples in the difficult areas, e.g. along
@@ -346,6 +355,16 @@ Generating random samples in difficult regions however does not ensure construct
 In RRT, the configuration tree is expanded in the direction of random samples, but the obstacles may prevent to reach them closely~\cite{vonasekphd}.
 Increased probability of sampling in a given region, e.g., in a narrow passage, 
 brings advantage only if the tree is close to the region and if it can reach it.
+To utilize a knowledge about the environment in the sampling process, represented e.g. using a mexial axis or a 2D or 3D path,
+it is necessary to maintain the sampling regions according the progress of the tree.
+For example, random samples can be generated along a given workspace path~\cite{vonasek2009rrt}.
+After the tree reaches a path point, the sampling around the point is disabled and moved to the next point of 
+the path.
+Similarly in
+\cite{jorry14marrt,neddy2016dynnamic}
+ob-rrt
+rrt-retraction
+
 
 In this paper, we propose how to combine RRT-based search with Voronoi-based methods in the task of tunnel detection. 
 To guide the configuration tree using Voronoi diagram, a subset of Voronoi vertices is determined and
@@ -748,6 +767,38 @@ $iteration = 0$\;
 }
 trajectory = extract from tree\;
 \end{algorithm}
+
+\begin{algorithm}[h]
+%\setstretch{\straa}
+\caption{\label{alg::tunnel}expand()}
+\KwIn{
+   configuration $q$ to be expanded
+}
+%\KwData{
+%}
+\KwOut{
+    set $S$ of collision-free configurations reachable from $q$
+}
+\hrule
+$c = $ conformation of $q$\;
+\ForEach{$c_j \in C$}{
+    \If{$canSwtich(c,c_j)$}{
+        \ForEach{$s \in scales$}{
+            \For{i = 1:m}{
+                $q' = q$\;
+                translate by random around $q'$\;
+                rotate randomly \;
+                $q'.c = c_j$\;
+                $q'.s = s$\;
+                \If{$isCollisionFree(q')$}{
+                    $S = S \cup \{ q \}$\;
+                }
+            }
+        }
+    }
+}
+\end{algorithm}
+
 
 
 
