@@ -37,6 +37,7 @@ Botanick\'a 68a, 602 00 Brno,
 \def\qrand{q_{rand}}
 \def\qstart{q_{start}}
 \def\qinit{\qstart}
+\def\qgoal{\qstart}
 \def\qnear{q_{near}}
 \def\qnew{q_{new}}
 \def\C{\mathcal{C}}
@@ -88,7 +89,6 @@ Botanick\'a 68a, 602 00 Brno,
 
 \abstract{
 %\begin{abstract}
-\red{TODO: rewrite}
 Proteins are involved in many biochemical processes and they function is achieved by interactions with other molecules such as ligands.
 The interaction takes place in an active site inside the protein, which is accesible from the surface by so called tunnels.
 The knowledge about tunnels can help researches for example to better select target ligand in order to achieve a desired
@@ -121,42 +121,44 @@ For example, one task in protein engineering is to change selected properties of
 This can be achieved by detecting and studying so called tunnels in proteins which can serve as the transportation paths for the 
 ligand from the outside environment to the active site or vice versa. 
 
-
-Generally, the task of tunnel detection is to find a collision-free path leading from the active site to the protein's surface. 
-The path is usually searched for a spherical probe of a given radius, which serves as a proxy geometry for a ligand. 
-As not all paths are biochemically relevant, only paths with a given minimal bottleneck have to be reported (the bottleneck is
+The widely used tools for tunnel detection are based on Voronoi diagrams~\cite{yaffe2008,caver3} or 
+a 3D grid~\cite{sehnal2013mole,petrek2006caver}.
+These methods compute the tunnels assuming a spherical ligand (probe).
+The resulting tunnels are represented as a sequence of spheres.
+The active sites are usually connected with the protein surface with multiple pathways.
+However, not all paths are biochemically relevant, so only paths with a given minimal bottleneck have to be reported (the bottleneck is
 the radius of the smallest sphere that can traverse the whole tunnel) 
-Available tools for tunnel detection compute the tunnels assuming spherical ligands (probes). 
-Bio-chemicists then decide if such a tunnel can be used to transport a given ligand mainly based on the tunnel lengths and its bottlenect.
-Such decision is however not precise and require previous expertise with the domain.
-
-To provide more information about the traversability of the tunnels, it is necessary to consider a non-spherical model of the ligand.
-Such task can be then solved using motion planning techniques.
-It is necessary to consider translation, rotation and possibly also other degrees of freedom of the ligands, that are determined
-by the torsional angles, the related configuration space, that need to be searched, is high-dimensional. 
-Sampling-based motion planning techniques can be used to find a trajectory of the ligand.
-
-%Early solutions focused on static molecules. 
-%However, from a static snapshot it is hard to assess the biochemical relevance of the tunnel as it does not provide information about its temporal stability. 
-
-Recently, researchers started to focus on molecular dynamics simulations and study the behavior of individual tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole}.
-%Recently, researchers started to focus on molecular dynamics simulations and studying the behavior of individual 
-%tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole}.
-Molecular dynamics is represented as a sequence of frames (molecule snapshots), and the tunnels need to be detected through these frames.
-%With the increasing size of simulations the correctness of predicting the most biochemically relevant tunnel increases as well.
-Existing solutions based exclusively on Voronoi diagrams and clustering methods are time and memory consuming
-which also gives the limitation for the maximum number of frames which they are able to analyze.
-In such cases, the biochemists have to select a subset of the whole simulation and perform the analysis only for this selection.
-Such analysis however provides only a rough idea of the tunnel behavior, as important parts of the simulation can be easily omitted.
-%This opens new possibilities for alternative solutions enabling to explore the tunnels in each frame of the molecular dynamics.
-%In such cases the biochemists have to skip each n-th snapshot or select a subset of the whole simulation and perform the analysis only for this selection.
-
-The properties of tunnels like bottleneck radius, their length and the surrounding residues can be used
-to estimate suitability of the tunnel for a ligand.
-However, such estimation still involve lot of experience.
+Bio-chemicists then decide if such a tunnel can be used to transport a given ligand mainly based on the tunnel lengths and its bottleneck.
 
 \red{TODO}
 something about screeing: what is it, what's is the input and output, in which applications (research/industry) it is useful.
+
+
+Such decision is however not precise and it requires previous expertise with the domain.
+Of the reasons is that typical ligands are non-spherical and therefore it is difficult to estimate their traversability in tunnels
+computed for a spherical probe.
+For better decision, it is necessary to consider also the shape of the ligand being investigaed, and consequently, to also
+consider rotations of the whole ligand.
+Moreover, ligands are rather flexible molecules, so the relative positions of their atoms can change as well.
+
+Sampling-based motion planning methods such as Rapidly Exploring Random Tree~\cite{lavalleRRT} can be
+used to test the traversability of a given ligand in the tunnels.
+These methods can cope with objects of many degrees of freedom and arbitrary geometry.
+
+%Recently, researchers started to focus on molecular dynamics simulations and study the behavior of individual tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole}.
+%Recently, researchers started to focus on molecular dynamics simulations and studying the behavior of individual 
+%tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole}.
+%Molecular dynamics is represented as a sequence of frames (molecule snapshots), and the tunnels need to be detected through these frames.
+%With the increasing size of simulations the correctness of predicting the most biochemically relevant tunnel increases as well.
+%Existing solutions based exclusively on Voronoi diagrams and clustering methods are time and memory consuming
+%which also gives the limitation for the maximum number of frames which they are able to analyze.
+%In such cases, the biochemists have to select a subset of the whole simulation and perform the analysis only for this selection.
+%Such analysis however provides only a rough idea of the tunnel behavior, as important parts of the simulation can be easily omitted.
+%This opens new possibilities for alternative solutions enabling to explore the tunnels in each frame of the molecular dynamics.
+%In such cases the biochemists have to skip each n-th snapshot or select a subset of the whole simulation and perform the analysis only for this selection.
+%The properties of tunnels like bottleneck radius, their length and the surrounding residues can be used
+%to estimate suitability of the tunnel for a ligand.
+%However, such estimation still involve lot of experience.
 
 
 
@@ -187,18 +189,13 @@ The goal is the traversability analysis is to estimate traversability of a tunne
 
 \section{Related work}
 
-\red{TODO include}
-Recently, we have proposed a novel method for tunnel detection using sampling-based motion planning, namely using Rapidly Exploring Random Tree (RRT) method~\cite{vonasek2016application}.
-In comparison to existing approaches~\cite{Petrek20071357,citeulike:6257975}, this RRT-based approach~\cite{vonasek2016application} 
-handles the dynamics without need to cluster and match Voronoi diagrams from consecutive frames.
 
-
-The analysis of protein structure aiming to reveal the tunnels has been supported by different computational software tools which take the geometry of the protein as an input and explore the inner void space (e.g., CAVER 1.0~\cite{citeulike:6257975} or MOLE~\cite{Petrek20071357}). 
+The analysis of protein structure aiming to reveal the tunnels has been supported by different computational software tools which take the geometry of the protein as an input and explore the inner void space (e.g., CAVER 1.0~\cite{petrek2006caver} or MOLE~\cite{Petrek20071357}). 
 Early methods for tunnel detection utilized a discretized 3D grid, where each cell is considered as occupied or free depending
 on the presence of atoms of the protein.
 Tunnels can be then searched using standard graph-search methods like Dijkstra's algorithm.
 Besides, the grid can be used to identify other relevant properties like 
-pockets, cavities, or channels~\cite{sehnal2013mole,citeulike:6257975}.
+pockets, cavities, or channels~\cite{sehnal2013mole,petrek2006caver}.
 %One of the first grid-based approaches to the detection of tunnels in protein is the CAVER 1.0 algorithm by Pet\v{r}ek et al.~\cite{citeulike:6257975}.
 The obvious disadvantage of the grid-based methods is the high memory demand and their dependency on the grid resolution.
 Due to the high memory consumption, these methods are not suitable for tunnel detection in dynamic proteins and therefore they
@@ -216,9 +213,8 @@ This may lead to detection of tunnels with incorrect bottlenecks. % i.e., incorr
 To consider atoms with different radii, weights of individual points are determined by the van der Walls radii of the atoms in WVD.
 An alternative solution is to compute a non-weighted VD on an extended point set, where 
 each atom is approximated by several spheres with small radius~\cite{yaffe2008,caver3}.
-%In this case, each atom is approximated by several spheres with small radius~\cite{yaffe2008,caver3}.
 %The VD-based methods remove one of the main limitations of the grid-based approach which is the dependency on the grid resolution.
-VD-based methods are memory less demanding, and also faster than grid-based methods.
+VD-based methods are memory less demanding, and also faster than the grid-based methods.
 %They can be easily used for static tunnel detection, as they are based on Voronoi diagrams of static frames.
 %The grid-based and VD-based methods are usually employed on static proteins.
 %Finding tunnels through time-changing proteins increases the dimension of the space to be searched, which prevents the grid-based methods
@@ -228,18 +224,26 @@ finding correspondences between them.
 The existing approaches often use hierarchical clustering to match Voronoi vertices and edges from different frames, which is computationally demanding~\cite{lindow2012dynamic,caverDetails}.
 %The main limitation of this approach is that this solution builds a complex and large hierarchical tree which has to be stored in memory and subsequently traversed which is computationally demanding. %~\cite{lindow2012dynamic}.
 
-
-The tunnel detection in dynamic proteins can also be formulated as path planning in 4D (i.e., 3D $\times$ time) 
-configuration space assuming a spherical probe.
+Finding tunnels for a general, non-spherical and possibly a flexible ligand can be solved by searching
+a feasible path in the corresponding configuration space $\C$.
+The dimension of the space is given by the degrees of freedom (6D for a solid ligand and 6D+$n$ for a flexible ligand with
+$n$ rotational bonds).
+The feasible configurations, where the ligand (robot) does not touch and obstacle, form the free region $\CF$.
+The tunnel traversability can be then formulated as a path planning from the start configuration $\qinit \in \CF$ 
+to a goal configuration $\qgoal\in\CF$, where both $\qinit$ and $\qgoal$ are located at the begining and the end of the
+tunnel, respectively.
+Sampling-based methods like PRM~\cite{kavrakiPRM} or RRT~\cite{lavalleRRT} can be used to search such a path.
+%Sampling-based techniques like PRM~\cite{kavrakiPRM} or RRT~\cite{lavalleRRT} can be used to search such a high-dimensional space.
+%The tunnel detection in dynamic proteins can also be formulated as path planning~\cite{vonasek2016application}. in 4D (i.e., 3D $\times$ time) 
+%configuration space assuming a spherical probe.
 %Tunnel detection in dynamic proteins leads to path planning 
 %in a high-dimensional configuration space (4D for the probe and 7D for the ligand).
-This space can be searched using sampling-based motion planning methods.
+%This space can be searched using sampling-based motion planning methods.
 %Instead of a systematic search, which would be time and memory consuming, randomized sampling can be used
 %to obtain necessary information about the configuration space. %~\cite{Lav06}. 
 %Path planning approaches studied in robotics can be used to solve tunnel detection~\cite{guieysse2008structure} as well.
 %Sampling-based path planning methods like Probabilistic Roadmaps (PRM)~\cite{kavrakiPRM} and Rapidly Exploring Random Trees (RRT)~\cite{lavalleRRT} are able to find feasible paths for complex objects with arbitrary geometries.
-The idea of sampling-based motion planning is to randomly sample the configuration space $\C$ of the robot. % (i.e., the spherical probe in this case).
-%The configuration space is a space of all possible configurations of the robot.
+The idea of sampling-based motion planning is to randomly sample the configuration space.
 The random samples are classified as free or non-free using collision detection and  the free ones are stored into a roadmap.
 A path in the roadmap then represents a motion in the workspace.
 %The usage of collision detection for classification of samples allows the application of sampling-based methods for path planning for robots (objects) of arbitrary shapes.
@@ -251,6 +255,7 @@ A path in the roadmap then represents a motion in the workspace.
 %protein folding~\cite{amato2002using,raveh2009rapid,novinskaya2015improving,songPFintro},
 %protein folding~\cite{raveh2009rapid,novinskaya2015improving},
 %or protein folding combined with ligand diffusion~\cite{cortes2010simulating}.
+
 Rapidly Exploring Random Tree (RRT)~\cite{lavalleRRT} is a single-query motion planning method.
 RRT incrementally builds a configuration tree $\T$ rooted at the initial configuration.
 In each iteration of RRT, a random configuration $\qrand \in \C$ is generated and its nearest node in the tree $\qnear \in \T$ is found.
@@ -260,70 +265,62 @@ The algorithm terminates if the tree approaches the goal configuration close eno
 
 Beyond robotics, sampling-based motion planners have been successfully applied in computational biology in studies
 related to 
-protein folding~\cite{al2012motion,gipson2012computational,cortes2010simulating,amato2002using,raveh2009rapid,novinskaya2015improving,songPFintro}, or analysis of loop motions~\cite{cortes2004geometric}.
+protein folding~\cite{al2012motion,gipson2012computational,cortes2010simulating,amato2002using,raveh2009rapid,novinskaya2015improving,songPFintro},analysis of loop motions~\cite{cortes2004geometric}, and even for tunnel detection~\cite{vonasek2016application,vonasek2017tunnel}.
 %rrt for molecular: \cite{al2012motion}
 %survey \cite{gipson2012computational}
-Solutions for tunnel detection using sampling-based methods however have not been discussed yet.
-The most relevant paper is~\cite{guieysse2008structure}, where RRT is used to compute pathways for flexible ligands towards 
-the active site.
-This method however does not compute explicitly all tunnels, rather a single pathway.
+%In our previous works, we proposed to employ RRT also for the purp
+%Solutions for tunnel detection using sampling-based methods however have not been discussed yet.
 
-In our recent paper~\cite{vonasek2016application}, we have proposed to detect tunnels using RRT.
-In this approach, RRT samples the configuration space of a small spherical probe moving in a single frame of protein dynamics.
-After the tunnels are found in one frame, the built  configuration tree is transferred to the next frame of protein dynamics and pruned to remove
-nodes colliding with the new positions of atoms.
-This results in a sequence of connected trees, that can be searched for path representing the tunnels in the protein dynamics.
-
+The most relevant paper is~\cite{guieysse2008structure}, where RRT is used to compute pathways for flexible ligands towards the active site, but
+without the possibility to select a preferable path/tunnel.
+%This method however does not compute explicitly all tunnels, rather a single pathway.
 %This allows us to build a sequence of trees, where each tree corresponds to each frame of protein dynamics.
 %The nodes of the trees are connected to their parents in the same frame, or to their parents in the previous frame.
 %This allows us to find paths in this sequence of tree between two given frames, that correspond to the dynamic tunnels.
+%In comparison to~\cite{guieysse2008structure}, the approach~\cite{vonasek2016application} assumes spherical probes, which is motivated
+%by practical reasons.
+%Flexible ligands have many degrees of freedom, which increases dimension of the configuration space to be searched and makes
+%the collision-detection more complex.
+%Moreover, it is required to define suitable metric and possibly also an efficient data structure for nearest-neighbor search.
+%Despite the flexibility of ligands, their movements in proteins are strongly limited, as they are typically larger than spherical probes.
+%Traversability of the ligand through a protein may depend on its initial orientation, 
+% which can further limit the growth of the configuration tree.
+%Contrary, configuration space of  spherical probes is only 3D with the possibility to employ Euclidean metric and KD-trees for the
+%nearest neighbor search.
+%It is more practical to first detect tunnels for a spherical probe and then analyze traversability of the actual shape of ligand.
+%In this case, the traversability analysis is limited only to a tunnel and its vicinity, which decreases volume of the configuration space and
+%decreases the number of atoms involved in collision detection.
 
-In comparison to~\cite{guieysse2008structure}, the approach~\cite{vonasek2016application} assumes spherical probes, which is motivated
-by practical reasons.
-%The tunnels can be computed for a spherical probe or even for non-spherical ligands --- small molecules.
-%Computing tunnels considering only spherical probes is more practical.
-%Despite the ability of sampling-based planners to find path for robots (objects) of arbitrary shapes, which is achieved by the collision detection, the above described approach~\cite{vonasek2016application} detect tunnels only for spherical ligands.
-%The reasons are practical.
-Flexible ligands have many degrees of freedom, which increases dimension of the configuration space to be searched and makes
-the collision-detection more complex.
-Moreover, it is required to define suitable metric and possibly also an efficient data structure for nearest-neighbor search.
-%Dimension of the configuration space of flexible ligands is higher and it is determined by the Degrees Of Freedom of the ligand.
-%It is required to define proper metric to efficiently search this space using RRT.
-%Planning patways for flexible ligands leads to a search in a high-di
-%Taking into account flexible ligands increases the dimension of the configuration space.
-Despite the flexibility of ligands, their movements in proteins are strongly limited, as they are typically larger than spherical
-probes.
-Traversability of the ligand through a protein may depend on its initial orientation, 
- which can further limit the growth of the configuration tree.
-Contrary, configuration space of  spherical probes is only 3D with the possibility to employ Euclidean metric and KD-trees for the
-nearest neighbor search.
-It is more practical to first detect tunnels for a spherical probe and then analyze traversability of the actual shape of ligand.
-In this case, the traversability analysis is limited only to a tunnel and its vicinity, which decreases volume of the configuration space and
-decreases the number of atoms involved in collision detection.
-%which is faster than searching path for the ligand in the full protein.
+In this paper, we propose to employ motion planning to compute the trajectory for a given ligand in a given tunnel.
+This brings several advantages.
+From motion planning point of view, the tunnels have properties of narrow passages.
+By focusing the motion planning only to the surrounding of a tunnel, the total volume of the configuration space decreases which increases
+the relative volume of the free space, which increases probability of placing random sampling in the perspective regions of the configruation 
+space.
 
-%The ability of RRT to quickly explore the configuration space is caused by the combination
-%of uniform sampling and the nearest-neighbor rule used to select nodes for the expansion.
+
+\red{comparison to momaligpath~\cite{cortes2005path} + \cite{guieysse2008structure} }
+
 The growth of the configuration tree into some regions of the configuration space can however be slowed down due to the narrow passages.
 A narrow passage is a small region of the configuration space containing part of the solution.
 As the samples are generated from uniform distribution in RRT, probability of placing the samples into the narrow passages is low and therefore,
    the probability of expanding the tree through a narrow passage is small~\cite{hannaWIS}.
 
-RRT--Retraction~\cite{zhangRetraction} improves sampling in the narrow passages by retracting the newly added configuration
-closer to obstacles.
-%for motion planning of 3D objects.
-After $\qrand$ is generated and its nearest neighbor $\qnear\in \T$ is found, the segment from $\qrand$ to $\qnear$ is checked for collision.
-The tree is extended normally if the segment is free, otherwise the retraction step is performed.
-The task of the retraction step is to find a contact configuration  that minimizes the distance to $\qrand$.
-The contact configuration $q$ is found on the line and its neighborhood is searched to find another contact configuration $q'$ such that 
-$\varrho(q',\qrand) < \varrho(q,\qrand)$.
-The retraction is terminated after predefined number of steps or if no new contact configuration can be found.
-%The configuration trees built by RRT--Retraction can therefore contain more nodes than is the number of planning iterations,
+%RRT--Retraction~\cite{zhangRetraction} improves sampling in the narrow passages by retracting the newly added configuration
+%closer to obstacles.
+%%for motion planning of 3D objects.
+%After $\qrand$ is generated and its nearest neighbor $\qnear\in \T$ is found, the segment from $\qrand$ to $\qnear$ is checked for collision.
+%The tree is extended normally if the segment is free, otherwise the retraction step is performed.
+%The task of the retraction step is to find a contact configuration  that minimizes the distance to $\qrand$.
+%The contact configuration $q$ is found on the line and its neighborhood is searched to find another contact configuration $q'$ such that 
+%$\varrho(q',\qrand) < \varrho(q,\qrand)$.
+%The retraction is terminated after predefined number of steps or if no new contact configuration can be found.
+%%The configuration trees built by RRT--Retraction can therefore contain more nodes than is the number of planning iterations,
 %as the tree can be expanded by upto $\Nrret$ contact configurations in each iteration.
 %An example of the retraction is depicted in Fig.~\ref{fig::rrtretraction}.
 %The RRT-Retraction was designed for path planning of 3D objects, where the straight-line local planner is used to connect two configurations, which allows us to find the contact configurations by random sampling.
-The RRT--Retraction can quickly penetrate to narrow passages, but its computational burden is significantly
-increased due to necessity to find the contact configurations.
+%The RRT--Retraction can quickly penetrate to narrow passages, but its computational burden is significantly
+%increased due to necessity to find the contact configurations.
 %The method was designed mainly for 3D path planning, but it can be combined with other planners
 %for motion planning of many-DOF robots~\cite{pan2010retraction}.
 %    e.g. for articulated robots~\cite{pan2010retraction}.
@@ -332,71 +329,73 @@ increased due to necessity to find the contact configurations.
 %The narrow passage problem has been studied intensively 
 %Due to its low volume, the probability of expanding the nodes towards the passage is small~\cite{hannaWIS}.
 %    many iterations are needed before a tree can be built through the passage~\cite{hannaWIS}.
+%Recently, we have proposed a novel method for tunnel detection using sampling-based motion planning, namely using Rapidly Exploring Random Tree (RRT) method~\cite{vonasek2016application}.
+%In comparison to existing approaches~\cite{Petrek20071357,petrek2006caver}, this RRT-based approach~\cite{vonasek2016application} 
+%handles the dynamics without need to cluster and match Voronoi diagrams from consecutive frames.
 
-A possible solution is to estimate the location of narrow passages from the knowledge of the workspace and generate more samples
-in the difficult areas.
-For Probabilistic Roadmaps~\cite{kavrakiPRM}, this can be achieved simply by generating more samples in the difficult areas, e.g. along
-medial axis~\cite{wilmarthMAPRM,foskey01hybrid,guibas1999probabilistic,hoff2000interactive,yang2004adapting}.
+This technique is similar to generation of samples near the medial exist of the environment
+medial axis~\cite{wilmarthMAPRM,foskey01hybrid,guibas1999probabilistic,hoff2000interactive,yang2004adapting,amatoOBRRT}.
+or by guiding the growth of the tree around a general path in the workspace~\cite{vonasek2009rrt,denny2014marrt}.
+
+%A possible solution is to estimate the location of narrow passages from the knowledge of the workspace and generate more samples in the difficult areas.
+%For Probabilistic Roadmaps~\cite{kavrakiPRM}, this can be achieved simply by generating more samples in the difficult areas, e.g. along
+%medial axis~\cite{wilmarthMAPRM,foskey01hybrid,guibas1999probabilistic,hoff2000interactive,yang2004adapting}.
 %This requires to precompute the medial axis, which can be time consuming.
 %Another approach is to shift the random samples towards the medial axis~\cite{amatoOBPRM} or into a direction of estimated
 %medial axis~\cite{hollemanMAPRM}.
-Generating random samples in difficult regions however does not ensure construction of a better tree in the case of RRT-based methods. 
-In RRT, the configuration tree is expanded in the direction of random samples, but the obstacles may prevent to reach them closely~\cite{vonasekphd}.
-Increased probability of sampling in a given region, e.g., in a narrow passage, 
-brings advantage only if the tree is close to the region and if it can reach it.
-To utilize a knowledge about the environment in the sampling process, 
-   %represented e.g. using a mexial axis or a 2D or 3D path,
-it is necessary to maintain the sampling regions according the progress of the tree.
-For example, random samples can be generated along a given workspace path~\cite{vonasek2009rrt}.
-After the tree reaches a path point, the sampling around the point is disabled and moved to the next point of 
-the path.
-Similar approach is used in~\cite{denny2014marrt}, where the sampling regions are maintained with a grapth describing topology 
-of the workspace.
-OB-RRT~\cite{amatoOBRRT} defines several types of tree expansions
-steps based on information about obstacles (e.g. using vectors of obstacles, tangential vectors and information about medial axis).
+%Generating random samples in difficult regions however does not ensure construction of a better tree in the case of RRT-based methods. 
+%In RRT, the configuration tree is expanded in the direction of random samples, but the obstacles may prevent to reach them closely~\cite{vonasekphd}.
+%Increased probability of sampling in a given region, e.g., in a narrow passage, 
+%brings advantage only if the tree is close to the region and if it can reach it.
+%it is necessary to maintain the sampling regions according the progress of the tree.
+%For example, random samples can be generated along a given workspace path~\cite{vonasek2009rrt}.
+%After the tree reaches a path point, the sampling around the point is disabled and moved to the next point of 
+%the path.
+%Similar approach is used in~\cite{denny2014marrt}, where the sampling regions are maintained with a grapth describing topology 
+%of the workspace.
+%OB-RRT~\cite{amatoOBRRT} defines several types of tree expansions
+%steps based on information about obstacles (e.g. using vectors of obstacles, tangential vectors and information about medial axis).
 
+By reducing the scale of the ligand's atomic radii, the configuration tree can explore more areas of the configuration space.
+Such techniques has been used for motion planning of deformable objects, 
+e.g.,~\cite{frank2008efficient,bayazit2001ligand,alterovitz2008motion,lamiraux2001flexible,kavraki1998towards,gayle2005path} 
+and for motion planning of rigin objects in amongst 
+flexible obstacles~\cite{rodriguez2006planning,frank2008efficient,phillips2014representation}.
 
-deformable objects in many fields like computer graphics, robotics and medicine~\cite{alterovitz2008motion}
-clothing, rope, human tissue
+%deformable objects in many fields like computer graphics, robotics and medicine~\cite{alterovitz2008motion} clothing, rope, human tissue
+%a two-stage approach was presented in~\cite{bayazit2002deformable}. 
+%First a path is found with reduced-scale of the robot, or by allowing the robot to penetrate obstacles.
+%The roadmap can therefore contain configurations that are infeasible for the rigid version of the robot
+%After finding a path, the infeasible configuraions are determined and the robot is deformed there to avoid the collisions.
+%the path is refined to remove the collisions
+%geometric deformation -- only part of the object that is colliding is deformed,
+%and bounding box (first bounding box is deformed and the the model is deformed according to the deformation compute for the bbox)
+%path planning with non-rigid obstacles~\cite{frank2008efficient}.
 
-a two-stage approach was presented in~\cite{bayazit2002deformable}. 
-First a path is found with reduced-scale of the robot, or by allowing the robot to penetrate obstacles.
-The roadmap can therefore contain configurations that are infeasible for the rigid version of the robot
-After finding a path, the infeasible configuraions are determined and the robot is deformed there to avoid the collisions.
-the path is refined to remove the collisions
-geometric deformation -- only part of the object that is colliding is deformed,
-and boundix box (first bounding box is deformed and the the model is deformed according to the deformation compute for the bbox)
+%the majority of path planning approached focus on rigid robots and rigid obstacles.
+%\cite{gayle2005path},planning for a flexible robot in complex environments. 
+%algorithm  computes a collision free path by taking into account geometric and physical constraints, including obstacle avoidance, non-
+%penetration constraint, volume preservation, surface tension, and energy minimization. 
 
-path planning with non-rigid obstacles~\cite{frank2008efficient}.
-the majority of path planning approached focus on rigid robots and rigid obstacles.
-
-\cite{gayle2005path},planning for a flexible robot in complex environments. 
-algorithm  computes a collision free path by taking into account geometric and physical constraints, including obstacle avoidance, non-
-penetration constraint, volume preservation, surface tension, and energy minimization. 
-
-new algorithm for collision detection between a deformable robot and fixed obstacles using  graphics processors. 
-We also present techniques to efficiently handle complex deformable models composed of tens of thousands of polygons and obtain significant performance improvement    over previous approaches. 
-practical application of our algorithm in performing path planning of catheters in liver chemoembolization.
-
-
-planning for flexible objects~\cite{lamiraux2001flexible}, 
+%new algorithm for collision detection between a deformable robot and fixed obstacles using  graphics processors. 
+%We also present techniques to efficiently handle complex deformable models composed of tens of thousands of polygons and obtain significant performance improvement    over previous approaches. 
+%practical application of our algorithm in performing path planning of catheters in liver chemoembolization.
+%planning for flexible objects~\cite{lamiraux2001flexible}, 
  
- f-PRM \cite{kavraki1998towards} framework for flexible robots of simple geometrix shapes\cite{anshelevich2000deformable} or surface patches~\cite{holleman1998planning}.
+% f-PRM \cite{kavraki1998towards} framework for flexible robots of simple geometrix shapes\cite{anshelevich2000deformable} or surface patches~\cite{holleman1998planning}.
 
-other planning for defomrable: \cite{anshelevich2000deformable,bayazit2002deformable,gayle2005path}
-deformable envinorments: \cite{rodriguez2006planning,frank2008efficient,phillips2014representation}
+%other planning for defomrable: \cite{anshelevich2000deformable,bayazit2002deformable,gayle2005path}
+%deformable envinorments: \cite{rodriguez2006planning,frank2008efficient,phillips2014representation}
 
-representation of deformation~\cite{phillips2014representation}
+%representation of deformation~\cite{phillips2014representation}
     
 
-Robots can be deformed either considering their physical propersites or not.
-
-geometrical or physical-based deformation approaches
-The non-physical deformations include basic deformations  like scale, bend or twist~\cite{barr1984global},
-    free-form deformation~\cite{gibson19973d,sederberg1986free},
-    Physical-based deformations can be achiebed using mass-spring and finite-element methods.
-
-f-PRM~\cite{anshelevich2000deformable}, physically coreect deformations, time consuming
+%Robots can be deformed either considering their physical propersites or not.
+%geometrical or physical-based deformation approaches
+%The non-physical deformations include basic deformations  like scale, bend or twist~\cite{barr1984global},
+%   free-form deformation~\cite{gibson19973d,sederberg1986free},
+%   Physical-based deformations can be achiebed using mass-spring and finite-element methods.
+%f-PRM~\cite{anshelevich2000deformable}, physically coreect deformations, time consuming
 
 
 %~\cite{amatoOBPRM,hollemanMAPRM} shift random samples towards medial axis of the environment, which helps to sample
@@ -674,11 +673,19 @@ The tunnels can be found by tunnel-detection tools like CAVER 3.0~\cite{caver3}.
 
 Ligands are small molecules interacting with the protein. 
 Due to the interaction, the relative positions of the ligand's atoms can change.
-the ligands  can be modeled as a multi-link kinematic chain where the torional angles phi/psi can change in a given range~\cite{songPFpath}.
+The ligands can be modeled as a multi-link kinematic chain where the torional angles phi/psi can change in a given range~\cite{songPFpath}.
 After the torsional angles are set, 3D position of each atom of the ligand is computed.
 By changing the angles, various conformations can be generated.
 However, not all conformations are feasible, which has to be checked using potential energy, which is time consuming.
 
+
+%from wiki:
+%Multiple static structures experimentally determined for the same protein in different conformations are often used to emulate receptor flexibility.[19] Alternatively rotamer libraries of amino acid side chains that surround the binding cavity may be searched to generate alternate but energetically reasonable protein conformations.[20][21]
+% 19 = \cite{totrov2008flexible}
+% 20 = \cite{hartmann2009docking}
+% 21 = \cite{taylor2003fds} 
+
+Another approach is to model the ligand flexibility using a predefined set of feasible conformations $C$.
 To decrease the computational burgen, a set of feasible conformations $C$ is prepared.
 The conformations can be prepared using Molecular Dynamics software such as Rosetta.
 For each conformation $c\in C$ an energy potential is also calculated.
@@ -689,7 +696,7 @@ The proteins are dense structures with narrow tunnels.
 Depending on the protein, the tunnel bottlenecks can be even less then $1$~\AA, which is too narrow for ligands with more than 2 atoms.
 For the purpose of traversability study, the radii of the ligands are scaled down by a factor $s$.
 
-A configuration of the pseudoflexible ligand $q=(x,y,z,r_x,r_y,r_z,c,s)$ is described
+A configuration of the pseudoflexible ligand $q=(x,y,z,r_x,r_y,r_z,c,s)$  is described
 by the 3D position $(x,y,z)$ of the reference point of the ligand (usually it's geometric center), rotation around $x$, $y$ and $z$ axes,
 index of the conformation $c$ and scale of atom radii $s$.
 All possible configurations form the configuration space $\C$. 
