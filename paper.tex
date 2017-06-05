@@ -1,10 +1,5 @@
-%\documentclass[a4paper,conference]{IEEEtran}
-%\documentclass[a4paper,10pt,conference]{ieeeconf}
-%\documentclass[usletter, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
-%\IEEEoverridecommandlockouts                              % This command is only needed if 
-%\overrideIEEEmargins                                      % Needed to meet printer requirements.
-
-\documentclass{llncs}
+%\documentclass{llncs}
+\documentclass{svmult}
 
 \usepackage{graphicx}
 \usepackage{booktabs}
@@ -20,8 +15,8 @@
 
 \SetKwInput{KwData}{Global params.}
 
-\title{
-    Analysis of protein tunnel traversability for flexible ligands using motion planning
+\title*{
+    Testing traversability of protein tunnels with flexible ligands using motion planning
 }
 
 \author{Vojt\v ech Von\' asek\inst{1} \and Barbora Kozl\'\i kov\'a\inst{2} \and Adam Jur\v{c}\'\i k\inst{2} \and Martin Saska\inst{1}}
@@ -36,6 +31,8 @@ Masaryk University,
 Botanick\'a 68a, 602 00 Brno,
 }
 
+
+\makeindex
 
 \def\qrand{q_{rand}}
 \def\qstart{q_{start}}
@@ -80,93 +77,69 @@ Botanick\'a 68a, 602 00 Brno,
 %spacing for algorithm environment. 1.0 mean normal spacing
 \def\gb{p_{c}}
 
+
+% ==================================================================================
+
 \begin{document}
 
 \maketitle
 %\frontmatter          % for the preliminaries
 
 
-\begin{abstract}
-%Proteins are involved in many biochemical processes.
-Behavior and properties of proteins as well as other bio-macromolecules are influenced by internal void space such as tunnels or cavities.
-%Behavior of proteins is influenced by internal void space such as tunnels or cavities.
-Tunnels are paths leading from an active site inside the protein to its surface and they act as transporting pathways
-to the active site.
-To achieve a desired propery of the proteins, the active sites has to be reached by small molecules (ligands).
-The widely used software tools for tunnel detection are based on Voronoi diagrams, which is suitable
-for detecting tunnel of spherical probes.
-It is however not easy to estimate if a given non-spherical ligand can pass a spherical tunnel.
-Moreover, ligands are not rigid structures, but their conformation changes due to interactions with the protein's atoms.
-In this paper, we propose to employ sampling-based motion planning techniques to analyze traversability of ligands in the spherical
-tunnels.
-To speed up the computation, the flexibility of ligands is modeled using a predefined set of conformations suitable (typical) for 
-the given ligand.
-We introduce a novel modification of RRT method, whose search in the corresponding configuration space is guided by
-the tunnel pathway.
-\end{abstract}
+\abstract{
+%\begin{abstract}
+\red{TODO: rewrite}
+Proteins are involved in many biochemical processes and they function is achieved by interactions with other molecules such as ligands.
+The interaction takes place in an active site inside the protein, which is accesible from the surface by so called tunnels.
+The knowledge about tunnels can help researches for example to better select target ligand in order to achieve a desired
+behavior of the protein.
+Widely used tools for tunnel detection are based on Voronoi diagrams.
+This however requires to approximate the ligand by a sphere, which is not always realistic.
+In this paper, we propose a motion planning technique for analysis of traversability of such tunnels by flexible ligands.
+To decrease the dimension of the related configuration space, the flexibility of ligands is modeled by a set of expected conformations.
+The proposed method is based on the Rapidly Exploring Random Tree motion planning.
+The spheres representing the tunnel are used to guide the growth of the RRT tree in the configuration space.
+Something about visualization ...
+%\end{abstract}
+}
 
 \section{Introduction}
 
+\red{prepsat, todle uz jsme meli vickrat}
 Protein structures are essential components of all living organisms.
 Proper understanding of their structure and function is important in many fields, including drug design, agriculture, cosmetics, etc.
-Although this knowledge is still very hard to reveal, several protein structures have been already investigated in sufficient detail. % which led to their better understanding. 
+Although this knowledge is still very hard to reveal, several protein structures have been already investigated in sufficient detail. 
 Such investigation can incorporate computational methods which help to analyze the geometry of protein structure,  its shape, surface area, and inner void space. 
-%These parameters then suggest and influence protein behavior, namely its reactivity with other molecules.
-%consists of the analysis of protein structure, its shape, surface area, and inner void space. 
-%These parameters influence namely the protein reactivity. % which is one of the most often studied behavior of the protein.
+These parameters then suggest and influence protein behavior, namely its reactivity with other molecules.
 
+Proteins interact with other molecules (small ligands, ribonucleic acid chains, other proteins, etc.) which can lead to changes in properties of the protein or the interacting molecule.
+The chemical reaction between the protein and ligand takes places in so called active site, that is accessible 
+from the protein surface by a tunnel.
 
-%Proteins interact with other molecules (small ligands, ribonucleic acid chains, other proteins, etc.) which can lead to changes in properties of the protein or the interacting molecule.
-%Thanks to protein interaction with other molecules (small ligands, ribonucleic acid chains, other proteins, etc.), 
-% we are able to change the properties of the protein or the interacting molecule. 
- For example, one task in protein engineering is to change selected properties of a protein, e.g. its stability under different outer conditions~\cite{Koudelakova2013} or activity of the protein towards the other molecules~\cite{Pavlova2009}.
-%This is reached by studying so called tunnels in proteins which can serve as the transportation paths for the ligand from the outside environment to the active site or vice versa.
-%For example, typical task in protein engineering is to change selected properties of a protein, e.g. its stability under different outer conditions [11] or activity of the protein towards other molecules [16]. 
+The knowledge about the tunnels is important in many fields .. todo.
+For example, one task in protein engineering is to change selected properties of a protein, e.g. its stability under different outer conditions~\cite{Koudelakova2013} or activity of the protein towards the other molecules~\cite{Pavlova2009}.
 This can be achieved by detecting and studying so called tunnels in proteins which can serve as the transportation paths for the 
 ligand from the outside environment to the active site or vice versa. 
-The active site is a specific site, usually deeply buried inside the protein, 
-    where the chemical reaction between the protein and ligand can undergo. 
-The importance of tunnels can be demonstrated on the study where mutations of amino acids located directly around the tunnel substantially improved the structural and kinetic stability of the studied protein, while
-surface mutations almost did not contribute to the stabilization~\cite{Koudelakova2013}.
 
-For example, one task in protein engineering is to change selected properties of a protein, e.g. its stability under different outer conditions~\cite{Koudelakova2013} or activity of the protein towards the other molecules~\cite{Pavlova2009}.
-This is reached by studying so called tunnels in proteins which can serve as the transportation paths for the ligand from the outside environment to the active site or vice versa.
-The active site is a specific site, usually deeply buried inside the protein, where the chemical reaction between the protein and ligand can undergo.
-Since the importance of the presence of tunnels in proteins was revealed, the researchers started to study them intensively.
-%Koudel\'{a}kov\'{a} et al.~\cite{Koudelakova2013} show that mutations of amino acids located directly around the tunnel improved the structural and kinetic stability of the studied protein substantially, while the surface mutations almost did not contribute to protein stabilization.
-%The importance of tunnel can be demonstrated on an example, 
-% where mutations of amino acids located directly around the tunnel improved the structural 
-%and kinetic stability of the studied protein substantially, while surface mutations almost did not contribute to
-%the protein stabilization~\cite{Koudelakova2013}.
 
-The task of tunnel detection is to find a collision-free path leading from an active site inside the protein to its surface.
-An example is depicted in Fig.~\ref{fig::motiv}.
+Generally, the task of tunnel detection is to find a collision-free path leading from the active site to the protein's surface. 
+The path is usually searched for a spherical probe of a given radius, which serves as a proxy geometry for a ligand. 
 As not all paths are biochemically relevant, only paths with a given minimal bottleneck have to be reported (the bottleneck is
 the radius of the smallest sphere that can traverse the whole tunnel) 
-
 Available tools for tunnel detection compute the tunnels assuming spherical ligands (probes). 
-Bio-chemicists then decide if such a tunnel can be used to transport a given ligand mainly based on the tunnel
-lengths and its bottlenect.
+Bio-chemicists then decide if such a tunnel can be used to transport a given ligand mainly based on the tunnel lengths and its bottlenect.
 Such decision is however not precise and require previous expertise with the domain.
 
-To provide more information about the traversability of the tunnels, it is necessary to consider a non-spherical model of 
-the ligand.
+To provide more information about the traversability of the tunnels, it is necessary to consider a non-spherical model of the ligand.
 Such task can be then solved using motion planning techniques.
 It is necessary to consider translation, rotation and possibly also other degrees of freedom of the ligands, that are determined
 by the torsional angles, the related configuration space, that need to be searched, is high-dimensional. 
 Sampling-based motion planning techniques can be used to find a trajectory of the ligand.
 
-Generally, the task of tunnel detection is to find a collision-free path leading from the active site to the protein's surface. 
-The path is usually searched for a spherical probe of a given radius, which serves as a proxy geometry for a ligand. 
-Early solutions focused on static molecules. 
-However, from a static snapshot it is hard to assess the biochemical relevance of the tunnel as it does not
-provide information about its temporal stability. 
+%Early solutions focused on static molecules. 
+%However, from a static snapshot it is hard to assess the biochemical relevance of the tunnel as it does not provide information about its temporal stability. 
 
 Recently, researchers started to focus on molecular dynamics simulations and study the behavior of individual tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole}.
-%The path is searched for a spherical probe of a given radius.
-%Early algorithms focused on static molecules, % and the tools were able to detect dozens of putative tunnels.
-%but it was hard to assess their biochemical relevance because from a static molecule it is impossible to derive the temporal stability
-%of the tunnels.
 %Recently, researchers started to focus on molecular dynamics simulations and studying the behavior of individual 
 %tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole}.
 Molecular dynamics is represented as a sequence of frames (molecule snapshots), and the tunnels need to be detected through these frames.
@@ -177,12 +150,7 @@ In such cases, the biochemists have to select a subset of the whole simulation a
 Such analysis however provides only a rough idea of the tunnel behavior, as important parts of the simulation can be easily omitted.
 %This opens new possibilities for alternative solutions enabling to explore the tunnels in each frame of the molecular dynamics.
 %In such cases the biochemists have to skip each n-th snapshot or select a subset of the whole simulation and perform the analysis only for this selection.
-%Such analysis however provides only a rough idea of the tunnel behavior, as important parts of the simulation can be easily omitted. 
-%Recently, we have proposed a novel method for tunnel detection using sampling-based motion planning [23]. In this method, RRT is used to ?nd tunnels in each frame and to consider the molecular dynamics, the tree is continuously pruned in each frame. In comparison to existing approaches [17], [18], this approach [23] handles the dynamics without need to cluster and match Voronoi diagrams from consecutive frames. 
 
-
-Curently available tools for protein analysis support only the tunnel detection both on single protein snapshots and sequences
-of molecular dynamics.
 The properties of tunnels like bottleneck radius, their length and the surrounding residues can be used
 to estimate suitability of the tunnel for a ligand.
 However, such estimation still involve lot of experience.
@@ -214,7 +182,6 @@ Protein 1CQW & Active site & Detected tunnels \\
 what is traversability analysis.
 
 The goal is the traversability analysis is to estimate traversability of a tunnel with a given ligand from geometrical point of view.
-
 
 
 
@@ -341,6 +308,28 @@ The growth of the configuration tree into some regions of the configuration spac
 A narrow passage is a small region of the configuration space containing part of the solution.
 As the samples are generated from uniform distribution in RRT, probability of placing the samples into the narrow passages is low and therefore,
    the probability of expanding the tree through a narrow passage is small~\cite{hannaWIS}.
+
+RRT--Retraction~\cite{zhangRetraction} improves sampling in the narrow passages by retracting the newly added configuration
+closer to obstacles.
+%for motion planning of 3D objects.
+After $\qrand$ is generated and its nearest neighbor $\qnear\in \T$ is found, the segment from $\qrand$ to $\qnear$ is checked for collision.
+The tree is extended normally if the segment is free, otherwise the retraction step is performed.
+The task of the retraction step is to find a contact configuration  that minimizes the distance to $\qrand$.
+The contact configuration $q$ is found on the line and its neighborhood is searched to find another contact configuration $q'$ such that 
+$\varrho(q',\qrand) < \varrho(q,\qrand)$.
+The retraction is terminated after predefined number of steps or if no new contact configuration can be found.
+%The configuration trees built by RRT--Retraction can therefore contain more nodes than is the number of planning iterations,
+%as the tree can be expanded by upto $\Nrret$ contact configurations in each iteration.
+%An example of the retraction is depicted in Fig.~\ref{fig::rrtretraction}.
+%The RRT-Retraction was designed for path planning of 3D objects, where the straight-line local planner is used to connect two configurations, which allows us to find the contact configurations by random sampling.
+The RRT--Retraction can quickly penetrate to narrow passages, but its computational burden is significantly
+increased due to necessity to find the contact configurations.
+%The method was designed mainly for 3D path planning, but it can be combined with other planners
+%for motion planning of many-DOF robots~\cite{pan2010retraction}.
+%    e.g. for articulated robots~\cite{pan2010retraction}.
+%RRT--Retraction combined with decomposition-based path planners for articulated robots with many DOF was proposed in~\cite{pan2010retraction}.
+
+%The narrow passage problem has been studied intensively 
 %Due to its low volume, the probability of expanding the nodes towards the passage is small~\cite{hannaWIS}.
 %    many iterations are needed before a tree can be built through the passage~\cite{hannaWIS}.
 
@@ -355,29 +344,59 @@ Generating random samples in difficult regions however does not ensure construct
 In RRT, the configuration tree is expanded in the direction of random samples, but the obstacles may prevent to reach them closely~\cite{vonasekphd}.
 Increased probability of sampling in a given region, e.g., in a narrow passage, 
 brings advantage only if the tree is close to the region and if it can reach it.
-To utilize a knowledge about the environment in the sampling process, represented e.g. using a mexial axis or a 2D or 3D path,
+To utilize a knowledge about the environment in the sampling process, 
+   %represented e.g. using a mexial axis or a 2D or 3D path,
 it is necessary to maintain the sampling regions according the progress of the tree.
 For example, random samples can be generated along a given workspace path~\cite{vonasek2009rrt}.
 After the tree reaches a path point, the sampling around the point is disabled and moved to the next point of 
 the path.
-Similarly in
-\cite{jorry14marrt,neddy2016dynnamic}
-ob-rrt
-rrt-retraction
+Similar approach is used in~\cite{denny2014marrt}, where the sampling regions are maintained with a grapth describing topology 
+of the workspace.
+OB-RRT~\cite{amatoOBRRT} defines several types of tree expansions
+steps based on information about obstacles (e.g. using vectors of obstacles, tangential vectors and information about medial axis).
 
 
-In this paper, we propose how to combine RRT-based search with Voronoi-based methods in the task of tunnel detection. 
-To guide the configuration tree using Voronoi diagram, a subset of Voronoi vertices is determined and
-the samples are generated around vertices in this subset.
-The subset is maintained according the distance from the tree, so the random samples
-are generated only if they are in a suitable distance from the tree.
-This allows us to sample simultaneously along all promissing parts of VD that are accessible from the tree, which is 
-suitable for detection of multiple tunnels.
+deformable objects in many fields like computer graphics, robotics and medicine~\cite{alterovitz2008motion}
+clothing, rope, human tissue
+
+a two-stage approach was presented in~\cite{bayazit2002deformable}. 
+First a path is found with reduced-scale of the robot, or by allowing the robot to penetrate obstacles.
+The roadmap can therefore contain configurations that are infeasible for the rigid version of the robot
+After finding a path, the infeasible configuraions are determined and the robot is deformed there to avoid the collisions.
+the path is refined to remove the collisions
+geometric deformation -- only part of the object that is colliding is deformed,
+and boundix box (first bounding box is deformed and the the model is deformed according to the deformation compute for the bbox)
+
+path planning with non-rigid obstacles~\cite{frank2008efficient}.
+the majority of path planning approached focus on rigid robots and rigid obstacles.
+
+\cite{gayle2005path},planning for a flexible robot in complex environments. 
+algorithm  computes a collision free path by taking into account geometric and physical constraints, including obstacle avoidance, non-
+penetration constraint, volume preservation, surface tension, and energy minimization. 
+
+new algorithm for collision detection between a deformable robot and fixed obstacles using  graphics processors. 
+We also present techniques to efficiently handle complex deformable models composed of tens of thousands of polygons and obtain significant performance improvement    over previous approaches. 
+practical application of our algorithm in performing path planning of catheters in liver chemoembolization.
 
 
-%In this paper, we propose how to combine the VD-based methods and sampling-based approaches for tunnel detection.
-%Instead of uninformed sampling of the configuration space, which has been proposed in~\cite{vonasek2016application}, we propose
-%to generate the random samples using Voronoi diagrams.
+planning for flexible objects~\cite{lamiraux2001flexible}, 
+ 
+ f-PRM \cite{kavraki1998towards} framework for flexible robots of simple geometrix shapes\cite{anshelevich2000deformable} or surface patches~\cite{holleman1998planning}.
+
+other planning for defomrable: \cite{anshelevich2000deformable,bayazit2002deformable,gayle2005path}
+deformable envinorments: \cite{rodriguez2006planning,frank2008efficient,phillips2014representation}
+
+representation of deformation~\cite{phillips2014representation}
+    
+
+Robots can be deformed either considering their physical propersites or not.
+
+geometrical or physical-based deformation approaches
+The non-physical deformations include basic deformations  like scale, bend or twist~\cite{barr1984global},
+    free-form deformation~\cite{gibson19973d,sederberg1986free},
+    Physical-based deformations can be achiebed using mass-spring and finite-element methods.
+
+f-PRM~\cite{anshelevich2000deformable}, physically coreect deformations, time consuming
 
 
 %~\cite{amatoOBPRM,hollemanMAPRM} shift random samples towards medial axis of the environment, which helps to sample
@@ -770,7 +789,7 @@ trajectory = extract from tree\;
 
 \begin{algorithm}[h]
 %\setstretch{\straa}
-\caption{\label{alg::tunnel}expand()}
+\caption{\label{alg::tunnel2}expand()}
 \KwIn{
    configuration $q$ to be expanded
 }

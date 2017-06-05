@@ -611,7 +611,7 @@ file={#apporaches_for_heuristically_biasing_rrt_growth.pdf}
 	file={10.1.1.19.1989.pdf}
 }
 
-@INPROCEEDINGS{Holleman98planningpaths,
+@INPROCEEDINGS{holleman1998planning,
 	author = {Christopher Holleman and Lydia E. Kavraki and Joe Warren},
 	title = {Planning Paths for a Flexible Surface Patch},
 	booktitle = {Proc. IEEE Int. Conf. on Robotics and Automation},
@@ -6036,7 +6036,7 @@ file={#apporaches_for_heuristically_biasing_rrt_growth.pdf}
 }
 
 
-@article{ lamiraux+2001:el,
+@article{lamiraux2001flexible,
 	title = {Planning Paths for Elastic Objects under Manipulation Constraints},
 	journal = {International Journal of Robotics Research},
 	volume = {20},
@@ -6396,33 +6396,6 @@ file={#apporaches_for_heuristically_biasing_rrt_growth.pdf}
 
 
 
-@INPROCEEDINGS{4463247, 
-	title={A Navigation Aid for the Blind Using Tactile-Visual Sensory Substitution}, 
-	author={Johnson, L.A. and Higgins, C.M.}, 
-	booktitle={Engineering in Medicine and Biology Society, 2006. EMBS '06. 28th Annual International Conference of the IEEE}, 
-	year={2006}, 
-	month={30 2006-Sept. 3}, 
-	volume={}, 
-	number={}, 
-	pages={6289-6292}, 
-	abstract={The objective of this study is to improve the quality of life for the visually impaired by restoring their ability to self-navigate. In this paper we describe a compact, wearable device that converts visual information into a tactile signal. This device, constructed entirely from commercially available parts, enables the user to perceive distant objects via a different sensory modality. Preliminary data suggest that this device is useful for object avoidance in simple environments}, 
-	keywords={biomedical equipment, handicapped aids, sensory aidsblind, distant object perception, navigation aid, object avoidance, quality of life, sensory modality, tactile signal, tactile-visual sensory substitution, visual information, visually impaired person, wearable device}, 
-	doi={10.1109/IEMBS.2006.259473}, 
-	ISSN={1557-170X}, 
-	pozn={
-#de facto to same, co dela ven ze tmy.
-#maji stereo kameru, jeji vystup segmentuji do matice 14 policek.
-#informaci predavaji taktilnim senzorem, ktery je umisteny na brise,
-#zadech nebo stehne. udajene experimentovali s vice
-#typy hmataku.
-#uzivatel nosi za zadech notebok+baterku v batohu
-#systm pouze detekujew blizke prekazdky a dabva informaci
-#pomoci vibracnich moturku (14 kusu). Sila vibraci je nelinearni
-#vuci vzdalenosti obejktu od kamer (cim blizsi, tim vice to vibruje).
-#pouzivaji median filter pro detekci prekazek, v kazdem policku
-#pak berou nejblizsi objekt. kamera je umistena na brise (spolu s hmatakem)
-	},
-}
 
 @MISC{electronicAidForBlind,
 	title={Electronic travel aid for blind people},
@@ -6866,7 +6839,7 @@ file={#apporaches_for_heuristically_biasing_rrt_growth.pdf}
 #napr. reprezentace meshem (kolik, jak zahrnout synamiku..)
 #fyzikalni simulaci (jaka presnost, ryvhlost)
 #zminka o molekulach (protein folding, hierarchicka repreznetace proteinu)
-#pocitacova grafika (zobrazovani, napr. z jakeho pohledu (user, robot, data, nezavisly pozorovatel..),
+#pocitacova grafika (zobrazovani, napr. z jakeho pohledu (user, robot, data, nezavisly pozorovatel..)),
 #problem meritka..
 #robotika: jak popsat pohzb, jak detekovat kolize, jak planovat,nejistota..
 #na zaver definuji "challenges":
@@ -7600,20 +7573,6 @@ file={#apporaches_for_heuristically_biasing_rrt_growth.pdf}
 	file={#trans_3dmotionResampling.pdf}
 }
 
-
-@ARTICLE{1668249, 
-	title={Path planning for deformable linear objects}, 
-	author={Moll, M. and Kavraki, L.E.}, 
-	journal={Robotics, IEEE Transactions on}, 
-	year={2006}, 
-	month={Aug. }, 
-	volume={22}, 
-	number={4}, 
-	pages={625-636}, 
-	doi={10.1109/TRO.2006.878933}, 
-	ISSN={1552-3098},
-	file={#trans_mpForDeformable.pdf}
-}
 
 
 @ARTICLE{sun2005narrow, 
@@ -11078,18 +11037,6 @@ Combining the DRN platform with these new sampling strategies, on-line centraliz
 }
 
 
-@article{lamiraux+2001:el,
-	author = {Lamiraux, F. and L. E. Kavraki},
-	title = {Planning Paths for Elastic Objects under Manipulation Constraints},
-	journal = {International Journal of Robotics Research},
-	volume = {20},
-	number = {3},
-	year = {2001},
-	pages = {188-208},
-	type = {article},
-	keywords = {deformable parts, kavrakilab},
-	doi = {10.1177/02783640122067354},
-}
 
 @article{moll+2006:path-p,
 	title = {Path Planning for Deformable Linear Objects},
@@ -11109,42 +11056,7 @@ curves. This planner can be used as a powerful local planner in a sampling-based
 }
 
 
-@article{moll+2006:path-p,
-	title = {Path Planning for Deformable Linear Objects},
-	journal = {IEEE Transactions on Robotics},
-	volume = {22},
-	number = {4},
-	year = {2006},
-	month = {Aug.},
-	pages = {625-636},
-	type = {article},
-	abstract = {We present a new approach to path planning for deformable linear (one-dimensional) objects such as flexible wires. We introduce a method for efficiently computing stable configurations of a wire subject to manipulation constraints. These configurations correspond to minimal-energy curves. By
-restricting the planner to minimal-energy curves, the execution of a path becomes easier. Our curve representation is adaptive in the sense that the number of parameters automatically varies with the complexity of the underlying curve. We introduce a planner that computes paths from one minimal-energy curve to another such that all intermediate curves are also minimal-energy
-curves. This planner can be used as a powerful local planner in a sampling-based roadmap method. This makes it possible to compute a roadmap of the entire {\textquotedblleft}shape space,{\textquotedblright} which is not possible with previous approaches. Using a simplified model for obstacles, we can find minimal-energy curves of fixed length that pass through specified tangents at given control points. Our work has applications in cable routing, and motion planning for surgical suturing and snake-like robots.},
-	keywords = {deformable parts, kavrakilab, kinodynamic/physics-based motion planning},
-	doi = {10.1109/TRO.2006.878933},
-	author = {Moll, Mark and L. E. Kavraki}
-}
-
-
-@article{moll+2006:path-p,
-	title = {Path Planning for Deformable Linear Objects},
-	journal = {IEEE Transactions on Robotics},
-	volume = {22},
-	number = {4},
-	year = {2006},
-	month = {Aug.},
-	pages = {625-636},
-	type = {article},
-	abstract = {We present a new approach to path planning for deformable linear (one-dimensional) objects such as flexible wires. We introduce a method for efficiently computing stable configurations of a wire subject to manipulation constraints. These configurations correspond to minimal-energy curves. By
-restricting the planner to minimal-energy curves, the execution of a path becomes easier. Our curve representation is adaptive in the sense that the number of parameters automatically varies with the complexity of the underlying curve. We introduce a planner that computes paths from one minimal-energy curve to another such that all intermediate curves are also minimal-energy
-curves. This planner can be used as a powerful local planner in a sampling-based roadmap method. This makes it possible to compute a roadmap of the entire {\textquotedblleft}shape space,{\textquotedblright} which is not possible with previous approaches. Using a simplified model for obstacles, we can find minimal-energy curves of fixed length that pass through specified tangents at given control points. Our work has applications in cable routing, and motion planning for surgical suturing and snake-like robots.},
-	keywords = {deformable parts, kavrakilab, kinodynamic/physics-based motion planning},
-	doi = {10.1109/TRO.2006.878933},
-	author = {Moll, Mark and L. E. Kavraki}
-}
-
-@conference{anshelevich+2000,
+@conference{anshelevich2000deformable,
 	author = {Anshelevich, E. and Owens, S. and Lamiraux, F. and L. E. Kavraki},
 	title = {Deformable Volumes in Path Planning Applications},
 	booktitle = {Proceedings of The IEEE International Conference on Robotics and Automation (ICRA)},
@@ -17028,5 +16940,166 @@ year = {2013},
     booktitle={IEEE International Conference on Robotics and Automation (ICRA)},
     year={2014},
 }
+
+@INPROCEEDINGS{kamarry2015RRTC, 
+    author={S. Kamarry and L. Molina and E. Á. N. Carvalho and E. O. Freire}, 
+    booktitle={2015 12th Latin American Robotics Symposium and 2015 3rd Brazilian Symposium on Robotics (LARS-SBR)}, 
+    title={Compact RRT: A New Approach for Guided Sampling Applied to Environment Representation and Path Planning in Mobile Robotics}, 
+    year={2015}, 
+    pages={259-264}, 
+    keywords={mobile robots;path planning;search problems;trees (mathematics);classic RRT;compact RRT;compact representation;computational cost;environment representation;environmental discretization;environmental variation;guided sampling;mobile robotics;nodes redundancy;path planning stage;polarization technique;probability;processing time;search region;tree growth;Computational efficiency;Dispersion;Measurement;Path planning;Planning;Redundancy;Robots}, 
+    doi={10.1109/LARS-SBR.2015.40}, 
+    month={Oct},
+}
+
+@inproceedings{byska2015path,
+ author = {By\v{s}ka, Jan and Kolingerov\'{a}, Ivana and Kozl\'{\i}kov\'{a}, Barbora and Sochor, Ji\v{r}\'{\i}},
+ title = {Path-planning Algorithm for Transportation of Molecules Through Protein Tunnel Bottlenecks},
+ booktitle = {Proceedings of the 31st Spring Conference on Computer Graphics},
+ series = {SCCG '15},
+ year = {2015},
+ isbn = {978-1-4503-3693-2},
+ location = {Smolenice, Slovakia},
+ pages = {81--88},
+ numpages = {8},
+ url = {http://doi.acm.org/10.1145/2788539.2788550},
+ doi = {10.1145/2788539.2788550},
+ acmid = {2788550},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {approximation, path planning, protein, tunnel},
+}
+
+
+@INPROCEEDINGS{bayazit2002deformable, 
+    author={O. Burchan Bayazit and Jyh-Ming Lien and N. M. Amato}, 
+    booktitle={Proceedings 2002 IEEE International Conference on Robotics and Automation (Cat. No.02CH37292)}, 
+    title={Probabilistic roadmap motion planning for deformable objects}, 
+    year={2002}, 
+    volume={2}, 
+    pages={2126-2133 vol.2}, 
+    keywords={collision avoidance;computer animation;flexible manipulators;path planning;probability;animation;collision avoidance;deformable robots;deformations;flexible robots;motion planning;probabilistic roadmap;Animation;Biological system modeling;Biology computing;Computational modeling;Motion planning;Path planning;Performance analysis;Road accidents;Robots;Shape}, 
+    doi={10.1109/ROBOT.2002.1014854}, 
+    month={},
+}
+
+
+
+@inproceedings{barr1984global,
+    author = {Barr, Alan H.},
+    title = {Global and Local Deformations of Solid Primitives},
+    booktitle = {Proceedings of the 11th Annual Conference on Computer Graphics and Interactive Techniques},
+    series = {SIGGRAPH '84},
+    year = {1984},
+    isbn = {0-89791-138-5},
+    pages = {21--30},
+    numpages = {10},
+    url = {http://doi.acm.org/10.1145/800031.808573},
+    doi = {10.1145/800031.808573},
+    acmid = {808573},
+    publisher = {ACM},
+    address = {New York, NY, USA},
+    keywords = {Computational geometry, Deformation, Solid modeling},
+} 
+
+
+@inproceedings{gibson19973d,
+ author = {Gibson, Sarah F.},
+ title = {3D Chainmail: A Fast Algorithm for Deforming Volumetric Objects},
+ booktitle = {Proceedings of the 1997 Symposium on Interactive 3D Graphics},
+ series = {I3D '97},
+ year = {1997},
+ isbn = {0-89791-884-3},
+ location = {Providence, Rhode Island, USA},
+ pages = {149--ff.},
+ url = {http://doi.acm.org/10.1145/253284.253324},
+ doi = {10.1145/253284.253324},
+ acmid = {253324},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+} 
+
+@inproceedings{frank2008efficient,
+  title={Efficient path planning for mobile robots in environments with deformable objects},
+  author={Frank, Barbara and Becker, Markus and Stachniss, Cyrill and Burgard, Wolfram and Teschner, Matthias},
+  booktitle={Robotics and Automation, 2008. ICRA 2008. IEEE International Conference on},
+  pages={3737--3742},
+  year={2008},
+  organization={IEEE}
+}
+
+
+@inproceedings{gayle2005path,
+  title={Path Planning for Deformable Robots in Complex Environments.},
+  author={Gayle, Russell and Segars, Paul and Lin, Ming C and Manocha, Dinesh},
+  booktitle={Robotics: science and systems},
+  volume={2005},
+  pages={225--232},
+  year={2005}
+}
+
+
+@inproceedings{kavraki1998towards,
+  title={Towards planning for elastic objects},
+  author={Kavraki, Lydia E and Lamiraux, Florent and Holleman, Christopher},
+  booktitle={Robotics: The Algorithmic Perspective},
+  year={1998},
+}
+
+
+@article{sederberg1986free,
+  title={Free-form deformation of solid geometric models},
+  author={Sederberg, Thomas W and Parry, Scott R},
+  journal={ACM SIGGRAPH computer graphics},
+  volume={20},
+  number={4},
+  pages={151--160},
+  year={1986},
+  publisher={ACM}
+}
+
+@book{alterovitz2008motion,
+  title={Motion planning in medicine: Optimization and simulation algorithms for image-guided procedures},
+  author={Alterovitz, Ron and Goldberg, Ken},
+  volume={50},
+  year={2008},
+  publisher={Springer Science \& Business Media}
+}
+
+
+@inproceedings{rodriguez2006planning,
+  title={Planning motion in completely deformable environments},
+  author={Rodriguez, Samuel and Lien, Jyh-Ming and Amato, Nancy M},
+  booktitle={Robotics and Automation, 2006. ICRA 2006. Proceedings 2006 IEEE International Conference on},
+  pages={2466--2471},
+  year={2006},
+  organization={IEEE}
+}
+
+@INPROCEEDINGS{phillips2014representation, 
+    author={C. Phillips-Grafflin and D. Berenson}, 
+    booktitle={2014 IEEE International Conference on Robotics and Automation (ICRA)}, 
+    title={A representation of deformable objects for motion planning with no physical simulation}, 
+    year={2014}, 
+    pages={98-105}, 
+    keywords={path planning;robots;sampling methods;3-DOF problem;cost function;deformable object;deformed geometry;motion planning;optimal discrete planner;robots;sampling-based planner;Computational modeling;Cost function;Deformable models;Geometry;Planning;Robots;Sensitivity}, 
+    doi={10.1109/ICRA.2014.6906595}, 
+    ISSN={1050-4729}, 
+    month={May},
+}
+
+
+@INPROCEEDINGS{denny2014marrt, 
+    author={J. Denny and E. Greco and S. Thomas and N. M. Amato}, 
+    booktitle={2014 IEEE International Conference on Robotics and Automation (ICRA)}, 
+    title={MARRT: Medial Axis biased rapidly-exploring random trees}, 
+    year={2014}, 
+    pages={90-97}, 
+    keywords={path planning;sampling methods;trees (mathematics);MARRT;biases tree exploration;close proximity;free space medial axis;medial axis biased rapidly-exploring random trees;motion planning;obstacle clearance;robot path planning;robotics;safest paths;sampling-based techniques;shortest paths;space planning;Collision avoidance;Libraries;Measurement;Planning;Probabilistic logic;Robots;Space exploration}, 
+    doi={10.1109/ICRA.2014.6906594}, 
+    ISSN={1050-4729}, 
+    month={May},
+}
+
 
 
