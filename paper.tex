@@ -40,9 +40,14 @@ Botanick\'a 68a, 602 00 Brno,
 \def\qgoal{\qstart}
 \def\qnear{q_{near}}
 \def\qnew{q_{new}}
-\def\C{\mathcal{C}}
 \def\T{\mathcal{T}}
+
+\def\C{\mathcal{C}}
 \def\CF{\mathcal{C}_{free}}
+\def\CFD{{\mathcal{C}^s_{free}}}
+\def\dt{d_{goal}}
+
+
 \def\Imax{I_{max}} %max number of iterations of RRT-based planners
 
 \def\dist{\mathrm{dist}}
@@ -55,10 +60,10 @@ Botanick\'a 68a, 602 00 Brno,
 \def\da{d_{high}}
 \def\db{d_{low}}
 
+\def\smin{s_{min}}
+\def\smax{s_{max}}
+\def\sdelta{{\Delta}_s}
 
-\def\TA{$A_1$}
-\def\TB{$A_2$}
-\def\TC{$A_3$}
 
 \def\probe{r_{\mathrm{probe}}}
 \def\Sprobe{S_{\mathrm{probe}}}
@@ -77,6 +82,8 @@ Botanick\'a 68a, 602 00 Brno,
 
 %spacing for algorithm environment. 1.0 mean normal spacing
 \def\gb{p_{c}}
+
+\def\L{L}
 
 
 % ==================================================================================
@@ -664,12 +671,10 @@ Proteins are represented by the hard sphere model, where the radius of each sphe
 Let $\SS \subset \mathbf{R}^3$ denote the union of all spheres, i.e., the geometry of the protein.
 %We further assume that a subset of atoms located at the surface, are known. These atoms, reffered to as {\sl surface atoms} in this paper,
 %   can be detected as atoms located at $\alpha$-shape of the molecule.
-The tunnels need to be found for a spherical probe $\Sprobe$ of radius $\probe$.
-
-A tunnel is described by a sequence of collision-free spheres $T=( (t_i, r_i) )$, where $n$ denotes the number of spheres and
-$t_i=(x_i,y_i,z_i)$ is their 3D position and $r_i$ denotes the maximum collision-free radius for a spherical probe centered
-at $t_i$. 
-The tunnels can be found by tunnel-detection tools like CAVER 3.0~\cite{caver3}.
+%The tunnels need to be found for a spherical probe $\Sprobe$ of radius $\probe$.
+A tunnel is described by a sequence of collision-free spheres $T=( (t_i, r_i) )$, where $n$ denotes the number of spheres,
+$t_i=(x_i,y_i,z_i)$ is their 3D position and $r_i$ denotes the maximum collision-free radius of a sphere centered at $t_i$. 
+The tunnels can be found by tunnel detection tools like CAVER 3.0~\cite{caver3}.
 
 Ligands are small molecules interacting with the protein. 
 Due to the interaction, the relative positions of the ligand's atoms can change.
@@ -678,31 +683,40 @@ After the torsional angles are set, 3D position of each atom of the ligand is co
 By changing the angles, various conformations can be generated.
 However, not all conformations are feasible, which has to be checked using potential energy, which is time consuming.
 
-
 %from wiki:
 %Multiple static structures experimentally determined for the same protein in different conformations are often used to emulate receptor flexibility.[19] Alternatively rotamer libraries of amino acid side chains that surround the binding cavity may be searched to generate alternate but energetically reasonable protein conformations.[20][21]
 % 19 = \cite{totrov2008flexible}
 % 20 = \cite{hartmann2009docking}
 % 21 = \cite{taylor2003fds} 
 
-Another approach is to model the ligand flexibility using a predefined set of feasible conformations $C$.
-To decrease the computational burgen, a set of feasible conformations $C$ is prepared.
-The conformations can be prepared using Molecular Dynamics software such as Rosetta.
-For each conformation $c\in C$ an energy potential is also calculated.
-The transition matrix $M$ defines the possible changes of conformations, i.e., $M(i,j)=1$ if the conformation $c_i \in C$
-can be switched to the confomration $c_j \in C$.
+%Conformations of the ligand may be generated in the absence of the receptor and subsequently docked[13] 
+%or conformations may be generated on-the-fly in the presence of the receptor binding cavity,[14] 
+%or with full rotational flexibility of every dihedral angle using fragment based docking.[15] 
+%Force field energy evaluation are most often used to select energetically reasonable conformations,[16] but 
+%knowledge-based methods have also been used.[17]
+%13 = https://link.springer.com/article/10.1007/BF00123666
+
+Another approach is to model the ligand flexibility using a predefined set of feasible conformations $\L$
+To decrease the computational burgen, a set of feasible conformations $\L$ is prepared, e.g. using Rosseta tool.
+%The conformations can be prepared using Molecular Dynamics software such as Rosetta.
+%For each conformation $c\in \L$ an energy potential is also calculated.
+%Let $\L_i$ denote the set of conformations that 
+We assume that a conformation $l \in \L$ can be switched to all other conformations in $\L$.
+%The transition matrix $M$ defines the possible changes of conformations, i.e., $M(i,j)=1$ if the conformation $c_i \in C$
+%can be switched to the confomration $c_j \in C$.
 
 The proteins are dense structures with narrow tunnels.
 Depending on the protein, the tunnel bottlenecks can be even less then $1$~\AA, which is too narrow for ligands with more than 2 atoms.
-For the purpose of traversability study, the radii of the ligands are scaled down by a factor $s$.
+For the purpose of traversability study, the atomic radii of the ligand are scaled down by a factor $s, 0 < s \le 1$.
 
-A configuration of the pseudoflexible ligand $q=(x,y,z,r_x,r_y,r_z,c,s)$  is described
-by the 3D position $(x,y,z)$ of the reference point of the ligand (usually it's geometric center), rotation around $x$, $y$ and $z$ axes,
-index of the conformation $c$ and scale of atom radii $s$.
+A configuration of the pseudoflexible ligand $q=(x,y,z,r_x,r_y,r_z,l,s)$  is described
+by the 3D position $(x,y,z)$ of the reference point of the ligand (e.g., it's geometric center), rotation around $x$, $y$ and $z$ axes,
+index of the conformation $l\in \L$ and the actual scale $s$.
+A discrete set of scales is used, i.e., $s \in {\smin, \smin+\sdelta, \ldots, \smax}$, where 
+$\smin$ is the minimal allowed scale, $\smax=1$ is the maximal allowed scale and $\sdelta$ is the minimal difference between two scales.
 All possible configurations form the configuration space $\C$. 
-Let $\CF \in \C$ denote the set of collision-free configurations. 
-A configuration is collision-free if there is no intersection between the ligand's atoms scaled by the actual scale factor and the protein atoms.
-
+A configuration is collision-free if there is no intersection between the protein atoms and ligand atoms scaled by $s$.
+The set of all feasible configurations at scale $s$ is denoted $\CFD \subseteq \C$.
 
 %We further consider a spherical probe $\Sprobe$  of radius $\probe$ encapsulating the ligand.
 %Let $q=(x,y,z)\in\C$ denote the configuration (position) of the probe, where
@@ -744,81 +758,102 @@ A configuration is collision-free if there is no intersection between the ligand
 The task of the traversability study is to determine if a given ligand can traverse  a given tunnel in the protein.
 The tunnels are usually computed on proteins without ligands, which implies narrow void space.
 
-The configuration space is searched using the RRT principle~\cite{lavalleRRT}, which is extended by three main modifications.
-First, the tree expanded by several new nodes in each iteration, in order to boost growth in the narrow passages.
-The second modification is designed to block growth of the tree outside the protein, which is necessary to prevent detection of false
-tunnels. 
-The last modification is the novel VD-based sampling of configuration space.
-
-
+The configuration space is searched using the RRT principle~\cite{lavalleRRT}.
+The main loop of the method is described in Alg.~\ref{alg::main}.
+In each iteration, a random sample $\qrand$ is generated, its nearest node $\qnear\in\T$ in the tree is found
+and the node is expanded.
+The random samples are not generatd only from whole $\C$, as in the original RRT, but the sampling
+is guided using moving virtual goal~\cite{vonasek2009rrt}.
+The virtual goal $v$ is the index of the actual sphere of the tunnel, around which the samples
+are generated with probability $\gb$. 
+After the tree reaches the sphere $t_v \in T$, i.e., the distance of the tree to the center of $t_v$ is
+less than a predefined threshold $\dt$, the virtual goal is moved to successor of the last sphere in the tunnel
+that is reached by the tree (lines~\ref{alg::main:a}--\ref{alg::main:b} in Alg.~\ref{alg::main}).
+The algorithm termines after a predefined planning trials $\Imax$ or if the tree reaches
+the last sphere in the tunnel, i.e., when $v = N$.
 
 \linesnumbered
 \begin{algorithm}[h]
 %\setstretch{\straa}
-\caption{\label{alg::tunnel}traversability planning}
+\caption{\label{alg::main}main loop of the RRT planner}
 \KwIn{
-    TODO
+    tunnel $T=(t_i, r_i), n=1,\ldots N$ represented by $N$ spheres,
+    initial configuration $\qinit$,
+    goal configuration $\qgoal$,
 }
 \KwData{
-    todo
+   ligand conformations $\L$,
+   scale limits $\smin, \smax$ and $\sdelta$
 }
 \KwOut{
-    todo
+    configuration tree $\T$\;
 }
 \hrule
 $v = 0$; // index of the virtual goal\\
 $iteration = 0$\;
 \While{$iteration < \Imax$ and $v < N$}{
     \eIf{$rand() < \gb$}{
-        $\qrand$ = random sample around $P[v]$\;
+        $\qrand$ = random sample around actual virtual goal $t_n \in T$\;
     }{
         $\qrand$ = random sample from $\C$\;
     }
     $\qnear$ = nearest node in $\T$ towards $\qrand$\;
 
-    $S = $expandConfigurations($\qnear$)\;
+    $S = $expandConfigurations($\qnear,\L$)\;
 
     \For{$q \in S$}{
         $\T$.addNode($q$)\;
         $\T$.addEdge($\qnear, q$)\;
     }
 
-    \For{$i=N : v$}{
+    \For{$i=N : v$}{ \nllabel{alg::main:a}
         $d$ = nearest node in the tree to $P[i]$\;
         \If{$d < DT$}{
             $v = i$; // new virtual goal found\;
             break\;
         }
-    }
+    } \nllabel{alg::main:b}
+    $iteration = iteration+1$\;
 }
-trajectory = extract from tree\;
+\return $\T$\;
 \end{algorithm}
+
+
+The core of the method is the expansion procedure, which generates new collision-free nodes around $\qnear\in\T$.
+The algorithm is listed in Alg.~\ref{alg::expand}.
+For each conformation $l \in \L$, the expansion generates up to $m$ samples $q$ with maximal radii around $\qnear$.
+The 3D position of $q$ is generated using Normal distribution $N(0,\sigma^2)$ around $\qnear$, where $\sigma^2$ is the predefined
+parameter.
+The rotation part of $q$ is generated using $U(0,2\pi)$.
+The expansion begins with the largest scale $s$ and if less then $m$ collision-free samples are generated
+with $s$, the next lower $s$ is used.
+The expansion step is repeated for each conformation $l \in L$.
+
 
 \begin{algorithm}[h]
 %\setstretch{\straa}
-\caption{\label{alg::tunnel2}expand()}
+\caption{\label{alg::expand}expand}
 \KwIn{
-   configuration $q$ to be expanded
+   configuration $\qnear$ to be expanded,
 }
-%\KwData{
-%}
+\KwData{
+   ligand conformations $\L$,
+   scale limits $\smin, \smax$ and $\sdelta$
+}
 \KwOut{
     set $S$ of collision-free configurations reachable from $q$
 }
 \hrule
-$c = $ conformation of $q$\;
-\ForEach{$c_j \in C$}{
-    \If{$canSwtich(c,c_j)$}{
-        \ForEach{$s \in scales$}{
-            \For{i = 1:m}{
-                $q' = q$\;
-                translate by random around $q'$\;
-                rotate randomly \;
-                $q'.c = c_j$\;
-                $q'.s = s$\;
-                \If{$isCollisionFree(q')$}{
-                    $S = S \cup \{ q \}$\;
-                }
+\ForEach{$l \in \L$}{
+    \ForEach{$s \in (\smax,\smax-\sdelta, \ldots, \smin)$}{
+        \For{$i = 1,\ldots,m$}{
+            $q' = q$\;
+            translate $q$ by random around $q'$\;
+            rotate randomly \;
+            $q'.l = l$\;
+            $q'.s = s$\;
+            \If{$isCollisionFree(q')$}{
+                $S = S \cup \{ q \}$\;
             }
         }
     }
@@ -827,8 +862,14 @@ $c = $ conformation of $q$\;
 
 
 
+\section{Visualization of results}
 
+The result of the proposed planning method is a tree of collision-free configurations, from which a path leading from $\qinit$
+to the nearest node towards $\qgoal$ can be found.
+Due to stochastic nature of RRT, it is not guaranteed that the tree always reached the goal configuration $\qgoal$.
+Despite, a trajectory leading as close as possible towards $\qgoal$ is extracted fromm the tree.
 
+To present the results to chemicists ...
 
 \section{Experimental verification}
 
@@ -836,14 +877,6 @@ $c = $ conformation of $q$\;
 
 \section{Conclusion }
 
-The problem of tunnel detection in protein structures can be formulated as a path planning problem which can be solved by RRT.
-The tunnels have properties of narrow passages and it is therefore challenging to find path inside the protein.
-We propose to generate random samples around a subset of Voronoi Diagram of the protein's atoms.
-The subset is maintained automatically according to the distance to the configuration tree, so only the regions not reached yet
-by the tree are sampled.
-While the Voronoi diagram provides valuable information about suitable void regions in the protein, the
-proposed RRT-based technique can cope with the protein dynamics.
-The proposed technique can therefore be considered as an extension of the existing VD-based tools for tunnel detection.
 
 \section{Acknowledgments}
 
