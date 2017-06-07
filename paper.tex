@@ -143,27 +143,31 @@ ligand from the outside environment to the active site or vice versa.
 
 The widely used tools for tunnel detection are based on Voronoi diagrams~\cite{yaffe2008,caver3} or 
 a 3D grid~\cite{sehnal2013mole,petrek2006caver}.
-These methods compute the tunnels assuming a spherical ligand (probe).
-The resulting tunnels are represented as a sequence of spheres.
-The active sites are usually connected with the protein surface with multiple pathways.
-However, not all paths are biochemically relevant, so only paths with a given minimal bottleneck have to be reported (the bottleneck is
-the radius of the smallest sphere that can traverse the whole tunnel) 
-Bio-chemists then decide if such a tunnel can be used to transport a given ligand mainly based on the tunnel lengths and its bottleneck.
+These methods compute the tunnels assuming a spherical ligand (probe), and the resulting tunnels are represented as a sequence of spheres.
+Bio-chemists then decide if such a tunnel can be used to transport a given ligand mainly based on the tunnel lengths and its bottleneck (i.e.,
+        the radius of the smallest sphere that can traverse the whole tunnel).
+%The active sites are usually connected with the protein surface with multiple pathways.
+%However, not all paths are biochemically relevant, so only paths with a given minimal bottleneck have to be reported (the bottleneck is
+%the radius of the smallest sphere that can traverse the whole tunnel).
+Such decision is however not precise and it requires previous expertise in the domain.
+
+Of the reasons is that typical ligands are non-spherical and therefore it is difficult to estimate their traversability in tunnels
+computed for a spherical probe.
+For a better decision, it is necessary to consider also the shape of the ligand and possibly also its flexibility.
+Due to the increase degrees of freedom (DOF) that need to be considered, the classical Voronoi-based methods cannot be used 
+to compute trajectories of the ligands.
 
 \red{TODO}
 something about screening: what is it, what's is the input and output, in which applications (research/industry) it is useful.
 
-
-Such decision is however not precise and it requires previous expertise with the domain.
-Of the reasons is that typical ligands are non-spherical and therefore it is difficult to estimate their traversability in tunnels
-computed for a spherical probe.
-For better decision, it is necessary to consider also the shape of the ligand being investigated, and consequently, to also
-consider rotations of the whole ligand.
-Moreover, ligands are rather flexible molecules, so the relative positions of their atoms can change as well.
-
-Sampling-based motion planning methods such as Rapidly Exploring Random Tree~\cite{lavalleRRT} can be
-used to test the traversability of a given ligand in the tunnels.
-These methods can cope with objects of many degrees of freedom and arbitrary geometry.
+In this paper, we propose a novel method for computing the trajectories of the flexible ligands in a tunnel represented by spheres.
+The proposed work is based on the sampling-based Rapidly Exploring Random Tree (RRT)~\cite{lavalleRRT} planner, which
+can cope with many-DOF objects of arbitrary geometry.
+The random samples for RRT are generated using the spheres of the tunnel.
+To make the transportation easier, a scaled-down version of the ligand is used, similarly e.g. to~\cite{cortes2005path}.
+The flexiblity of the ligand is modeled using a predefined set of typical conformations.
+We propose novel visualization techniques for presenting the results to bio-chemists.
+The proposed method can be seen as an extension for the classic tunnel detection tools.
 
 %Recently, researchers started to focus on molecular dynamics simulations and study the behavior of individual tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole}.
 %Recently, researchers started to focus on molecular dynamics simulations and studying the behavior of individual 
@@ -189,8 +193,8 @@ These methods can cope with objects of many degrees of freedom and arbitrary geo
 \renewcommand{\tabcolsep}{0pt}
 \begin{tabular}{ccc}
 \includegraphics[width=0.15\textwidth]{fig/motiv1} &
-\includegraphics[width=0.17\textwidth]{fig/motiv2lab} \\
-%\includegraphics[width=0.16\textwidth]{fig/motiv3} \\
+\includegraphics[width=0.17\textwidth]{fig/motiv2lab} &
+\includegraphics[width=0.16\textwidth]{fig/motiv3} \\
 Protein 1CQW & Active site & Detected tunnels \\
              &            & (orange)
 \end{tabular}
@@ -199,12 +203,6 @@ Protein 1CQW & Active site & Detected tunnels \\
     Example of tunnel detection in haloalkane dehalogenase.
 }
 \end{figure}
-
-\red{TODO}
-what is traversability analysis.
-
-The goal is the traversability analysis is to estimate traversability of a tunnel with a given ligand from geometrical point of view.
-
 
 
 \section{Related work}
