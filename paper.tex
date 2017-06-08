@@ -58,6 +58,7 @@ TODO DAVID \at TODO DAVID
 \def\CF{\mathcal{C}_{free}}
 \def\CFD{{\mathcal{C}^s_{free}}}
 \def\dt{d_{goal}}
+\def\da{d_{atom}}
 
 
 \def\Imax{I_{max}} %max number of iterations of RRT-based planners
@@ -69,8 +70,6 @@ TODO DAVID \at TODO DAVID
 
 \def\VV{V_{vor}}
 \def\VVA{V_{vor}^{act}}
-\def\da{d_{high}}
-\def\db{d_{low}}
 
 \def\smin{s_{min}}
 \def\smax{s_{max}}
@@ -291,7 +290,7 @@ It can be assume that both the protein and the ligand adapt to each other and th
 To enable the planner find a solution, the radii of the ligand, and possibly also the radii of the protein atoms, are down-scaled
 by a given factor.
 
-The most related work to this paper is the MoMa-LigPath~\cite{cortes2005path}, that is based on the ML-RRT method~\cite{cortes2010simulating}.
+The most related work to this paper is the MoMa-LigPath~\cite{cortes2005path}, that is based on the ML-RRT method~\cite{cortes2010simulating,cortes2007mlrrt}.
 In comparison to our solution, the method~\cite{cortes2005path} aims for find any path leading towards the active site without
 possibility to select a tunnel of interest.
 
@@ -459,6 +458,8 @@ The expansion begins with the largest scale $s$ and if less then $m$ collision-f
 with $s$, the next lower $s$ is used.
 The expansion step is repeated for each conformation $l \in L$.
 
+todo atom metric
+
 
 \begin{algorithm}[h]
 %\setstretch{\straa}
@@ -477,21 +478,19 @@ The expansion step is repeated for each conformation $l \in L$.
 \ForEach{$l \in \L$}{
 %    $newnodes = $ false\;
     \ForEach{$s \in (\smax,\smax-\sdelta, \ldots, \smin)$}{
+        $\qnew = \emptyset$; // empty configuration\\
         \For{$i = 1,\ldots,m$}{
-            $q' = q$\;
-            translate $q$ by random around $q'$\;
-            rotate randomly \;
-            $q'.l = l$\;
-            $q'.s = s$\;
-            $qn$ = nearest node in $\T$ towards $q'$\;
-            \If{$isCollisionFree(q')$ {\bf and} $d(q',\qnear) < d(q',qn)$}{
-                $\T$.addNode($q$)\;
-                $\T$.addEdge($\qnear,q$)\;
-%                $S = S \cup \{ q \}$\;
-%                $newnodes = $ true\;
-                {\bf break}\;
-            }
+            $q=\qnear$\;
+            $q.position$ = random 3D position around $\qnear$\;
+            $q.rotation$ = random 3D rotation\;
+            $q.l = l$\; 
+            $q.s = s$\;
+            \If{isCollisionFree($q$) {\bf and} \\ $(\qnew = \emptyset$ {\bf or} $\da(q, \qnear) < \da(\qnew,\qnear))$} {
+                $\qnew = q$\;
+            } 
         }
+        $\T$.addNode($q$)\;
+        $\T$.addEdge($\qnear,q$)\;
     }
 }
 %\return $S$\;
