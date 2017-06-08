@@ -389,8 +389,10 @@ The tunnels are usually computed on proteins without ligands, which implies narr
 
 The configuration space is searched using the RRT principle~\cite{lavalleRRT}.
 The main loop of the method is described in Alg.~\ref{alg::main}.
-In each iteration, a random sample $\qrand$ is generated, its nearest node $\qnear\in\T$ in the tree is found
-and the node is expanded.
+In each iteration, a random sample $\qrand$ is generated, its nearest node $\qnear\in\T$ in the tree is found.
+The nearest-neighbor search between the $\qrand$ and the tree is realized using the weighted 6D Euclidean metric considering
+both 3D rotation and 3D translation.
+
 The random samples are not generated only from whole $\C$, as in the original RRT, but the sampling
 is guided using moving virtual goal~\cite{vonasek2009rrt}.
 The virtual goal $v$ is the index of the actual sphere of the tunnel, around which the samples
@@ -448,9 +450,22 @@ $iteration = 0$\;
 \end{algorithm}
 
 
-The core of the method is the expansion procedure, which generates new collision-free nodes around $\qnear\in\T$.
-The algorithm is listed in Alg.~\ref{alg::expand}.
-For each conformation $l \in \L$, the expansion generates up to $m$ samples $q$ with maximal radii around $\qnear$.
+The core of the proposed method is the expansion procedure (Alg.~\ref{alg::expand}) which generates new collision-free nodes around $\qnear\in\T$.
+For each ligand conformation, the expansion procedure attempts to find a new collision-free configuration around $\qnear$ with maximal
+scale.
+For a given conformation $l \in \L$, first the maximal scale $\smax$ is considered and
+$m$ samples are generated around $\qrand$ and tested for collision.
+The nearest collision-free sample towards $\qrand$ is selected and added to the tree.
+If none of the samples is collision-free, the scale is reduced to $\smax-\sdelta$ and the searches continues
+until a free collision-free samples is found or until the mimimal reduced-scale $\smin$ is reached.
+
+The sampling-based methods are sensitive to the employed metric, especially if the objects are not symmetrical, which is the
+case of the non-spherical ligands.
+To consider the actual shape of the ligand (which is different in each conformation) and to allow finding such configurations
+that approach $\qrand$, the distance between newly generated configurations and $\qrand$ is measured as the smallest
+distance between an atom of the ligand placed at $q$ and the 3D position of $\qrand$ ($\da(q,\qrand)$ on line~\ref{alg::expand:a} in
+        Alg.~\ref{alg::expand}).
+
 The 3D position of $q$ is generated using Normal distribution $N(0,\sigma^2)$ around $\qnear$, where $\sigma^2$ is the predefined
 parameter.
 The rotation part of $q$ is generated using $U(0,2\pi)$.
@@ -458,14 +473,13 @@ The expansion begins with the largest scale $s$ and if less then $m$ collision-f
 with $s$, the next lower $s$ is used.
 The expansion step is repeated for each conformation $l \in L$.
 
-todo atom metric
-
 
 \begin{algorithm}[h]
 %\setstretch{\straa}
 \caption{\label{alg::expand}expand}
 \KwIn{
    configuration $\qnear$ to be expanded,
+   random configuration $\qrand$
 }
 \KwData{
    ligand conformations $\L$,
@@ -476,7 +490,6 @@ todo atom metric
 %}
 \hrule
 \ForEach{$l \in \L$}{
-%    $newnodes = $ false\;
     \ForEach{$s \in (\smax,\smax-\sdelta, \ldots, \smin)$}{
         $\qnew = \emptyset$; // empty configuration\\
         \For{$i = 1,\ldots,m$}{
@@ -485,16 +498,27 @@ todo atom metric
             $q.rotation$ = random 3D rotation\;
             $q.l = l$\; 
             $q.s = s$\;
-            \If{isCollisionFree($q$) {\bf and} \\ $(\qnew = \emptyset$ {\bf or} $\da(q, \qnear) < \da(\qnew,\qnear))$} {
-                $\qnew = q$\;
+            \If{isCollisionFree($q$)}{
+                \If{$\qnew = \emptyset$ {\bf or} $\da(q, \qnear) < \da(\qnew,\qnear)$}{ \nllabel{alg::expand:a}
+                    $\qnew = q$\;
+                }
             } 
         }
-        $\T$.addNode($q$)\;
-        $\T$.addEdge($\qnear,q$)\;
+        \If{$\qnew \ne \emptyset$} {
+            $\T$.addNode($\qnew$)\;
+            $\T$.addEdge($\qnear,\qnew$)\;
+            {\bf break;} // go to next conformation
+        }
     }
 }
 %\return $S$\;
 \end{algorithm}
+
+The configruation tree can be expanded by up to $|\L|$ new configurations, as for each ligand conformation at most
+one new configuration can be added.
+The most time consuming part of the method is the collision-detection, which is called $m|\L|$ in each expansion step.
+The collision detection can be evaluated fast using hiearchical methods like OBB trees, which is implemented e.g. in the OZCollide library~\cite{ozcollide}
+
 
 
 
