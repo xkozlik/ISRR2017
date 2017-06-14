@@ -571,17 +571,29 @@ In order to do that, we employ an ensemble of resulting trajectories, and we com
 \begin{itemize}
   \item \textbf{Accessibility} --- The probability of the ligand that it reaches a tunnel's part.
   \red{ i.e., number of trajectories ending in the tunnel part over all trajectories? }
-  \item \textbf{Ligand Scale} --- The scale of the ligand wheh it passes a tunnel's part.
+  \item \textbf{Ligand scale} --- The scale of the ligand wheh it passes a tunnel's part.
   \item \textbf{Throughput} --- The probability of the ligand that it passes through a tunnel's part.
 \red{ i.e., the conditional probability we discussed in the mail?}
 \end{itemize}
-During visualization, we map these properties onto a tunnel's surface so that they can be visually correlated with, e.g., the tunnel's shape.
+During visualization, we map these properties onto a tunnel's surface (see Fig.~\ref{fig:properties}) so that they can be visually correlated with, e.g., the tunnel's shape.
 
-
-
+\begin{figure}
+\centering
+\begin{tabular}{ccc}
+\includegraphics[width=0.3\textwidth]{fig/accessibility}
+\quad & \quad
+\includegraphics[width=0.3\textwidth]{fig/ligand-scale}
+\quad & \quad
+\includegraphics[width=0.3\textwidth]{fig/throughput}
+\end{tabular}
+\caption{Tunnel properties mapped onto its surface.
+Left: Accessibility --- green denotes parts that were accesed by the ligand easily while red denotes parts that were accessible only in about 10\% of computations.
+Middle: Ligand scale --- the average scale of the ligand was \~50\% in orange parts, \~60\% in yellow parts, \~80\% in yellow to green parts and \~100\% in green parts.
+Right: Throughput --- green denotes parts that are highly probable to be passed by the ligand while red denotes those that were hard to pass.}
+\label{fig:properties}
+\end{figure}
 
 \red{can you please tell in detail how is the accesibility/liugand/throughput mapped to the tunnel surface/spheres? }
-
 
 Moreover, we analyze the whole set of trajectories in order to convey the most important trajectories that enabled the ligand to pass or that prevented it from passing.
 In order to visualize the important trajectories we first cluster the trajectories according to their similarity. 
@@ -591,11 +603,9 @@ Then we choose a representant from each cluster a we visualize its trajectory in
 Moreover, we map the representant's cluster size onto the width of the polyline.
 In this manner, we are able to convey the information about all different trajectories together (see Fig.~\ref{fig:trajectories} right).
 
-
-
 \begin{figure}
 \centering
-\begin{tabular}{cccccc}
+\begin{tabular}{cc}
 \includegraphics[width=0.45\textwidth]{fig/trajectories-all}
 \qquad & \qquad
 \includegraphics[width=0.45\textwidth]{fig/trajectories-clustered-21} \\
