@@ -570,14 +570,24 @@ In this manner, we aim to further support the decision process of a chemist abou
 In order to do that, we employ an ensemble of resulting trajectories in order to compute and visualize the following tunnel properties:
 \begin{itemize}
   \item \textbf{Accessibility} --- The probability of the ligand that it reaches a tunnel's part.
+  \red{ i.e., number of trajectories ending in the tunnel part over all trajectories? }
   \item \textbf{Ligand Scale} --- The scale of the ligand wheh it passes a tunnel's part.
   \item \textbf{Throughput} --- The probability of the ligand that it passes through a tunnel's part.
+\red{ i.e., the conditional probability we discussed in the mail?}
 \end{itemize}
+
+\red{can you please tell in detail how is the accesibility/liugand/throughput mapped to the tunnel surface/spheres? }
+
+
 Moreover, we analyze the whole set of trajectories in order to convey the most important trajectories that enabled the ligand to pass or that prevented it from passing.
-In order to visualize the important trajectories we first cluster the trajectories according to their similarity.
+In order to visualize the important trajectories we first cluster the trajectories according to their similarity. 
+\red{can you please add some details how is the similarity counted? Maybe a short description of even equation.}
 Then we choose a representant from each cluster a we visualize its trajectory in 3D using a polyline.
+\red{please some reference to the hierarchical clustering}.
 Moreover, we map the representant's cluster size onto the width of the polyline.
 In this manner, we are able to convey the information about all different trajectories together (see Fig.~\ref{fig:trajectories} right).
+
+
 
 \begin{figure}
 \centering
@@ -616,7 +626,7 @@ The traversability of the tunnel was evaluated for 1-chlorpropan (denoted as $\L
 }
 \input table.003.tex
 \hskip 10pt
-\input table.004.tex
+%\input table.004.tex
 \end{table}
 
 
