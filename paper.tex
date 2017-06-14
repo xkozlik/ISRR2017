@@ -16,14 +16,14 @@
 \SetKwInput{KwData}{Global params.}
 
 \title*{
-    Testing traversability of protein tunnels with flexible ligands using motion planning
+    Testing Traversability of Protein Tunnels with Flexible Ligands Using Motion Planning
 }
 
 \author{
     Vojt\v ech Von\' asek \and 
     Barbora Kozl\'\i kov\'a  \and 
     Adam Jur\v{c}\'\i k  \and 
-    David Bend\'{a}\v{r}  \and
+    David Bedn\'{a}\v{r}  \and
     Martin Saska }
 
 
@@ -40,7 +40,10 @@ Masaryk University,
 Botanick\'a 68a, 602 00 Brno, \\
 \and 
 \inst{3}
-TODO DAVID \at TODO DAVID
+David Bedn\'{a}\v{r} \at 
+Faculty of Science,
+Masaryk University,
+Kamenice 5, 625 00 Brno
 }
 
 
@@ -106,24 +109,18 @@ TODO DAVID \at TODO DAVID
 
 
 \abstract{
-\red{needs rewrite:
-Function and behavior of proteins are achieved by interactions with other molecules such as ligands.
-The interaction takes place in an active site inside the protein, which is accessible from the surface by so called tunnels.
-The knowledge about tunnels can help researches for example to better select target ligand in order to achieve a desired
-behavior of the protein.
-Widely used tools for tunnel detection are based on Voronoi diagrams and they compute the tunnels for a virtual spherical probe.
-The tunnels are then scored based on their bottleneck, length and also curvature. 
-It is however not easy to determine if a given non-spherical ligand can pass such a tunnel.
-To provide the chemists better information about the tunnels, the full shape of ligands should be considered.
-}
-Sampling-based motion planning techniques can be used to compute trajectories for the non-spherical ligands in the protein tunnels.
-In this paper, we propose a modification of Rapidly Exploring Random Tree (RRT) to find the trajectories.
-To enable the ligands to move in the tunnels, the planning is realized with a reduced-scale of the ligands. 
-The flexibility of ligands is achieved by using a predefined set of ligand conformations.
-For the purpose of further analysis, we computed trajectories are visualized ..
+Understanding of interactions between enzymes and ligands is very important in enzymology, protein engineering or drug design. 
+Molecular tunnels play an important role in catalytic and thermodynamic properties and they connect catalytic active sites with the solvent. 
+Therefore, the geometrical and physico-chemical properties of tunnels need to be determined to understand the transport of ligand from and into the protein active site. 
+Current methods describing the ligand passing through the tunnel are based either only on geometry of the tunnel or on molecular dynamic simulations. 
+In this paper, we propose \red{TODO}
+Additionally, we introduce several approaches to visualization of detected tunnels which depict valuable information about various properties and behavior of the ligand.
+Our proposed detection method, compared to the traditionally used geometrical analysis, provides more insight into the ligand possibility to pass through the tunnel. 
+On the other hand, it is much less computationally demanding than methods based on molecular dynamic simulations. 
+The method can be used to improve virtual screening results which are usually based only on determination of ligand binding in the active site but no information about ligand transport through the tunnel is provided.
 }
 
-\section{Introduction \& motivation}
+\section{Introduction \& Motivation}
 
 
 \begin{figure}[t]
@@ -151,20 +148,12 @@ Protein 1CQW & Active site & Detected tunnels & Example of a  \\
 }
 \end{figure}
 
+Understanding of interactions between proteins and other small molecules is crucial in many research fields, including drug design and protein engineering. 
+These interactions are highly influence by the ability to transport the small molecule, called ligand, to the protein active site.
+The active site can be considered as a deeply buried inner cavity with the ability to interact with the incoming ligand.
+To get the ligand to the active site, there has to be the transportation path connecting the protein outer environment with the active site.
+This paths, called tunnels, have to be wide enough and the physico-chemical properties of the surrounding amino acids have to be compatible with the ligand. 
 
-
-
-\red{this is fast copy and paste from previous paper, please rewrite, cut to at ca. 1 page}
-
-%Protein structures are essential components of all living organisms.
-Proper understanding of structure and function of proteins is important in many fields, including drug design, agriculture, cosmetics, etc.
-%Although this knowledge is still very hard to reveal, several protein structures have been already investigated in sufficient detail. 
-Computational methods are often used to analyze the geometry of protein structure,  its shape, surface area, and inner void space. 
-Proteins interact with other molecules (small ligands, ribonucleic acid chains, other proteins, etc.) which can lead to changes in properties of the protein or the interacting molecule.
-The chemical reaction between the protein and ligand takes places in so called active site, that is accessible 
-from the protein surface by a tunnel.
-
-The knowledge about the tunnels is important in many fields..
 For example, one task in protein engineering is to change selected properties of a protein, e.g. its stability under different outer conditions~\cite{Koudelakova2013} or activity of the protein towards the other molecules~\cite{Pavlova2009}.
 This can be achieved by detecting and studying so called tunnels in proteins which can serve as the transportation paths for the 
 ligand from the outside environment to the active site or vice versa. 
@@ -558,14 +547,16 @@ to the nearest node towards $\qgoal$ can be found.
 Due to stochastic nature of RRT, it is not guaranteed that the tree always reached the goal configuration $\qgoal$.
 Despite, a trajectory leading as close as possible towards $\qgoal$ is extracted from the tree.
 
-To present the results to chemicists ...
+To present the results to chemists ...
 
 \section{Experimental verification}
 
 
 
 \section{Conclusion }
-
+In the future, we will focus on the following extensions proposed by the domain experts.
+Only ligand flexibility is included in the current algorithm but the flexibility of amino acid side-chains would greatly improve the prediction. 
+Moreover, incorporation of some scoring function for energy evaluation would introduce the characterization of not only geometrical but also physico-chemical properties and would further improve the prediction ability of our approach.
 
 \section{Acknowledgments}
 
