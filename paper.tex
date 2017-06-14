@@ -10,6 +10,8 @@
 \pdfminorversion=4
 
 \newcommand{\red}[1]{\textcolor{red}{#1}}
+%\newcommand{\tylde}{\raisebox{-0.85ex}{\textasciitilde}} %does not work for vojta
+\newcommand{\tylde}{$\sim$}
 
 \hypersetup{colorlinks=true,linkcolor=black,citecolor=black}
 
@@ -98,7 +100,6 @@ Loschmidt Laboratories, Department of Experimental Biology, Masaryk University, 
 \def\L{L}
 \def\LA{L_1}
 \def\LB{L_2}
-
 
 % ==================================================================================
 
@@ -569,7 +570,6 @@ The collision detection can be evaluated fast using hierarchical methods like OB
 \includegraphics[width=\tmpa]{fig/m003-009} & 
 \includegraphics[width=\tmpa]{fig/m003-010} & 
 \includegraphics[width=\tmpa]{fig/m003-011} \\
-
 \end{tabular}
 \caption{todo and maybe delete}
 \end{figure}
@@ -587,20 +587,42 @@ To present the results to chemicists ...
 \red{Adam: }
 As described above, our approach enables to estimate the probability that a ligand given a minimum scale passes through a tunnel.
 On the other hand, the probability does not describe any details about the ligand's passage, e.g., how hard it is to pass some part of the tunnel, which trajectory is the most used, etc.
-Moreover, it is not feasible to directly visualize and explore the resulting trajectories due the visual clutter (see Fig.~\ref{fig:trajectories} left) caused by their high number and close proximity.
+Moreover, it is not feasible to directly visualize and explore the resulting trajectories due to the visual clutter (see Fig.~\ref{fig:trajectories} left) caused by their high number and close proximity.
 Therefore, we propose to extract and visualize the complex information about the ligand's passage through a tunnel.
 In this manner, we aim to further support the decision process of a chemist about a tunnel.
-In order to do that, we employ an ensemble of resulting trajectories in order to compute and visualize the following tunnel properties:
+In order to do that, we employ an ensemble of resulting trajectories, and we compute and visualize the following tunnel properties:
 \begin{itemize}
   \item \textbf{Accessibility} --- The probability of the ligand that it reaches a tunnel's part.
   \red{ i.e., number of trajectories ending in the tunnel part over all trajectories? }
-  \item \textbf{Ligand Scale} --- The scale of the ligand wheh it passes a tunnel's part.
+  \item \textbf{Ligand scale} --- The scale of the ligand wheh it passes a tunnel's part.
   \item \textbf{Throughput} --- The probability of the ligand that it passes through a tunnel's part.
 \red{ i.e., the conditional probability we discussed in the mail?}
 \end{itemize}
+During visualization, we map these properties onto a tunnel's surface (see Fig.~\ref{fig:properties}) so that they can be visually correlated with, e.g., the tunnel's shape.
 
 \red{can you please tell in detail how is the accesibility/ligand/throughput mapped to the tunnel surface/spheres? }
 
+
+
+\begin{figure}
+\centering
+\begin{tabular}{ccc}
+\includegraphics[width=0.3\textwidth]{fig/accessibility}
+\quad & \quad
+\includegraphics[width=0.3\textwidth]{fig/ligand-scale}
+\quad & \quad
+\includegraphics[width=0.3\textwidth]{fig/throughput}
+\end{tabular}
+\caption{Tunnel properties mapped onto its surface.
+Left: Accessibility --- green denotes parts that were accesed by the ligand easily while red denotes parts that were accessible only in \tylde 10\% of computations.
+Middle: Ligand scale --- the average scale of the ligand was \tylde 50\% in orange parts, \tylde 60\% in yellow parts, \tylde 80\% in yellow to green parts and \tylde 100\% in green parts.
+Right: Throughput --- green denotes parts that are highly probable to be passed by the ligand while red denotes those that were hard to pass.
+\label{fig:properties}
+}
+\end{figure}
+
+
+\red{can you please tell in detail how is the accesibility/liugand/throughput mapped to the tunnel surface/spheres? }
 
 Moreover, we analyze the whole set of trajectories in order to convey the most important trajectories that enabled the ligand to pass or that prevented it from passing.
 In order to visualize the important trajectories we first cluster the trajectories according to their similarity. 
@@ -610,11 +632,9 @@ Then we choose a representant from each cluster a we visualize its trajectory in
 Moreover, we map the representant's cluster size onto the width of the polyline.
 In this manner, we are able to convey the information about all different trajectories together (see Fig.~\ref{fig:trajectories} right).
 
-
-
 \begin{figure}
 \centering
-\begin{tabular}{cccccc}
+\begin{tabular}{cc}
 \includegraphics[width=0.45\textwidth]{fig/trajectories-all}
 \qquad & \qquad
 \includegraphics[width=0.45\textwidth]{fig/trajectories-clustered-21} \\
