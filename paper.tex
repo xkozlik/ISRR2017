@@ -95,6 +95,8 @@ TODO DAVID \at TODO DAVID
 \def\gb{p_{tunnel}}
 
 \def\L{L}
+\def\LA{L_1}
+\def\LB{L_2}
 
 
 % ==================================================================================
@@ -404,7 +406,7 @@ less than a predefined threshold $\dt$, the virtual goal is moved to successor o
 that is reached by the tree (lines~\ref{alg::main:a}--\ref{alg::main:b} in Alg.~\ref{alg::main}).
 Setting the virtual goal to this successor allows the tree to ``skip'' such parts of the tunnels that are
 not traversible or reachable by the ligand.
-The algorithm terminates after a predefined planning trials $\Imax$ or if the tree reaches
+The algorithm terminates after the predefined number of planning trials $\Imax$ or if the tree reaches
 the last sphere in the tunnel, i.e., when $v = N$.
 
 The random samples $\qrand$ are generated around the virtual goal.
@@ -417,7 +419,7 @@ Alternatively, $R_v$ can be set to $R_v=r_v$ according the radius of the tunnel 
 %\setstretch{\straa}
 \caption{\label{alg::main}main loop of the RRT planner}
 \KwIn{
-    tunnel $T=(t_i, r_i), n=1,\ldots N$ represented by $N$ spheres,
+    tunnel $T=(t_i, r_i), n=1,\ldots,N$ represented by $N$ spheres,
     initial configuration $\qinit$,
     goal configuration $\qgoal$,
 }
@@ -446,8 +448,8 @@ $iteration = 0$\;
     %    $\T$.addEdge($\qnear, q$)\;
     %}
 
-    \For{$i= N,N-1,\ldots v+1,v$}{ \nllabel{alg::main:a}
-        $d$ = nearest node in the tree to $T[i]$\;
+    \For{$i= N-1,N-2,\ldots,v+1,v$}{ \nllabel{alg::main:a}
+        $d$ = nearest node in the tree towards sphere $t_i$\;
         \If{$d < \dt $}{
             $v = i+1$; // new virtual goal found\;
             {\bf  break}\;
@@ -460,12 +462,11 @@ $iteration = 0$\;
 
 
 The core of the proposed method is the expansion procedure (Alg.~\ref{alg::expand}) which generates new collision-free nodes around $\qnear\in\T$.
-For each ligand conformation, the expansion procedure attempts to find a new collision-free configuration around $\qnear$ with maximal
+For each ligand conformation $l \in \L$, the expansion procedure attempts to find a new collision-free configuration around $\qnear$ with a maximal
 scale.
-For a given conformation $l \in \L$, first the maximal scale $\smax$ is considered and
-$m$ samples are generated around $\qrand$ and tested for collision.
+First, the maximal scale $\smax$ is tested and $m$ random samples are generated around $\qrand$ and tested for collision.
 The nearest collision-free sample towards $\qrand$ is selected and added to the tree.
-If none of the samples is collision-free, the scale is reduced to $\smax-\sdelta$ and the searches continues
+If none of the tested samples is collision-free, the scale is reduced to $\smax-\sdelta$ and the searches continues
 until a free collision-free samples is found or until the mimimal reduced-scale $\smin$ is reached.
 
 The sampling-based methods are sensitive to the employed metric, especially if the objects are not symmetrical, which is the
@@ -569,18 +570,28 @@ In this manner, we aim to further support the decision process of a chemist abou
 In order to do that, we employ an ensemble of resulting trajectories, and we compute and visualize the following tunnel properties:
 \begin{itemize}
   \item \textbf{Accessibility} --- The probability of the ligand that it reaches a tunnel's part.
+  \red{ i.e., number of trajectories ending in the tunnel part over all trajectories? }
   \item \textbf{Ligand Scale} --- The scale of the ligand wheh it passes a tunnel's part.
   \item \textbf{Throughput} --- The probability of the ligand that it passes through a tunnel's part.
+\red{ i.e., the conditional probability we discussed in the mail?}
 \end{itemize}
 During visualization, we map these properties onto a tunnel's surface so that they can be visually correlated with, e.g., the tunnel's shape.
 
 
 
+
+\red{can you please tell in detail how is the accesibility/liugand/throughput mapped to the tunnel surface/spheres? }
+
+
 Moreover, we analyze the whole set of trajectories in order to convey the most important trajectories that enabled the ligand to pass or that prevented it from passing.
-In order to visualize the important trajectories we first cluster the trajectories according to their similarity.
+In order to visualize the important trajectories we first cluster the trajectories according to their similarity. 
+\red{can you please add some details how is the similarity counted? Maybe a short description of even equation.}
 Then we choose a representant from each cluster a we visualize its trajectory in 3D using a polyline.
+\red{please some reference to the hierarchical clustering}.
 Moreover, we map the representant's cluster size onto the width of the polyline.
 In this manner, we are able to convey the information about all different trajectories together (see Fig.~\ref{fig:trajectories} right).
+
+
 
 \begin{figure}
 \centering
@@ -598,7 +609,33 @@ The different line widths represent the number of trajectories in a cluster.}
 
 \section{Experimental verification}
 
+The proposed method has been used to analyze a tunnel in Haloalkane dehalogenase (protein 1CQW) (Fig.~\ref{fig::tunnel}).
+The tunnel was computed using CAVER 3.0~\cite{caver3} for spherical probe of radius 0.9~\AA.
+The tunnel is represented by 760 spheres with average distance $0.05$~\AA.
 
+% from David: m003 je "1-chlorpropan" a m004 "1-chlorbutan"
+The traversability of the tunnel was evaluated for 1-chlorpropan (denoted as $\LA$) and 1-chlorbutan (denoted as $\LB$).
+
+\begin{figure}
+\centering
+\caption{\label{fig::tunnel}
+    TODO image of the tunnel + 1cqw
+}
+\end{figure}
+
+\begin{table}
+\centering
+\caption{\label{tab::rrt}
+    Runtime and sucess ratio of the planner
+}
+\input table.003.tex
+\hskip 10pt
+%\input table.004.tex
+\end{table}
+
+
+
+Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 
 \section{Conclusion }
 
