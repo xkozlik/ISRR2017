@@ -560,6 +560,38 @@ Despite, a trajectory leading as close as possible towards $\qgoal$ is extracted
 
 To present the results to chemicists ...
 
+\red{Adam: }
+As described above, our approach enables to estimate the probability that a ligand given a minimum scale passes through a tunnel.
+On the other hand, the probability does not describe any details about the ligand's passage, e.g., how hard it is to pass some part of the tunnel, which trajectory is the most used, etc.
+Moreover, it is not feasible to directly visualize and explore the resulting trajectories due the visual clutter (see Fig.~\ref{fig:trajectories} left) caused by their high number and close proximity.
+Therefore, we propose to extract and visualize the complex information about the ligand's passage through a tunnel.
+In this manner, we aim to further support the decision process of a chemist about a tunnel.
+In order to do that, we employ an ensemble of resulting trajectories in order to compute and visualize the following tunnel properties:
+\begin{itemize}
+  \item \textbf{Accessibility} --- The probability of the ligand that it reaches a tunnel's part.
+  \item \textbf{Ligand Scale} --- The scale of the ligand wheh it passes a tunnel's part.
+  \item \textbf{Throughput} --- The probability of the ligand that it passes through a tunnel's part.
+\end{itemize}
+Moreover, we analyze the whole set of trajectories in order to convey the most important trajectories that enabled the ligand to pass or that prevented it from passing.
+In order to visualize the important trajectories we first cluster the trajectories according to their similarity.
+Then we choose a representant from each cluster a we visualize its trajectory in 3D using a polyline.
+Moreover, we map the representant's cluster size onto the width of the polyline.
+In this manner, we are able to convey the information about all different trajectories together (see Fig.~\ref{fig:trajectories} right).
+
+\begin{figure}
+\centering
+\begin{tabular}{cccccc}
+\includegraphics[width=0.45\textwidth]{fig/trajectories-all}
+\qquad & \qquad
+\includegraphics[width=0.45\textwidth]{fig/trajectories-clustered-21} \\
+\end{tabular}
+\caption{Visualization of resulting trajectories.
+Left: All trajectories colored according to whether they reached the end of the tunnel (green) or they did not (red).
+Right: Trajectories clustered according to their proximity colored by distinct colors.
+The different line widths represent the number of trajectories in a cluster.}
+\label{fig:trajectories}
+\end{figure}
+
 \section{Experimental verification}
 
 
