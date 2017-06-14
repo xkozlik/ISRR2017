@@ -10,6 +10,7 @@
 \pdfminorversion=4
 
 \newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\tylde}{\raisebox{-0.85ex}{\textasciitilde}}
 
 \hypersetup{colorlinks=true,linkcolor=black,citecolor=black}
 
@@ -97,7 +98,6 @@ TODO DAVID \at TODO DAVID
 \def\L{L}
 \def\LA{L_1}
 \def\LB{L_2}
-
 
 % ==================================================================================
 
@@ -587,8 +587,8 @@ During visualization, we map these properties onto a tunnel's surface (see Fig.~
 \includegraphics[width=0.3\textwidth]{fig/throughput}
 \end{tabular}
 \caption{Tunnel properties mapped onto its surface.
-Left: Accessibility --- green denotes parts that were accesed by the ligand easily while red denotes parts that were accessible only in about 10\% of computations.
-Middle: Ligand scale --- the average scale of the ligand was \~50\% in orange parts, \~60\% in yellow parts, \~80\% in yellow to green parts and \~100\% in green parts.
+Left: Accessibility --- green denotes parts that were accesed by the ligand easily while red denotes parts that were accessible only in \tylde 10\% of computations.
+Middle: Ligand scale --- the average scale of the ligand was \tylde 50\% in orange parts, \tylde 60\% in yellow parts, \tylde 80\% in yellow to green parts and \tylde 100\% in green parts.
 Right: Throughput --- green denotes parts that are highly probable to be passed by the ligand while red denotes those that were hard to pass.}
 \label{fig:properties}
 \end{figure}
