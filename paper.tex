@@ -42,7 +42,6 @@ Faculty of Informatics,
 Masaryk University, 
 Botanick\'a 68a, 602 00 Brno, \\
 \and 
-\inst{3}
 David Bedn\'{a}\v{r} \at 
 Faculty of Science,
 Masaryk University,
@@ -65,6 +64,8 @@ Kamenice 5, 625 00 Brno
 \def\CFD{{\mathcal{C}^s_{free}}}
 \def\dt{d_{tunnel}}
 \def\da{d_{atom}}
+
+\def\rv{T_w}
 
 
 \def\Imax{I_{max}} %max number of iterations of RRT-based planners
@@ -112,13 +113,16 @@ Kamenice 5, 625 00 Brno
 %\frontmatter          % for the preliminaries
 
 
+\vskip -50pt
 \abstract{
 Understanding of interactions between enzymes and ligands is very important in enzymology, protein engineering or drug design. 
 Molecular tunnels play an important role in catalytic and thermodynamic properties and they connect catalytic active sites with the solvent. 
 Therefore, the geometrical and physico-chemical properties of tunnels need to be determined to understand the transport of ligand from and into the protein active site. 
-Current methods describing the ligand passing through the tunnel are based either only on geometry of the tunnel or on molecular dynamic simulations. 
-In this paper, we propose \red{TODO}
-Additionally, we introduce several approaches to visualization of detected tunnels which depict valuable information about various properties and behavior of the ligand.
+Current methods describing the ligand passing through the tunnel are based either solely on the geometry of the tunnel or on molecular dynamic simulations. 
+In this paper, we propose to analyze the ligand passing using sampling-based motion planning, namely using Rapidly Exploring Random Tree (RRT).
+The tunnel is represented by a set of spheres, that are used to guide the growth of the RRT configuration tree in the related configuration space.
+Multiple trajectories are computed using the proposed planner in order to analyze expected behavior of the ligand in the tunnel.
+We introduce several approaches to visualization of detected tunnels which depict valuable information about various properties and behavior of the ligand.
 Our proposed detection method, compared to the traditionally used geometrical analysis, provides more insight into the ligand possibility to pass through the tunnel. 
 On the other hand, it is much less computationally demanding than methods based on molecular dynamic simulations. 
 The method can be used to improve virtual screening results which are usually based only on determination of ligand binding in the active site but no information about ligand transport through the tunnel is provided.
@@ -167,43 +171,22 @@ a 3D grid~\cite{sehnal2013mole,petrek2006caver}.
 These methods compute the tunnels assuming a spherical ligand (probe), and the resulting tunnels are represented as a sequence of spheres.
 Bio-chemists then decide if such a tunnel can be used to transport a given ligand mainly based on the tunnel lengths and bottleneck (i.e.,
         the radius of the smallest sphere that can traverse the whole tunnel).
-%The active sites are usually connected with the protein surface with multiple pathways.
-%However, not all paths are biochemically relevant, so only paths with a given minimal bottleneck have to be reported (the bottleneck is
-%the radius of the smallest sphere that can traverse the whole tunnel).
+Typical ligands are however non-spherical and it is therefore difficult to estimate their traversability in tunnels computed for a spherical probe.
+The decision based only on the spherical tunnels requires previous expertise in the domain and yet it may be imprecise.
 
-%Such decision is however not precise and it requires previous expertise in the domain.
-Typical ligands are however non-spherical and therefore it is difficult to estimate their traversability in tunnels
-computed for a spherical probe.
-It is therefore necessary to consider also the shape of the ligand and possibly also its flexibility.
-Due to the increase degrees of freedom (DOF) that need to be considered, the classical Voronoi-based methods cannot be used 
-to compute trajectories of the ligands.
-
-\red{TODO}
-something about screening: what is it, what's is the input and output, in which applications (research/industry) it is useful.
+To provide chemists more insight into the behavior of non-spherical ligands, it is necessary to compute the trajectories of the ligand considering it's shape and possibly also conformation changes, which can be formulated as a path planning problem in the a high-dimensional configuration space.
 
 In this paper, we propose a novel method for computing the trajectories of the flexible ligands in a tunnel represented by spheres.
 The proposed work is based on the sampling-based Rapidly Exploring Random Tree (RRT)~\cite{lavalleRRT} planner, which
 can cope with many-DOF objects of arbitrary geometry.
-The random samples for RRT are generated using the spheres of the tunnel.
+The random samples for RRT are generated using the spheres representing the tunnel in order to guide the configuration tree through the search space.
 To make the transportation easier, a scaled-down version of the ligand is used, similarly e.g. to~\cite{cortes2005path}.
 The flexibility of the ligand is modeled using a predefined set of typical conformations.
 We propose novel visualization techniques for presenting the results to bio-chemists.
 The proposed method can be seen as an extension for the classic tunnel detection tools.
 
-%Recently, researchers started to focus on molecular dynamics simulations and study the behavior of individual tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole}.
-%Recently, researchers started to focus on molecular dynamics simulations and studying the behavior of individual 
-%tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole}.
-%Molecular dynamics is represented as a sequence of frames (molecule snapshots), and the tunnels need to be detected through these frames.
-%With the increasing size of simulations the correctness of predicting the most biochemically relevant tunnel increases as well.
-%Existing solutions based exclusively on Voronoi diagrams and clustering methods are time and memory consuming
-%which also gives the limitation for the maximum number of frames which they are able to analyze.
-%In such cases, the biochemists have to select a subset of the whole simulation and perform the analysis only for this selection.
-%Such analysis however provides only a rough idea of the tunnel behavior, as important parts of the simulation can be easily omitted.
-%This opens new possibilities for alternative solutions enabling to explore the tunnels in each frame of the molecular dynamics.
-%In such cases the biochemists have to skip each n-th snapshot or select a subset of the whole simulation and perform the analysis only for this selection.
-%The properties of tunnels like bottleneck radius, their length and the surrounding residues can be used
-%to estimate suitability of the tunnel for a ligand.
-%However, such estimation still involve lot of experience.
+\red{TODO}
+something about screening: what is it, what's is the input and output, in which applications (research/industry) it is useful.
 
 
 \section{Related work}
@@ -227,45 +210,48 @@ To consider atoms with different radii, weights of individual points are determi
 An alternative solution is to compute a non-weighted VD on an extended point set, where 
 each atom is approximated by several spheres with small radius~\cite{yaffe2008,caver3}.
 VD-based methods are memory less demanding, and also faster than the grid-based methods.
+\red{asi vyhodit?
 The extension of VD-based methods to dynamic molecules requires to construct VD in the frames being analyzed and 
 finding correspondences between them.
 The existing approaches often use hierarchical clustering to match Voronoi vertices and edges from different frames, which is computationally demanding~\cite{lindow2012dynamic,caverDetails}.
+}
 
 The detected tunnels are evaluated using basic characteristics like bottleneck, length, curvature and a list of surrounding
 residues, which are later used to estimate possibility of the interaction.
 The biggest disadvantage is that the shape of the ligand is not considered during the tunnel detection and it is therefore
-not easy to estimate if (and how) a ligand might traverse the tunnel.
+not easy to estimate if (and how) a ligand might traverse the tunnels.
+%The protein tunnels computed for spherical probes contain valuable information about the protein void space.
+%Based on the biochemical properties, the chemists can decide if a given tunnel is relevant and can be possibly used by a ligand to exit the protein.
+%The biochemically relevant tunnels can be then analyzed separately.
 
-The task of trajectory computation for the non-spherical ligand can be formulated as a path search 
-in the related configuration space $\C$.
-The dimension of the configuration space is given my the DOF of the ligand, i.e., 6D for a rigid and 6D + $n$ for a flexible
+This requires to compute trajectories of the non-spherical ligand in the tunnels, which can be formulated as a path planning problem in a high-dimensional configuration space $\C$.
+The configuration space is formed by all possible configurations of the ligand in the tunnel, i.e., considering its rotation, translation and possibly also other degrees of freedom responsible for the conformation changes.
+The dimension of the configuration space is given by the DOF of the ligand, i.e., 6D for a rigid ligand and 6D + $n$ for a flexible
 ligand with $n$ DOFs.
-%We propose to employ motion planning technique to determine possible trjaectories for a given ligand in the detected tunnels.
-%This can be solved by search a high-dimensional configuration space $\C$. % as both 3D translation, rotation possibly with additional DOFs caused
-%by the ligand's flexiblity need to be considered.
-%The dimension of the configuration space $\C$ is given by the degrees of freedom (6D for a solid ligand and 6D+$n$ for a flexible ligand with
-%$n$ rotational bonds).
-%The feasible configurations, where the ligand (robot) does not touch and obstacle, form the free region $\CF$.
-%The tunnel traversability can be then formulated as a path planning from the start configuration $\qinit \in \CF$ 
-%to a goal configuration $\qgoal\in\CF$, where both $\qinit$ and $\qgoal$ are located at the beginning and the end of the
-%tunnel, respectively.
-%Sampling-based methods like PRM~\cite{kavrakiPRM} or RRT~\cite{lavalleRRT} can be used to search such a path.
-The idea of sampling-based motion planning is to randomly sample the configuration space.
-The random samples are classified as free or non-free using collision detection and  the free ones are stored into a roadmap.
-A path in the roadmap then represents a motion in the workspace.
-Beyond robotics, sampling-based motion planners have been successfully applied in computational biology in studies
-related to 
-protein folding~\cite{al2012motion,gipson2012computational,amato2002using,raveh2009rapid,novinskaya2015improving,songPFintro}, analysis of loop motions~\cite{cortes2004geometric},
+Sampling-based motion planning methods~\cite{Lav06} can be used to search this high-dimensional configuration space.
+The idea of sampling-based motion planning is to randomly sample $\C$ and classify the samples as free or non-free using collision detection.
+The free samples are stored in a roadmap (a graph structures), in which a path can be searched using standard graph-search methods.
+%A path in the roadmap then represents a motion in the workspace.
+
+Sampling-based methods can cope with robots (objects) with many DOFs. 
+Flexibility of ligands (or even proteins) can be modeled using a multi-link kinematic chain, where torsional angles
+can changes~\cite{songPFpath}.
+This is useful e.g. in the protein folding studies~\cite{al2012motion,gipson2012computational,amato2002using,raveh2009rapid,novinskaya2015improving,songPFintro} or analysis of loop motions~\cite{cortes2004geometric}.
+Sampling-based methods have also been used for 
  tunnel detection~\cite{vonasek2016application,vonasek2017tunnel} and
  exit pathway computation~\cite{cortes2010simulating,guieysse2008structure}.
 %none of the existing work focuses on the trajectory generation in tunnels.
+%However, not all conformations are feasible, which has to be checked using potential energy, which is time consuming.
 
 Rapidly Exploring Random Tree (RRT)~\cite{lavalleRRT} is a single-query sampling-based motion planning method that 
 incrementally builds a configuration tree $\T$ rooted at the initial configuration $\qinit$.
-In each iteration of RRT, a random configuration $\qrand \in \C$ is generated and its nearest node in the tree $\qnear \in \T$ is found.
+In each iteration of RRT, a random configuration $\qrand \in \C$ is generated and its nearest node $\qnear \in \T$ in the tree is found.
 A new configuration $\qnew$ is constructed on the line connecting $\qnear$ and $\qrand$ in the distance $\varepsilon$.
 If $\qnew$ is collision-free, it is added to the tree.
 The algorithm terminates if the tree approaches the goal configuration close enough.
+RRT is a suitable candidate for computing the trajectories of flexible ligands due to its ability to cope
+with many-DOF systems.
+Two main issues however need to be adressed: the increased dimension of the configuration space and the narrow passage problem.
 
 %rrt for molecular: \cite{al2012motion}
 %survey \cite{gipson2012computational}
@@ -278,34 +264,48 @@ The algorithm terminates if the tree approaches the goal configuration close eno
 %protein folding~\cite{raveh2009rapid,novinskaya2015improving},
 %or protein folding combined with ligand diffusion~\cite{cortes2010simulating}.
 
-A RRT-based method for computing exit pathways for a small molecule was presented in~\cite{cortes2010simulating}.
-Both protein and ligand are represented as flexible kinematic chains.
-To decrease the dimension of the related configuration space, the RRT-ML variant~\cite{cortes2007mlrrt} is employed.
-In RRT-ML expands the tree primarily using those DOF that are essential for achieving motion of the ligand (i.e., rotation
-        and translation) and it employs the other DOFs (i.e., that are responsible for conformation change) if they hinder
-the growth of the tree.
-The RRT-ML is also used in the MoMa-LigPath online service.
 
-The~\cite{cortes2010simulating} approach aims to find any exit pathway for a given ligand, which requires
-to search the whole configuration space of the ligand/protein complex.
-This might be a possible disadvantage, as the proteins are dense structures with relatively narrow void space, which has the
-properties of the narrow passage~\cite{hannaWIS}.
+A well known issue of sampling-based planners is the narrow passage problem~\cite{hannaWIS}.
+A narrow passage is a region in the configuration space whose removal changes the connectivity of the free space.
+Narrow passages have smaller volume than other regions and it is therefore difficult to sample them dense enough using uniform distribution, that is used in the basic sampling-based planners.
+The presence of narrow passages in the configuration space, especially if they contain part of the solution, requires many iterations
+in order to put enough samples there and it consequently increases the planning time.
+The protein tunnels have the properties of the narrow passages. 
+A possible approach to cope with the narrow passage property of the protein tunnels is to use the information
+about their 3D position, which is represented by the tunnel centerline.
+The centerline can be used to guide the growth of the RRT tree through the configuration space~\cite{vonasek2009rrt,denny2016dynamic}.
+
+The kinematic chain representation used to model ligand flexibility allows the sampling-based planners to generate all possible conformations.
+However, not all of them are feasible and it is therefore necessary to verify feasibility of the given conformation based on energy, which is time consuming.
+Moreover, the additional degrees of freedom required to model the flexibility increases dimension of the configuration space.
+RRT-based planners are sensitive to the employed metric, that should consider also the flexibility-related DOFs.
+
+A RRT-based method for computing exit pathways for a small flexible molecule was presented in~\cite{cortes2010simulating}.
+To cope with the many-DOF ligands, the RRT-ML variant~\cite{cortes2007mlrrt} was employed.
+In RRT-ML expands the tree primarily using those DOF that are essential for achieving motion of the ligand (i.e., rotation
+and translation) and it employs the other DOFs (i.e., that are responsible for conformation change) if they hinder the growth of the tree.
+The approach~\cite{cortes2010simulating} may however suffer from the narrow passage problem, as it aims to find any exit pathway for a given ligand, which requires to search the whole configuration space of the ligand/protein complex.
 Although there are usually multiple pathways from a given active site, not all of them are traversable by a given ligand.
 Many iterations are needed to find a solution, which increases the computational time.
 
-The protein tunnels computed for spherical probes contain valuable information about the protein void space.
-Based on the biochemical properties, the chemists can decide if a given tunnel is relevant and can be possibly
-used by a ligand to exit the protein.
-The biochemically relevant tunnels can be then analyzed separately.
+In this paper, we propose to analyze the traversability separately for each tunnel.
+This can bring several advantages for the biochemists.
+The tunnels in a protein being studied can be computed using standard tunnel detection tools for spherical probes and assessed
+according their length, curvature, bottleneck and biochemical properties (e.g. partial charge).
+These characteristics are already used in many research studies.
+Selected promising tunnels can be further analyzed for a given ligand to determine the traversability.
+It is not necessary to first run time consuming MD simulations with both protein and ligand being studied, but it is suitable
+to detected tunnels in the protein only.
 
-In this paper, we propose to employ RRT to compute the trajectory for a given ligand in a given tunnel.
-We assume that the tunnel is computed using the standard tunnel detection tool and is represented using a sequence of spheres.
-To guide the configuration tree through the configuration space, the random samples are generated gradually using the spheres of the tunnel.
-As the tunnels are usually computed on protein models without ligands, they are usually very narrow and a ligand can barely traverse them.
-It can be assume that both the protein and the ligand adapt to each other and therefore.
-To enable the planner find a solution, the radii of the ligand, and possibly also the radii of the protein atoms, are down-scaled
-by a given factor.
+The proposed work employs the RRT planning principle with a three extensions: 
+a) the configuration space is not sampled uniformly, but using a guided sampling along the tunnel centerline,
+b) the radii of the ligand atoms are decreased, and 
+c) ligand flexibility of modeled using a set of predefined energy-suitable conformations.
+The first two extensions can help to cope with the narrow passage problem and the third modification
+is introduced in order to decrease the dimension of the configuration space and the sensitivity to the employed
+metric.
 
+\red{presunu jinam}
 This brings two important advantages: the volume of the configuration space to be searched is decreased, as not the whole
 protein/ligand complex, but only its subspace need to be searched.
 Consequently, the relative volume of the corresponding free region of the configuration space is increased, which leads to easier motion planning.
@@ -314,11 +314,6 @@ again for each ligand.
 
 %Ligands are small molecules interacting with the protein. 
 %Due to the interaction, the relative positions of the ligand's atoms can change.
-The ligands can be modeled as a multi-link kinematic chain where the torsional angles phi/psi can change in a given range~\cite{songPFpath}.
-After the torsional angles are set, 3D position of each atom of the ligand is computed.
-By changing the angles, various conformations can be generated.
-However, not all conformations are feasible, which has to be checked using potential energy, which is time consuming.
-
 
 % in cortes2005path:
 %In this paper two kinds of large-amplitude motion are treated: protein loop conformational changes (involving pro-
@@ -353,7 +348,7 @@ Proteins and ligands are represented by the hard sphere model, where the radius 
 %   can be detected as atoms located at $\alpha$-shape of the molecule.
 %The tunnels need to be found for a spherical probe $\Sprobe$ of radius $\probe$.
 The flexibility of a ligand is modeled using the set $\L$ of its conformations.
-The conformations can be prepared e.g., considering the potential energy using tools like Rosetta.
+The conformations can be prepared e.g., considering the potential energy.
 We assume that a conformation $l \in \L$ can be switched to all other conformations in $\L$.
 
 %Another approach is to model the ligand flexibility using a predefined set of feasible conformations $\L$
@@ -364,7 +359,8 @@ We assume that a conformation $l \in \L$ can be switched to all other conformati
 %The transition matrix $M$ defines the possible changes of conformations, i.e., $M(i,j)=1$ if the conformation $c_i \in C$
 %can be switched to the confomration $c_j \in C$.
 
-A protein tunnel is described by a sequence of collision-free spheres $T=( (t_i, r_i) )$, $i=1,\ldots,n$, where $n$ denotes the number of spheres,
+A protein tunnel is described by a sequence of collision-free spheres 
+$T=( (t_1, r_1),\ldots,(t_n,r_n) )$, where $n$ denotes the number of spheres,
 $t_i=(x_i,y_i,z_i)$ is their 3D position and $r_i$ denotes the maximum collision-free radius of a sphere centered at $t_i$. 
 The tunnels can be found by tunnel detection tools like CAVER 3.0~\cite{caver3}.
 
@@ -382,7 +378,7 @@ The tunnels can be found by tunnel detection tools like CAVER 3.0~\cite{caver3}.
 %13 = https://link.springer.com/article/10.1007/BF00123666
 
 The proteins are dense structures with narrow tunnels.
-Depending on the protein, the tunnel bottlenecks can be even less then $1$~\AA, which is too narrow for ligands with more than 2 atoms.
+Depending on the protein, the tunnel bottlenecks can be even less than $1$~\AA, which is too narrow for ligands with more than 2 atoms.
 For the purpose of traversability study, the atomic radii of the ligand are scaled down by a factor $s, 0 < s \le 1$.
 A discrete set of scales is used, i.e., $s \in \{\smin, \smin+\sdelta, \ldots, \smax\}$, where 
 $\smin$ is the minimal allowed scale, $\smax=1$ is the maximal allowed scale and $\sdelta$ is the minimal difference between two scales.
@@ -392,47 +388,56 @@ A configuration of the pseudoflexible ligand $q=(x,y,z,r_x,r_y,r_z,l,s)$  is des
 by the 3D position $(x,y,z)$ of the reference point of the ligand (e.g., it's geometric center), rotation around $x$, $y$ and $z$ axes,
 index of the conformation $l\in \L$ and the actual scale $s$.
 All possible configurations form the configuration space $\C$. 
-A configuration is collision-free if there is no intersection between the protein atoms and ligand atoms scaled by $s$.
+A configuration is collision-free if none of the ligand atoms scaled by $s$ and placed at the
+position defined by $q$ collide with the protein atoms.
 %The set of all feasible configurations at scale $s$ is denoted $\CFD \subseteq \C$.
 
 
 \section{Ligand traversability}
 
-The task of the traversability study is to determine if a given ligand can traverse  a given tunnel in the protein.
-The spheres representing the tunnel are used to generate the random samples for the proposed RRT-based planner.
+The traversability study proposed in this paper is achieved by computing many trajectories for the given ligand and tunnel, which
+is solved using a novel RRT-based planner.
+The main principle of the RRT planner is extended by guided sampling, scaling of the ligands atoms and using predefined set of ligand
+conformations.
+The main loop of the method is described in Alg.~\ref{alg::main}.
+%The spheres representing the tunnel are used to generate the random samples for the proposed RRT-based planner.
 %We propose a RRT-based method to compute the trajectories of the ligand.
 %As the tunnels are usually computed on proteins without ligands, their are usually very narrow and the classic RRT would
 %suffer from the well known narrow passage problem~\cite{hannaWIS}.
 %To cope with the narrow passage problem, the random samples are not generating from the whole configuration space.
 %Instead, they are generated using the spheres of the tunnel.
-The main loop of the method is described in Alg.~\ref{alg::main}.
 In each iteration, a random sample $\qrand$ is generated, its nearest node $\qnear\in\T$ in the tree is found.
 The nearest-neighbor search between the $\qrand$ and the tree is realized using the weighted 6D Euclidean metric considering
 both 3D rotation and 3D translation.
 
-To guide thee growth of the tree through the tunnel, a moving virtual goal is used~\cite{vonasek2009rrt}.
-The virtual goal $v$ is the index of a sphere, around which the random samples are generated with probability $\gb$.
+To guide tree growth of the tree through the tunnel, a moving virtual goal is used~\cite{vonasek2009rrt}.
+The virtual goal $v, 1\le v \le n$, is the index of a tunnel sphere.
+The random samples $\qrand$ are generated with probability $1-\gb$ from $\C$, otherwise they are generated
+around the virtual goal sphere $v$.
+%around which the random samples are generated with probability $\gb$.
 %The random samples are not generated only from whole $\C$, as in the original RRT, but the sampling
 %is guided using moving virtual goal~\cite{vonasek2009rrt}.
 After the tree reaches the sphere $t_v \in T$, i.e., the distance of the tree to the center of $t_v$ is
 less than a predefined threshold $\dt$, the virtual goal is moved to successor of the last sphere in the tunnel
 that is reached by the tree (lines~\ref{alg::main:a}--\ref{alg::main:b} in Alg.~\ref{alg::main}).
-Setting the virtual goal to this successor allows the tree to ``skip'' such parts of the tunnels that are
-not traversible or reachable by the ligand.
+Setting the virtual goal to this successor allows the tree to avoid such parts of the tunnels that are
+not traversable or reachable by the ligand.
+This is necessary in the dense protein structures, where it is not always possible to exactly follow the tunnel.
 The algorithm terminates after the predefined number of planning trials $\Imax$ or if the tree reaches
-the last sphere in the tunnel, i.e., when $v = N$.
+the last sphere in the tunnel, i.e., when $v = n$.
 
-The random samples $\qrand$ are generated around the virtual goal.
-The translation of $\qrand$ is generated from Normal distribution centered at $t_v$ with radius $R_v$.
-The radius $R_v$ is set as the absolute distance from the tunnel centerline, e.g. $R_v=3\AA$.
-Alternatively, $R_v$ can be set to $R_v=r_v$ according the radius of the tunnel at the virtual goal.
+To generate the samples $\qrand$ around the virtual goal $v$, the translation part $(x,y,z)$ of $\qrand$ is generated
+from $N(t_v,\Sigma)$, where $\Sigma$ is diagonal matrix with diagonal entries equal to a parameter $\rv$, and the rotational
+part of $\qrand$ is generated using techniques described in~\cite{kuffnerES}.
+The other two parameters (ligand index $l$ and scale $s$) of $\qrand$ can be left zero, as these are not used in the employed
+metric for nearest-neighbor search.
 
 \linesnumbered
 \begin{algorithm}[h]
 %\setstretch{\straa}
 \caption{\label{alg::main}main loop of the RRT planner}
 \KwIn{
-    tunnel $T=(t_i, r_i), n=1,\ldots,N$ represented by $N$ spheres,
+    tunnel spheres $t_i$ and their radii $r_i$, $i=1,\ldots,n$, 
     initial configuration $\qinit$,
     goal configuration $\qgoal$,
 }
@@ -444,24 +449,17 @@ Alternatively, $R_v$ can be set to $R_v=r_v$ according the radius of the tunnel 
     configuration tree $\T$\;
 }
 \hrule
-$v = 0$; // index of the virtual goal\\
+$v = 1$; // index of the virtual goal\\
 $iteration = 0$\;
-\While{$iteration < \Imax$ {\bf and}  $v < N$}{
+\While{$iteration < \Imax$ {\bf and}  $v < n$}{
     \eIf{$rand() < \gb$}{
         $\qrand$ = random sample around actual virtual goal $t_n \in T$\;
     }{
         $\qrand$ = random sample from $\C$\;
     }
     $\qnear$ = nearest node in $\T$ towards $\qrand$\;
-
     expand($\qnear$)\;
-
-   % \For{$q \in S$}{
-    %    $\T$.addNode($q$)\;
-    %    $\T$.addEdge($\qnear, q$)\;
-    %}
-
-    \For{$i= N-1,N-2,\ldots,v+1,v$}{ \nllabel{alg::main:a}
+    \For{$i= n-1,n-2,\ldots,v+1,v$}{ \nllabel{alg::main:a}
         $d$ = nearest node in the tree towards sphere $t_i$\;
         \If{$d < \dt $}{
             $v = i+1$; // new virtual goal found\;
@@ -480,7 +478,7 @@ scale.
 First, the maximal scale $\smax$ is tested and $m$ random samples are generated around $\qrand$ and tested for collision.
 The nearest collision-free sample towards $\qrand$ is selected and added to the tree.
 If none of the tested samples is collision-free, the scale is reduced to $\smax-\sdelta$ and the searches continues
-until a free collision-free samples is found or until the mimimal reduced-scale $\smin$ is reached.
+until a free collision-free samples is found or until the minimal reduced-scale $\smin$ is reached.
 
 The sampling-based methods are sensitive to the employed metric, especially if the objects are not symmetrical, which is the
 case of the non-spherical ligands.
@@ -489,11 +487,9 @@ that approach $\qrand$, the distance between newly generated configurations and 
 distance between an atom of the ligand placed at $q$ and the 3D position of $\qrand$ ($\da(q,\qrand)$ on line~\ref{alg::expand:a} in
         Alg.~\ref{alg::expand}).
 
-The 3D position of $q$ is generated using Normal distribution $N(0,\sigma^2)$ around $\qnear$, where $\sigma^2$ is the predefined
-parameter.
-The rotation part of $q$ is generated using $U(0,2\pi)$.
-The expansion begins with the largest scale $s$ and if less then $m$ collision-free samples are generated
-with $s$, the next lower $s$ is used.
+The random samples $q$ are generated similarly as in the case of $\qrand$ samples, only their translation
+part is generated around $\qnear$.
+The expansion begins with the largest scale $s$ and if less then $m$ collision-free samples are generated with $s$, the next lower $s$ is used.
 The expansion step is repeated for each conformation $l \in L$.
 
 
@@ -590,7 +586,7 @@ For the trajectory $t$ the ligand scale $s(P_t)$ in the tunnel part $P_t$ is def
 Then, the average ligand scale in a tunnel part is defined as $s(P) = \frac{1}{|T|} \sum_{t \in T} s(P_t)$.
 Similarly, minimum and maximum ligand scales can be defined.
   \item \textbf{Throughput} --- The probability of the ligand that it passes through a tunnel's part.
-The througput of the tunnel part $P$ is defined as a ratio of trajectories that passed $P$ over all trajectories that reached $P$.
+The throughput of the tunnel part $P$ is defined as a ratio of trajectories that passed $P$ over all trajectories that reached $P$.
 \end{itemize}
 In the visualization, these properties are mapped onto a tunnel's surface (see Fig.~\ref{fig:properties}) so that they can be visually correlated with, e.g., the tunnel's shape.
 More precisely, a point $x$ on the tunnel surface is colored according to the property value in its nearest tunnel part $P$, i.e., such part $P$ whose center is the closest to $x$ among all tunnel parts.
@@ -605,7 +601,7 @@ More precisely, a point $x$ on the tunnel surface is colored according to the pr
 \includegraphics[width=0.3\textwidth]{fig/throughput}
 \end{tabular}
 \caption{Tunnel properties mapped onto its surface.
-Left: Accessibility --- green denotes parts that were accesed by the ligand easily while red denotes parts that were accessible only in \tylde 10\% of computations.
+Left: Accessibility --- green denotes parts that were accessed by the ligand easily while red denotes parts that were accessible only in \tylde 10\% of computations.
 Middle: Ligand scale --- the average scale of the ligand was \tylde 50\% in orange parts, \tylde 60\% in yellow parts, \tylde 80\% in yellow to green parts and \tylde 100\% in green parts.
 Right: Throughput --- green denotes parts that are highly probable to be passed by the ligand while red denotes those that were hard to pass.}
 \label{fig:properties}
@@ -671,7 +667,7 @@ Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 
 \section{Discussion}
 
-guiding, parametes, different sampling, flexibility
+guiding, parameters, different sampling, flexibility
 
 \section{Conclusion }
 In the future, we will focus on the following extensions proposed by the domain experts.
@@ -1080,6 +1076,21 @@ Access to computing and storage facilities owned by parties and projects contrib
 %   Physical-based deformations can be achiebed using mass-spring and finite-element methods.
 %f-PRM~\cite{anshelevich2000deformable}, physically coreect deformations, time consuming
 
+
+%Recently, researchers started to focus on molecular dynamics simulations and study the behavior of individual tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole}.
+%Recently, researchers started to focus on molecular dynamics simulations and studying the behavior of individual 
+%tunnels over time~\cite{yaffe2008,caver3,sehnal2013mole}.
+%Molecular dynamics is represented as a sequence of frames (molecule snapshots), and the tunnels need to be detected through these frames.
+%With the increasing size of simulations the correctness of predicting the most biochemically relevant tunnel increases as well.
+%Existing solutions based exclusively on Voronoi diagrams and clustering methods are time and memory consuming
+%which also gives the limitation for the maximum number of frames which they are able to analyze.
+%In such cases, the biochemists have to select a subset of the whole simulation and perform the analysis only for this selection.
+%Such analysis however provides only a rough idea of the tunnel behavior, as important parts of the simulation can be easily omitted.
+%This opens new possibilities for alternative solutions enabling to explore the tunnels in each frame of the molecular dynamics.
+%In such cases the biochemists have to skip each n-th snapshot or select a subset of the whole simulation and perform the analysis only for this selection.
+%The properties of tunnels like bottleneck radius, their length and the surrounding residues can be used
+%to estimate suitability of the tunnel for a ligand.
+%However, such estimation still involve lot of experience.
 
 
 
