@@ -5,6 +5,7 @@
 \usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage{subfig}
 \usepackage[ruled,lined]{algorithm2e}
 \usepackage{multirow}
 \usepackage[bookmarks=false]{hyperref}
@@ -31,21 +32,23 @@
 
 
 \institute{
-    V. Von\'{a}sek, Martin Saska \at 
+    V. Von\'{a}sek, Martin Saska:
     Faculty of Electrical Engineering,  
 Czech Technical University in Prague, 
-Technick\'a 2, 166 27, Prague 6, Czech Republic
-\email{vonasek@labe.felk.cvut.cz}  
-\and
-B. Kozl\'{\i}kov\'{a}, A. Jur\v{c}\'{\i}k \at
+Technick\'a 2, 166 27 Prague, Czech Republic
+\email{vonasek@labe.felk.cvut.cz}   \\
+%\and
+B. Kozl\'{\i}kov\'{a}, A. Jur\v{c}\'{\i}k:
 Faculty of Informatics,  
 Masaryk University, 
 Botanick\'a 68a, 602 00 Brno, \\
-\and 
-David Bedn\'{a}\v{r} \at 
+%w\and 
+David Bedn\'{a}\v{r}:
 Faculty of Science,
 Masaryk University,
-Kamenice 5, 625 00 Brno
+Kamenice 5, 625 00 Brno\\
+The presented work has been supported by the Czech Science Foundation (GA{\v C}R) under research project No. 17-07690S.
+Access to computing and storage facilities owned by parties and projects contributing to the National Grid Infrastructure MetaCentrum, provided under the programme "Projects of Large Infrastructure for Research, Development, and Innovations" (LM2010005), is greatly appreciated.
 }
 
 
@@ -340,7 +343,10 @@ and for motion planning of rigid objects in among
 flexible obstacles~\cite{rodriguez2006planning,frank2008efficient,phillips2014representation}.
 
 
-\section{Preliminaries}
+%\section{Preliminaries}
+\section{Traversability in tunnels}
+
+\subsection{Preliminaries}
 
 Proteins and ligands are represented by the hard sphere model, where the radius of each sphere (atom) is given by its van der Waals radius.
 %Let $\SS \subset \mathbf{R}^3$ denote the union of all spheres, i.e., the geometry of the protein.
@@ -392,8 +398,9 @@ A configuration is collision-free if none of the ligand atoms scaled by $s$ and 
 position defined by $q$ collide with the protein atoms.
 %The set of all feasible configurations at scale $s$ is denoted $\CFD \subseteq \C$.
 
+\subsection{Motion planning}
 
-\section{Ligand traversability}
+%\section{Ligand traversability}
 
 The traversability study proposed in this paper is achieved by computing many trajectories for the given ligand and tunnel, which
 is solved using a novel RRT-based planner.
@@ -533,41 +540,34 @@ The expansion step is repeated for each conformation $l \in L$.
 %\return $S$\;
 \end{algorithm}
 
-The configuration tree can be expanded by up to $|\L|$ new configurations, as for each ligand conformation at most
-one new configuration can be added.
-The most time consuming part of the method is the collision-detection, which is called $m|\L|$ in each expansion step.
-The collision detection can be evaluated fast using hierarchical methods like OBB trees, which is implemented e.g. in the OZCollide library~\cite{ozcollide}
 
-\def\tmpa{0.16\textwidth}
+%\begin{figure}
+%\centering
+%\begin{tabular}{cccccc}
+%\includegraphics[width=\tmpa]{fig/m003-000} &
+%\includegraphics[width=\tmpa]{fig/m003-001} &
+%\includegraphics[width=\tmpa]{fig/m003-002} & 
+%\includegraphics[width=\tmpa]{fig/m003-003} & 
+%\includegraphics[width=\tmpa]{fig/m003-004} & 
+%\includegraphics[width=\tmpa]{fig/m003-005} \\
+%\includegraphics[width=\tmpa]{fig/m003-006} &
+%\includegraphics[width=\tmpa]{fig/m003-007} &
+%\includegraphics[width=\tmpa]{fig/m003-008} & 
+%\includegraphics[width=\tmpa]{fig/m003-009} & 
+%\includegraphics[width=\tmpa]{fig/m003-010} & 
+%\includegraphics[width=\tmpa]{fig/m003-011} \\
+%\end{tabular}
+%\caption{todo and maybe delete}
+%\end{figure}
+%
 
-\begin{figure}
-\centering
-\begin{tabular}{cccccc}
-\includegraphics[width=\tmpa]{fig/m003-000} &
-\includegraphics[width=\tmpa]{fig/m003-001} &
-\includegraphics[width=\tmpa]{fig/m003-002} & 
-\includegraphics[width=\tmpa]{fig/m003-003} & 
-\includegraphics[width=\tmpa]{fig/m003-004} & 
-\includegraphics[width=\tmpa]{fig/m003-005} \\
-\includegraphics[width=\tmpa]{fig/m003-006} &
-\includegraphics[width=\tmpa]{fig/m003-007} &
-\includegraphics[width=\tmpa]{fig/m003-008} & 
-\includegraphics[width=\tmpa]{fig/m003-009} & 
-\includegraphics[width=\tmpa]{fig/m003-010} & 
-\includegraphics[width=\tmpa]{fig/m003-011} \\
-\end{tabular}
-\caption{todo and maybe delete}
-\end{figure}
-
-
-\section{Visualization of results}
+\subsection{Visualization of results}
 
 The result of the proposed planning method is a tree of collision-free configurations, from which a path leading from $\qinit$
 to the nearest node towards $\qgoal$ can be found.
 Due to stochastic nature of RRT, it is not guaranteed that the tree always reached the goal configuration $\qgoal$.
 Despite, a trajectory leading as close as possible towards $\qgoal$ is extracted from the tree.
 
-To present the results to chemists ...
 
 \red{Adam: }
 As described above, our approach enables to estimate the probability that a ligand given a minimum scale passes through a tunnel.
@@ -631,18 +631,35 @@ The different line widths represent the number of trajectories in a cluster.}
 
 \section{Experimental verification}
 
-The proposed method has been used to analyze a tunnel in Haloalkane dehalogenase (protein 1CQW) (Fig.~\ref{fig::tunnel}).
+The proposed method has been used to analyze a tunnel in Haloalkane dehalogenase (protein 1CQW) (Fig.~\ref{fig::tunnel}a).
 The tunnel was computed using CAVER 3.0~\cite{caver3} for spherical probe of radius 0.9~\AA.
 The tunnel is represented by 760 spheres with average distance $0.05$~\AA.
-
 % from David: m003 je "1-chlorpropan" a m004 "1-chlorbutan"
 The traversability of the tunnel was evaluated for 1-chlorpropan (denoted as $\LA$) and 1-chlorbutan (denoted as $\LB$).
+$\LA$ was represented by 12 conformations, and $\LB$ by a set of $114$ conformations.
+Examples of three conformations are depicted in Fig.~\ref{fig::tunnel}b.
+
+The tested ligands are bigger than the tunnel with, therefore the ligands have been scaled down, and four
+different scales were used: $\smin=\{0.3,0.4,0.5,0.6\}$.
+For each of this scale, 50 collision-free initial states were found in the $2$\AA radius of the first sphere of the tunnel.
+For each ligand, each minimal scale $\smin$ and each start configuration, 100 trajectories were computed using the proposed planner.
+The parameters of the planner are: $\Imax=10000$, $m=50$, $\gb=0.9$, $\dt=1.5$\AA.
+
+The average runtimes and sizes of the build tree are shown in Tab.~\ref{tab::rrt}.
+For each trajectory
+
+\def\tmpa{0.13\textwidth}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{fig/protein-tunnel-gray}
+\begin{tabular}{cc}
+\includegraphics[width=0.38\textwidth]{fig/protein-tunnel-gray} &
+\includegraphics[width=0.5\textwidth]{fig/ligAll}  \\
+(a) & (b)                        
+\end{tabular}                       
 \caption{\label{fig::tunnel}
-    The protein 1CQW visualized using its secondary structure (gray) with its highest ranked tunnel (green) which was detected using CAVER 3.0.
+    (a) The protein 1CQW visualized using its secondary structure (gray) with its highest ranked tunnel (green) which was detected using CAVER 3.0.
+    (b) Examples of three conformations of $\LA$ (top) and $\LB$ (bottom)
 }
 \end{figure}
 
@@ -662,17 +679,20 @@ Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 
 \section{Discussion}
 
+
+
 guiding, parameters, different sampling, flexibility
+
+The configuration tree can be expanded by up to $|\L|$ new configurations, as for each ligand conformation at most
+one new configuration can be added.
+The most time consuming part of the method is the collision-detection, which is called $m|\L|$ in each expansion step.
+The collision detection can be evaluated fast using hierarchical methods like OBB trees, which is implemented e.g. in the OZCollide library~\cite{ozcollide}
+
 
 \section{Conclusion }
 In the future, we will focus on the following extensions proposed by the domain experts.
 Only ligand flexibility is included in the current algorithm but the flexibility of amino acid side-chains would greatly improve the prediction. 
 Moreover, incorporation of some scoring function for energy evaluation would introduce the characterization of not only geometrical but also physico-chemical properties and would further improve the prediction ability of our approach.
-
-\section{Acknowledgments}
-
-The presented work has been supported by the Czech Science Foundation (GA{\v C}R) under research project No. 17-07690S.
-Access to computing and storage facilities owned by parties and projects contributing to the National Grid Infrastructure MetaCentrum, provided under the programme "Projects of Large Infrastructure for Research, Development, and Innovations" (LM2010005), is greatly appreciated.
 
 
 \bibliographystyle{plain}
@@ -1087,5 +1107,10 @@ Access to computing and storage facilities owned by parties and projects contrib
 %to estimate suitability of the tunnel for a ligand.
 %However, such estimation still involve lot of experience.
 
+
+\section{Acknowledgments}
+
+The presented work has been supported by the Czech Science Foundation (GA{\v C}R) under research project No. 17-07690S.
+Access to computing and storage facilities owned by parties and projects contributing to the National Grid Infrastructure MetaCentrum, provided under the programme "Projects of Large Infrastructure for Research, Development, and Innovations" (LM2010005), is greatly appreciated.
 
 
