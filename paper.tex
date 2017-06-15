@@ -612,10 +612,15 @@ Right: Throughput --- green denotes parts that are highly probable to be passed 
 \end{figure}
 
 Moreover, we analyze the whole set of trajectories in order to convey the most important trajectories that enabled the ligand to pass or that prevented it from passing.
-In order to visualize the important trajectories we first cluster the trajectories according to their similarity. 
-\red{can you please add some details how is the similarity counted? Maybe a short description of even equation.}
-Then we choose a representant from each cluster a we visualize its trajectory in 3D using a polyline.
-\red{please some reference to the hierarchical clustering}.
+In order to visualize the important trajectories we first cluster the trajectories according to their similarity.
+We define the similarity of two trajectories as follows.
+First, we represent each trajectory $t$ by a vector $v = (x_1, x_2, ..., x_N)$ of $N$ samples where $x_i \in \mathbb{R}^3$.
+In order to obtain the samples, we find the average starting point $x_s$ of all trajectories and the most distant (w.r.t. $x_s$) ending point $x_e$ also among all trajectories.
+Using $x_s$ and $x_e$ we define spheres $S_1, ..., S_N$ such that $S_i = (x_s, r_i)$ where $r_i = i \frac{|x_s x_e|}{N + 1}$.
+Then, a vector $v$ for a trajectory $t$ is obtained such that an $i$-th sample $x_i$ in $v$ corresponds to the position in $t$ which is nearest to the surface of $S_i$.
+Finally, we define a metric $d$ for trajectories $t_i$ and $t_j$ such as $d(t_i, t_j) = \frac{1}{N} \sum_{1 \leq k \leq N} |x_k^i x_k^j|$.
+The clustering is then computed using the UPGMA clustering algorithm~\cite{sokal1958statistical}.
+When visualizing we choose a representant from each cluster a we depict its trajectory in 3D using a polyline.
 Moreover, we map the representant's cluster size onto the width of the polyline.
 In this manner, we are able to convey the information about all different trajectories together (see Fig.~\ref{fig:trajectories} right).
 
