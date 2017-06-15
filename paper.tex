@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage[ruled,lined]{algorithm2e}
 \usepackage{multirow}
 \usepackage[bookmarks=false]{hyperref}
@@ -578,19 +579,21 @@ On the other hand, the probability does not describe any details about the ligan
 Moreover, it is not feasible to directly visualize and explore the resulting trajectories due to the visual clutter (see Fig.~\ref{fig:trajectories} left) caused by their high number and close proximity.
 Therefore, we propose to extract and visualize the complex information about the ligand's passage through a tunnel.
 In this manner, we aim to further support the decision process of a chemist about a tunnel.
-In order to do that, we employ an ensemble of resulting trajectories, and we compute and visualize the following tunnel properties:
+In order to do that, we employ an ensemble of resulting trajectories $T$, and we compute and visualize the following tunnel properties:
 \begin{itemize}
   \item \textbf{Accessibility} --- The probability of the ligand that it reaches a tunnel's part.
-  \red{ i.e., number of trajectories ending in the tunnel part over all trajectories? }
-  \item \textbf{Ligand scale} --- The scale of the ligand wheh it passes a tunnel's part.
+We employ the tunnel representation from CAVER 3.0 and we define a tunnel part as a sphere $P = (x, r)$ where $x \in \mathbb{R}^3$ is sphere center and $r \in \mathbb{R}$ is radius.
+Then for each trajectory $t$ we define its ending tunnel part $P_t^e$ as a tunnel part whose center is closest to the end position of $t$.
+Finally, the accessibility of $P$ is defined as a ratio of trajectories that passed $P$ or ended in $P$ over all trajectories.
+  \item \textbf{Ligand scale} --- The scale of the ligand when it passes a tunnel's part.
+For the trajectory $t$ the ligand scale $s(P_t)$ in the tunnel part $P_t$ is defined as a scale of a such sample of $t$ whose position is the closest to the center of $P_t$.
+Then, the average ligand scale in a tunnel part is defined as $s(P) = \frac{1}{|T|} \sum_{t \in T} s(P_t)$.
+Similarly, minimum and maximum ligand scales can be defined.
   \item \textbf{Throughput} --- The probability of the ligand that it passes through a tunnel's part.
-\red{ i.e., the conditional probability we discussed in the mail?}
+The througput of the tunnel part $P$ is defined as a ratio of trajectories that passed $P$ over all trajectories that reached $P$.
 \end{itemize}
-During visualization, we map these properties onto a tunnel's surface (see Fig.~\ref{fig:properties}) so that they can be visually correlated with, e.g., the tunnel's shape.
-
-\red{can you please tell in detail how is the accesibility/ligand/throughput mapped to the tunnel surface/spheres? }
-
-
+In the visualization, these properties are mapped onto a tunnel's surface (see Fig.~\ref{fig:properties}) so that they can be visually correlated with, e.g., the tunnel's shape.
+More precisely, a point $x$ on the tunnel surface is colored according to the property value in its nearest tunnel part $P$, i.e., such part $P$ whose center is the closest to $x$ among all tunnel parts.
 
 \begin{figure}
 \centering
@@ -604,13 +607,9 @@ During visualization, we map these properties onto a tunnel's surface (see Fig.~
 \caption{Tunnel properties mapped onto its surface.
 Left: Accessibility --- green denotes parts that were accesed by the ligand easily while red denotes parts that were accessible only in \tylde 10\% of computations.
 Middle: Ligand scale --- the average scale of the ligand was \tylde 50\% in orange parts, \tylde 60\% in yellow parts, \tylde 80\% in yellow to green parts and \tylde 100\% in green parts.
-Right: Throughput --- green denotes parts that are highly probable to be passed by the ligand while red denotes those that were hard to pass.
+Right: Throughput --- green denotes parts that are highly probable to be passed by the ligand while red denotes those that were hard to pass.}
 \label{fig:properties}
-}
 \end{figure}
-
-
-\red{can you please tell in detail how is the accesibility/liugand/throughput mapped to the tunnel surface/spheres? }
 
 Moreover, we analyze the whole set of trajectories in order to convey the most important trajectories that enabled the ligand to pass or that prevented it from passing.
 In order to visualize the important trajectories we first cluster the trajectories according to their similarity. 
