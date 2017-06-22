@@ -167,23 +167,22 @@ Protein 1CQW & Active site & Detected tunnels & Example of a  \\
 \end{figure}
 
 Understanding of interactions between proteins and other small molecules is crucial in many research fields, including drug design and protein engineering. 
-These interactions are highly influence by the ability to transport the small molecule, called ligand, to the protein active site.
+These interactions are highly influenced by the ability to transport the small molecule, called ligand, to the protein active site.
 The active site can be considered as a deeply buried inner cavity with the ability to interact with the incoming ligand.
 To get the ligand to the active site, there has to be the transportation path connecting the protein outer environment with the active site.
 This paths, called tunnels, have to be wide enough and the physico-chemical properties of the surrounding amino acids have to be compatible with the ligand (Fig.~\ref{fig::motiv}).
 
-For example, one task in protein engineering is to change selected properties of a protein, e.g. its stability under different outer conditions~\cite{Koudelakova2013} or activity of the protein towards the other molecules~\cite{Pavlova2009}.
-This can be achieved by detecting and studying so called tunnels in proteins which can serve as the transportation paths for the 
-ligand from the outside environment to the active site or vice versa. 
-
 The tunnels can be detected using Voronoi diagrams~\cite{yaffe2008,caver3}.
 %The widely used tools for tunnel detection are based on Voronoi diagrams~\cite{yaffe2008,caver3}.  %or a 3D grid~\cite{sehnal2013mole,petrek2006caver}.
 The tunnels are computed assuming a spherical ligand (probe), and they are represented as a sequence of spheres.
-Bio-chemists then decide if such a tunnel can be used to transport a given ligand mainly based on the tunnel lengths and bottleneck (i.e.,
-        the radius of the smallest sphere that can traverse the whole tunnel).
+Bio-chemists decide if such a tunnel can be used to transport a given ligand mainly based on the tunnel lengths and bottleneck (i.e., the radius of the smallest sphere that can traverse the whole tunnel).
+This is used for example in protein engineering, where the task is to change selected properties of a protein, e.g. its stability under different outer conditions~\cite{Koudelakova2013} or activity of the protein towards the other molecules~\cite{Pavlova2009}.
+%The design of suitable ligands causing the desired changes can be speeded up by detecting and analyzing the tunnels leading to the active sites.
+%This can be achieved by detecting and studying so called tunnels in proteins which can serve as the transportation paths for the 
+%ligand from the outside environment to the active site or vice versa. 
+
 Typical ligands are however non-spherical and it is therefore difficult to estimate their traversability in tunnels computed for a spherical probe.
 The decision based only on the spherical tunnels requires previous expertise in the domain and yet it may be imprecise.
-
 To provide chemists more insight into the behavior of non-spherical ligands, it is necessary to compute the trajectories of the ligand considering it's shape and possibly also conformation changes, which can be formulated as a path planning problem in the a high-dimensional configuration space.
 
 In this paper, we propose a novel method for computing the trajectories of the flexible ligands in a tunnel represented by spheres.
@@ -195,8 +194,8 @@ The flexibility of the ligand is modeled using a predefined set of typical confo
 We propose novel visualization techniques for presenting the results to bio-chemists.
 The proposed method can be seen as an extension for the classic tunnel detection tools.
 
-\red{TODO}
-something about screening: what is it, what's is the input and output, in which applications (research/industry) it is useful.
+%\red{TODO}
+%something about screening: what is it, what's is the input and output, in which applications (research/industry) it is useful.
 
 
 \section{Related work}
