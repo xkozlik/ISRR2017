@@ -401,7 +401,7 @@ position defined by $q$ collides with the protein atoms.
 %The set of all feasible configurations at scale $s$ is denoted $\CFD \subseteq \C$.
 
 
-\subsection{Computing initial configuration}
+\subsection{Computing Initial Configuration}
 
 The analysis of tunnel traversability is based on computation of multiple trajectories of the ligand inside the tunnel, which
 requires to generate a set $\QI$ of collision-free initial configurations.
@@ -412,7 +412,7 @@ For each starting configuration $\qinit \in \QI$, we compute multiple trajectori
 Each trajectory is computed using a variant of RRT, which is proposed in the following section.
 
 
-\subsection{Computing single trajectory of the ligand}
+\subsection{Computing Single Trajectory of the Ligand}
 
 The trajectories are computed using an extension of the RRT~\cite{lavalleRRT} planner.
 The RRT planner is extended by guided sampling, scaling of the ligand atoms, and using a predefined set of ligand conformations.
@@ -550,22 +550,22 @@ The path $P=(q_i), q_i \in \C$ is represented as a sequence of collision-free co
 \subsection{Traversability Characteristics}
 
 The trajectories are computed for all initial configurations $\qinit \in \QI$ and for each of the starting
-configuration, multiple trajecotries are obtained.
+configuration, multiple trajectories are obtained.
 For the purpose of this paper, we compute the tunnel characteristics using all computed trajectories.
 
-A trajectory $P$ reaches the tunnel sphere $c_i \in t$ if the 3D Euclidean distances of the 
+Trajectory $P$ reaches the tunnel sphere $c_i \in t$, if the 3D Euclidean distance of the 
 nearest configuration $q \in P$ towards $c_i$ is less than $r_i$ (radius of the sphere $c_i$).
-Let $N(i)$ denote the number of trajectories, that reached $i-$th sphere of the tunnel, $i=1,\ldots,n$.
-Three basic characteristics of the tunnel are computed from the trajectories: accessibility, throughput and the scaling factor.
+Let $N(i)$ denote the number of trajectories that reached $i-$th sphere of the tunnel, $i=1,\ldots,n$.
+Three basic characteristics of the tunnel are computed from the trajectories: accessibility, throughput, and the scaling factor.
 
 The accessibility $A(i)$ of the sphere $i$ is the probability of reaching the sphere by the computed trajectories,
-i.e., $A(i)=N(i) / N$, where $N$ is the total number of all trajectories.
-The accessibility  shows how probable is to pass the tunnel upto the sphere $i$.
+i.e., $A(i)=N(i) / N$, where $N$ is the total number of trajectories.
+The accessibility  shows how probable is to pass the tunnel up to the sphere $i$.
 The  ligand passage may however be strongly affected by the first bottleneck, so the parts of the tunnel located behind
 the bottleneck have low accessibility.
 
-To better measure how probable is to pass a tunnel part, we should take into account only trajectories, that even have chance
-to visit it, e.g. the trajectories that reached the preceding tunnel part.
+To better measure the probability of passing a given tunnel part, we should take into account only trajectories that even have chance
+to visit this part, e.g., the trajectories that reached the preceding tunnel part.
 The throughput $T(i)$ is the ratio of trajectories that passed sphere $i$ (i.e., visited sphere $i+1$) and reached the sphere $i$,
 i.e, $T(i) = N(i+1) / N(i)$. 
 The throughput is not computed for the last sphere ($i=N$).
@@ -578,11 +578,11 @@ The throughput shows a local accessibility of the tunnel parts.
 %On the other hand, the probability does not show any details about the ligand's passage, e.g., how complicated it is to pass through some part of the tunnel, which trajectory is the most used one, etc.
 %Moreover, it is not feasible to directly visualize and explore the resulting trajectories due to the visual clutter (see Fig.~\ref{fig:trajectories} left) caused by their high number and close proximity.
 
-The proposed planner is allowed to scale down radii of the ligand up to the scale $\smin$. 
-It can be expected, that narrow parts of the tunnels are more often passed with a more scaled down ligand, than
+The proposed planner is allowed to scale down the radii of ligand spheres up to the allowed scale $\smin$. 
+It can be expected, that narrower parts of the tunnel are more often passed with a more scaled-down ligand than
 the wider parts.
 Ligand scale $L(i)$ at the tunnel sphere $i$ is the average scale of ligand that reaches the sphere $i$.
-The ligand scale is computed as the average value of scales of nearest configurations of the trajectories towards tunnel sphere
+The ligand scale is computed as the average value of scales of the nearest configurations of the trajectories towards tunnel sphere
 $i$.
 
 %--- The scale of the ligand when it passes a given tunnel's part.
@@ -594,7 +594,7 @@ $i$.
 \subsection{Visualization of Results}
 
 %In order to fursupport the tunnel exploration process performed by biochemists.
-The computed properties of the tunnel are presented visually by mapping the accessibility, throughput and scale to the sphere representation
+The computed properties of the tunnel are presented visually by mapping the accessibility, throughput, and scale to the sphere representation
 of the tunnel (Fig.~\ref{fig:properties}) using a color map.
 Alternatively, the surface representation can be used to visualize the tunnel.
 In this case, a 3D point on the tunnel surface is colored according to the property value in its nearest tunnel part $i$,  i.e., such part $i$ whose center $t_i$ is the closest to the point among all tunnel parts.
@@ -616,15 +616,15 @@ In this case, a 3D point on the tunnel surface is colored according to the prope
 }
 \end{figure}
 
-The mapping using colors helps to identify difficult part of the tunnels, but it is also necessary to show the raw trajectories.
+The mapping using colors helps to identify difficult parts of the tunnel, but it is also necessary to show the original trajectories.
 This is necessary for example if the trajectories detour from a part of the tunnel.
-The na\"{i}ve visualization of all trajectories is possible, but too slow if the number of trajectories is in the order of thousands.
+The na\"{i}ve visualization of all trajectories is possible, but too slow if we are dealing with thousands of trajectories.
 
 In order to visualize the most typical trajectories, we cluster the trajectories according to their similarity.
 The number of configurations in the trajectories usually differ due to the stochastic nature of RRT and it also depends on the
 initial configurations.
 
-To compare two trajectories (which are sequence of configuration in the configuration space), they are first converted
+To compare two trajectories (which are sequences of configurations in the configuration space), we first convert them
 to a vector $v=(x_1,x_2,\ldots,x_M)$, where $x_i \in \R^3$ is a 3D
 point representing the trajectory and $M$ is the parameter determining how precisely we want to represent the trajectories.
 To obtain the vector $v$ for a given trajectory $P$, first a set of spheres 
