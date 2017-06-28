@@ -181,16 +181,29 @@ This is used for example in protein engineering, where the task is to change sel
 %This can be achieved by detecting and studying so called tunnels in proteins which can serve as the transportation paths for the 
 %ligand from the outside environment to the active site or vice versa. 
 
-However, ligands are typically of non-spherical shape and it is therefore difficult to estimate their traversability in tunnels computed for a spherical probe.
+Whereas the tunnel computation is already well established research field, the simulation of ligand transportation through the detected tunnels is rather new field.
+Ligands are typically of non-spherical shape and it is therefore difficult to estimate their traversability in tunnels computed for a spherical probe.
 The decision based only on spherical tunnels requires previous expertise in the domain and yet it may be imprecise.
 To provide biochemists with better insight into the behavior of non-spherical ligands, it is necessary to compute the trajectories of the ligand considering its shape and possibly also conformation changes, which can be formulated as a path planning problem in the a high-dimensional configuration space.
+
+The flexibility of the ligand is modeled using a predefined set of typical conformations.
+The conformation changes of protein amino acids and ligand are represented by so called rotamers, stored in different rotamer libraries (e.g., Dunbrack library~\cite{dunbrack}).
+Rotamers differ in the angles between their atoms.
+Possible rotamer conformations correspond to energetically and geometrically favorable positions.
 
 In this paper, we propose a novel method for computing the trajectories of flexible ligands in a tunnel represented by spheres.
 The proposed work is based on the sampling-based Rapidly Exploring Random Tree (RRT)~\cite{lavalleRRT} planner, which
 can deal with many-DOF objects of arbitrary geometry.
 The random samples for RRT are generated using the spheres representing the tunnel in order to guide the configuration tree through the search space.
 To make the transportation easier, a scaled-down version of the ligand is used, similarly, e.g., to~\cite{cortes2005path}.
-The flexibility of the ligand is modeled using a predefined set of typical conformations.
+This solution is common also in different types of calculations, e.g.~\cite{kellogg}. 
+It helps to keep also potential solutions which do not fit to the geometric restrains but can be still feasible because of the physico-chemical properties.
+This strategy helps to overcome the limitations of the conformational discretation introduced by the rotamer approximation.
+
+Our method helps the biochemists to perform so called virtual screening, where they test the traversability of a ligand through a given tunnel.
+In order to predict the success of traversability, the virtual screening performs hundreds of thousands of tests and checks if the ligand passed through the tunnel.
+The advantage of our method is that we can search the ligand path inside a specific tunnel which substantially decreases the computational time and resources.
+
 We further propose novel visualization techniques for presenting the results to biochemists.
 The proposed method can be seen as an extension for the traditionally used tunnel detection tools.
 
