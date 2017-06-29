@@ -69,6 +69,7 @@ Access to computing and storage facilities owned by parties and projects contrib
 \def\da{d_{atom}}
 \def\R{\mathbb{R}}
 \def\QI{Q_{init}}
+\def\RI{R_{init}}
 
 \def\rv{T_w}
 
@@ -79,9 +80,6 @@ Access to computing and storage facilities owned by parties and projects contrib
 \def\dists{\mathrm{dist}_{\mathrm{s}}}
 
 \SetKw{return}{return}
-
-\def\VV{V_{vor}}
-\def\VVA{V_{vor}^{act}}
 
 \def\smin{s_{min}}
 \def\smax{s_{max}}
@@ -127,7 +125,7 @@ On the other side, MD simulations are too slow for a daily routine.
 Many degrees of freedom need to be considered in order to analyze the traversability, which motivates us to employ robotic motion planning tools.
 In this paper, we propose to evaluate the tunnels using based on ligand trajectories computed by motion planning, namely using
 Rapidly Exploring Random Tree (RRT).
-We propose novel modifications to RRT in order to compute the trajectories around the tunnel and also to consider the flexibility of the ligand.
+We propose several modifications to RRT in order to compute the trajectories around the tunnel and also to consider the flexibility of the ligand.
 We also introduce several approaches for visualization of the resulting trajectories which depict valuable information about various properties and behavior of the ligand.
 The goal of the paper is to show that motion planning can provide additional insight about tunnel properties, being
 less computationally demanding than the MD simulations.
@@ -385,12 +383,12 @@ The tunnels can be found by tunnel detection tools like CAVER 3.0~\cite{caver3}.
 %knowledge-based methods have also been used.[17]
 %13 = https://link.springer.com/article/10.1007/BF00123666
 
-The proteins are dense structures with narrow tunnels.
+The proteins are dense structures and the tunnels are typically narrow.
 Depending on the protein, the tunnel bottlenecks can be even less than $1$~\AA, which is too narrow for ligands with more than 2 atoms.
 For the purpose of traversability study, the atomic radii of the ligand are scaled down by a factor $s, 0 < s \le 1$.
 A discrete set of scales is used, i.e., $s \in \{\smin, \smin+\sdelta, \ldots, \smax\}$, where 
 $\smin$ is the minimal allowed scale, $\smax=1$ is the maximal allowed scale and $\sdelta$ is the minimal difference between two scales.
-This scaling technique is used also in other tools like MoMa-LigPath~\cite{cortes2005path}.
+The scaling-down  technique is used also in other tools like MoMa-LigPath~\cite{cortes2005path}.
 
 A configuration of the pseudoflexible ligand $q=(x,y,z,r_x,r_y,r_z,l,s)$  is described
 by the 3D position $(x,y,z)$ of the reference point of the ligand (e.g., its geometric center), rotation around $x$, $y$, and $z$ axes,
@@ -405,31 +403,39 @@ position defined by $q$ collides with the protein atoms.
 
 The analysis of tunnel traversability is based on computation of multiple trajectories of the ligand inside the tunnel, which
 requires to generate a set $\QI$ of collision-free initial configurations.
-A sample $q$ is created by generating its translation part randomly around $c_1$ in the distance $R$.
-The rotation part of $q$ and the conformation index are set randomly, the scale is set to $\smin$.
+In this paper we assume that the ligand has to travel from the begining to the end of the tunnel.
+As the tunnel are computed for a spherical probe, the ligand may not fit exactly to the first sphere of the tunnel.
+The initial configurations have to be searched around the first sphere of the tunnel.
+To find a new initial configuration, a random sample $q$ is generated around $c_i$ in the distance $\RI$ (translation and rotation
+ parts of $q$ are generated randomly, the scale is set to $\smin$ and the conformation index is set randomly).
 If the sample $q$ is collision-free, it can be considered as a new starting configuration, so $q$ is added to $\QI$.
-For each starting configuration $\qinit \in \QI$, we compute multiple trajectories.
-Each trajectory is computed using a variant of RRT, which is proposed in the following section.
+For each starting configuration $\qinit \in \QI$,  $K$ trajectories are created.
+Each trajectory is computed using a modified RRT, which is introduced in the following section.
 
 
 \subsection{Computing Single Trajectory of the Ligand}
 
-The trajectories are computed using an extension of the RRT~\cite{lavalleRRT} planner.
-The RRT planner is extended by guided sampling, scaling of the ligand atoms, and using a predefined set of ligand conformations.
-The main loop of the method is described in Alg.~\ref{alg::main}.
+The task of the trajectory computation is to find a trajectory for the given ligand in the given tunnel, which can be solved
+using RRT~\cite{lavalleRRT}.
+The original RRT is exnteded to cope with specific requirmeents needed for traversability of ligands.
+First, the trajectory has to be found around the given tunnel, but deviation from the tunnel centerline are allowed.
+We assume, that the distance of the ligand from the tunnel centerline is at most $\rv$.
+Due to this requirement, sampling process of RRT has to be adapted in order to follow the tunnel, and to prevent
+construction of trajectories in the rest of the protein.
+The other modifications aim to cope with various scales of the ligand and multiple conformations,
+
+The main loop of the proposed method is described in Alg.~\ref{alg::main}.
 In each iteration, a random sample $\qrand$ is generated and its nearest node $\qnear\in\T$ in the tree is found.
 The nearest-neighbor search between the $\qrand$ and the tree is performed using the weighted 6D Euclidean metric considering
 both 3D rotation and 3D translation.
 
 To guide the growth of the tree through the tunnel, a moving virtual goal is used~\cite{vonasek2009rrt}.
 The virtual goal $v, 1\le v \le n$, is the index of sphere of the tunnel.
-The random samples $\qrand$ are generated with probability $1-\gb$ from $\C$, otherwise they are generated
-around the sphere $t_v \in T$.
+The random samples $\qrand$ are generated with probability $1-\gb$ from $\C$, otherwise they are generated around the sphere $t_v \in T$.
 After the tree reaches the sphere $t_v$, i.e., the distance of the tree to the center of $t_v$ is
 less than a predefined threshold $\dt$, the virtual goal is moved to successor of the last sphere in the tunnel
 that is reached by the tree (lines~\ref{alg::main:a}--\ref{alg::main:b} in Alg.~\ref{alg::main}).
-Setting the virtual goal to this successor allows the tree to avoid such parts of the tunnels that are
-not traversable or reachable by the ligand.
+Setting the virtual goal to this successor allows the tree to avoid such parts of the tunnels that are not traversable or reachable by the ligand.
 This is necessary in the dense protein structures, where it is not always possible to exactly follow the tunnel.
 The algorithm terminates after a predefined number of planning trials $\Imax$ or if the tree reaches
 the last sphere in the tunnel, i.e., when $v = n$.
@@ -481,24 +487,23 @@ $iteration = 0$\;
 
 
 The core of the proposed method is the expansion procedure (Alg.~\ref{alg::expand}) which generates new collision-free nodes around $\qnear\in\T$.
-For each ligand conformation $l \in \L$, the expansion procedure attempts to find a new collision-free configuration around $\qnear$ with a maximal
-scale.
+For each ligand conformation $l \in \L$, the expansion procedure attempts to find a new collision-free configuration around $\qnear$ with a maximal scale.
 First, the maximal scale $\smax$ is tested and $m$ random samples are generated around $\qrand$ and tested for collision.
 The nearest collision-free sample towards $\qrand$ is selected and added to the tree.
 If none of the tested samples is collision-free, the scale is reduced to $\smax-\sdelta$ and the search continues
 until a collision-free sample is found or until the minimal reduced-scale $\smin$ is reached.
+The random samples are generated similarly as in the case of $\qrand$ samples, only their translation
+part is generated around $\qnear$.
 
 The sampling-based methods are sensitive to the employed metric, especially if the objects are not symmetrical, which is the
 case of the non-spherical ligands.
 To consider the actual shape of the ligand (which is different in each conformation) and to allow finding such configurations
 that approach $\qrand$, the distance between newly generated configurations and $\qrand$ is measured as the smallest
-distance between an atom of the ligand placed at $q$ and the 3D position of $\qrand$ ($\da(q,\qrand)$ on line~\ref{alg::expand:a} in
-        Alg.~\ref{alg::expand}).
-
-The random samples $q$ are generated similarly as in the case of $\qrand$ samples, only their translation
-part is generated around $\qnear$.
-The expansion begins with the largest scale $s$ and if less than $m$ collision-free samples are generated with $s$, the next lower $s$ is used.
-The expansion step is repeated for each conformation $l \in L$.
+3D distance between an atom of the ligand placed at $q$ and the 3D position of $\qrand$ ($\da(q,\qrand)$ on line~\ref{alg::expand:a} in
+Alg.~\ref{alg::expand}).
+By computing the distance between the nearest atoms, the shape of the ligand is actually considered.
+As the expansion routine attemts to find such sample that minimizes this distance to $\qrand$, it supports retraction
+of the ligand towards $\qrand$.
 
 
 \begin{algorithm}[h]
@@ -540,6 +545,8 @@ The expansion step is repeated for each conformation $l \in L$.
 }
 %\return $S$\;
 \end{algorithm}
+
+
 
 The result of each planning trial is the tree $\T$ of collision-free configurations.
 The path between $\qinit$ (root of the tree) and $q'$, where $q'$ is the nearest node in the tree towards $\qgoal$, is found in the tree.
@@ -833,42 +840,6 @@ Moreover, incorporation of some scoring function for energy evaluation would int
 %The tunnels change with the protein dynamics as well: their width and position change, they can merge with other tunnels or even disappear.
 %The free region $\CF$ is therefore different in each frame, as positions of atoms change.
 %For the sake of simplicity, a single notation $\C$ resp. $\CF$ is used in this paper and it is valid for the frame being processed.
-
-%Approximated WVD diagram of the atoms is computed by representing each atom using 12 balls of equal radii and computing ordinary Voronoi diagram.
-%Computing WVD this way is more efficient and numerically stable and it is used also in other related tools~\cite{caver3,yaffe2008}.
-%Vertices of this WVD are filtered out if their distance to an atom is less than probe radius $\probe$.
-%Let $\VV$ contain the remaining Voronoi vertices, and let $r_v \in \VV$ denote the distance to the nearest atom.
-%The remaining Voronoi vertices $\VV$ of the WVD and their distances $r_v, v\in \VV$ to the nearest atom are then used in the following method.
-
-%A possible solution is to estimate the location of narrow passages from the knowledge of the workspace and generate more samples in the difficult areas.
-%For Probabilistic Roadmaps~\cite{kavrakiPRM}, this can be achieved simply by generating more samples in the difficult areas, e.g. along
-%medial axis~\cite{wilmarthMAPRM,foskey01hybrid,guibas1999probabilistic,hoff2000interactive,yang2004adapting}.
-%This requires to precompute the medial axis, which can be time consuming.
-%Another approach is to shift the random samples towards the medial axis~\cite{amatoOBPRM} or into a direction of estimated
-%medial axis~\cite{hollemanMAPRM}.
-%Generating random samples in difficult regions however does not ensure construction of a better tree in the case of RRT-based methods. 
-%In RRT, the configuration tree is expanded in the direction of random samples, but the obstacles may prevent to reach them closely~\cite{vonasekphd}.
-%Increased probability of sampling in a given region, e.g., in a narrow passage, 
-%brings advantage only if the tree is close to the region and if it can reach it.
-%it is necessary to maintain the sampling regions according the progress of the tree.
-%For example, random samples can be generated along a given workspace path~\cite{vonasek2009rrt}.
-%After the tree reaches a path point, the sampling around the point is disabled and moved to the next point of 
-%the path.
-%Similar approach is used in~\cite{denny2014marrt}, where the sampling regions are maintained with a grapth describing topology 
-%of the workspace.
-%OB-RRT~\cite{amatoOBRRT} defines several types of tree expansions
-%steps based on information about obstacles (e.g. using vectors of obstacles, tangential vectors and information about medial axis).
-
-%~\cite{amatoOBPRM,hollemanMAPRM} shift random samples towards medial axis of the environment, which helps to sample
-%narrow passages more densely. 
-%For example, the random samples generated in the configuration space can be shifted
-%towards the medial axis of the environment~\cite{amatoOBPRM,hollemanMAPRM} or even generated around the medial 
-%axis~\cite{wilmarthMAPRM,foskey01hybrid,guibas1999probabilistic,hoff2000interactive,yang2004adapting}.
-%The paper~\cite{amatoOBPRM} suggests to sample uniformly in the configuration space and shift the samples towards the medial axis.
-%Another approach is to generate the samples randomly in \CS\ and shift them closer to the medial axis~\cite{amatoOBPRM}.
-%The medial axis can be computed exactly using GVD.
-%While the medial axis can be easily computed for 2D or 3D workspaces using GVD, its computation become complicated in many dimensions.
-%In such case, the samples can be generated uniformly from the whole \CS\ and moved in an estimated direction towards the medial axis~\cite{hollemanMAPRM}.
 
 
 
