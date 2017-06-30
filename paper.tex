@@ -578,8 +578,7 @@ nearest configuration $q \in P$ towards $c_i$ is less than $r_i$ (radius of the 
 Let $N(i)$ denote the number of trajectories that reached $i-$th sphere of the tunnel, $i=1,\ldots,n$.
 Three basic characteristics of the tunnel are computed from the trajectories: accessibility, throughput, and the scaling factor.
 
-The accessibility $A(i)$ of the sphere $i$ is the probability of reaching the sphere by the computed trajectories,
-i.e., $A(i)=N(i) / N$, where $N=K|\QI|$ is the total number of trajectories.
+The accessibility $A(i)=N(i)/N$ of the sphere $i$ is the probability of reaching the sphere $i$, where $N=K|\QI|$ is the total number of trajectories.
 The accessibility shows how probable it is to pass the tunnel up to the sphere $i$.
 Obviously, the most important is $A(n)$ of the last sphere of the tunnel, which can be considered as the overall difficulty of the tunnel.
 The  ligand passage may however be strongly affected by the first bottleneck, so the parts of the tunnel located behind
@@ -614,10 +613,13 @@ Ligand scale $L(i)$ at the tunnel sphere $i$ is the average scale of ligand that
 \subsection{Visualization of Results}
 
 %In order to fursupport the tunnel exploration process performed by biochemists.
-The above defined characteristics can be shown even as a graph, or better, presented visually by mapping then using colors to the tunnel spheres.
+The above defined characteristics can be shown even as a graph, or better, presented visually by mapping them using colors to the tunnel spheres.
  Alternatively, the surface representation can be used to visualize the tunnel.
 In this case, a 3D point on the tunnel surface is colored according to the property value in its nearest tunnel part $i$,  i.e., such part $i$ whose center $c_i$ is the closest to the point among all tunnel parts.
-Examples of color mapping are shown in Fig.~\ref{fig:properties}.
+
+The examples of the color mapping are shown in Fig.~\ref{fig:properties}.
+The accessibility (Fig.~\ref{fig:properties}a) shows that more than the half of the tunnel is not accessible (red part of the tunnel).
+The throughput shows (Fig.~\ref{fig:properties}b) that the only difficult is the part around the bottleneck (red color in Fig.~\ref{fig:properties}b), and the second half of the tunnel is also traversible.
 
 \begin{figure}[h]
 \centering
@@ -643,22 +645,21 @@ Examples of color mapping are shown in Fig.~\ref{fig:properties}.
 \def\cend{\overline{c_{end}}}
 
 Besides the color mapping, it is also necessary to show the computed trajectories.
-This is useful, for example, to find out in which part of the tunnel the trajectories detour.
+%This is useful, for example, to find out in which part of the tunnel the trajectories detour.
 Simple visualization of all trajectories could however be too slow for an interactive work.
 Therefore, the trajectories are first clustered and then only the clusters are visualized.
 Due to different lengths of the trajectories, they are first converted to a normalized form.
 Let $\cstart$ represent the average starting position of all trajectories and let $d_{max}$ be the 3D Euclidean distance
-of the most distant configuration from $\cstart$ from all trajectories.
-A set of $M$ spheres centered at $\cstart$ are created with radii $r'_i=i {d \over M}$, where $i=0,\ldots, M-1$.
+of the most distant configuration from $\cstart$ amongst all trajectories.
+A set of $M$ spheres centered at $\cstart$ are created with radii $r'_i=i {d_{max} \over M}$, where $i=0,\ldots, M-1$.
 The trajectory $P=(q_1,\ldots,q_n)$ of length $n$ is represented by the normalized vector $v=(x_1,\ldots,x_M)$ of length $M$,
 where $x_i$ is the 3D position of the nearest configuration $q \in P$ to the surface of the $i$-th sphere with the radius $r'_i$.
 The distance between two normalized trajectories $v_i$ and $v_j$ is defined as
 $d(v_i, v_j) = \frac{1}{M} \sum_{1 \leq k \leq N} |x_k^i x_k^j|$.
 This distance is used in the UPGMA clustering technique~\cite{sokal1958statistical}.
-
-The trajectories are then visualized using a representative of each cluster.
-The number of trajectories in each cluster is represented by the width of the polyline.
-In this manner, we are able to convey the information about all different trajectories together (see Fig.~\ref{fig:trajectories} right).
+The trajectories can be visualized using a representative of each cluster.
+The number of trajectories in each cluster is represented by the width of the polyline (Fig.~\ref{fig:trajectories}).
+%In this manner, we are able to convey the information about all different trajectories together (see Fig.~\ref{fig:trajectories} right).
 
 \begin{figure}
 \centering
@@ -667,9 +668,10 @@ In this manner, we are able to convey the information about all different trajec
 \includegraphics[width=0.4\textwidth]{fig/trajectories-clustered-21} \\
 (a) & (b) \\                       
 \end{tabular}
-\caption{Visualization of the resulting trajectories. The tunnel begins in the top left corner.
+\caption{Visualization of the trajectories. The tunnel begins in the top left corner.
 (a) All trajectories ($\sim5000$) colored according to whether they reached the end of the tunnel (green) or not (red). 
-(b) Trajectories clustered according to their proximity colored by distinct colors.
+(b) Visualization using clusters of trajectories. 
+%Trajectories clustered according to their proximity colored by distinct colors.
 %The different line widths represent the number of trajectories in a cluster.
 \label{fig:trajectories}
 }
@@ -680,31 +682,33 @@ In this manner, we are able to convey the information about all different trajec
 
 \section{Experimental Verification}
 
-The proposed approach has been used to analyze tunnels in Haloalkane dehalogenase protein (PDB ID 1CQW) (Fig.~\ref{fig::tunnel}a).
-Three tunnels were detected using CAVER 3.0~\cite{caver3} for the spherical probe of radius 0.9~\AA.
-The traversability of the first tunnel (represented by $n=76$ spheres), was evaluated for 1-chlorpropan (denoted as $\LA$) with 11 atoms and 
+The tunnels in Haloalkane dehalogenase protein (PDB ID 1CQW) has been analyzed using the proposed approach.
+Three tunnels were detected using CAVER 3.0~\cite{caver3} for the spherical probe of radius 0.9~\AA (Fig.~\ref{fig::tunnel}a).
+The traversability was evaluated for 1-chlorpropan (denoted as $\LA$) with 11 atoms and 
 % from David: m003 je "1-chlorpropan" a m004 "1-chlorbutan"
 and 1-chlorbutan (denoted as $\LB$) with 14 atoms.
 $\LA$ was represented by 12 conformations, and $\LB$ by a set of $114$ conformations.
 Examples of three conformations of $\LA$ and $\LB$ are depicted in Fig.~\ref{fig::tunnel}b.
+Further information about the experiments can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 
-Both tested ligands have more than 10 atoms and therefore they cannot fit into the tunnel of with 0.9~\AA.
-To find collision-free trajectories, the radii of ligands have to be scaled down. 
+Both tested ligands have more than 10 atoms and therefore they cannot fit into the tunnel of with 0.9~\AA, so
+the radii of ligands were scaled down. 
 Four different scaling-down factors were used: $\smin=\{0.3,0.4,0.5,0.6\}$.
 No trajectories were found for $\smin > 0.6$.
 For each scale, 50 collision-free initial configurations were found in the $\RI=2$\AA\ radius around the first sphere of the tunnel.
 For each ligand, each minimal scale $\smin$ and each initial configuration, 100 trajectories were computed using the proposed planner.
 The parameters of the planner were: $\Imax=10,000$, $m=50$, $\gb=0.9$, $\dt=1.5$\AA, $\rv=2$~\AA.
-For each initial configuration, the success rate is computed as the ratio of trajectories that reached the end of the tunnel (to the distance $\rv$ or less) over 100 trials.
+For each initial configuration, the success rate is computed as the ratio of trajectories that reached the end of the tunnel (to the distance 
+ $\rv=2$~\AA or less) over 100 trials.
 
-The average runtimes and sizes of the built trees are shown in Tab.~\ref{tab::rrt}.
-The tables also show the minimal, maximal success rate, and the average success rate.
-The average success rate is computed as the average value of the success rates achieved for all 50 initial configurations.
-
-The highest average success rate is achieved for the most scaled-down ligands ($\smin=0.3$) and it decreases with the increasing $\smin$. 
-The minimal and maximal success rates indicate how the initial position of the ligand influence the ability to pass the tunnels.
-The ligand $\LB$, which was represented by more conformations than $\LA$, has higher minimal and also average success rate, which
-indicates that the flexibility is important for the tunnel traversability.
+The average runtimes, success rates and sizes of the built trees for the first tunnel are shown in Tab.~\ref{tab::rrt}.
+The highest average success rate wasv achieved for the most scaled-down ligands ($\smin=0.3$) and it decreases with the increasing $\smin$. 
+The difference between the minimal and maximal success rates indicates how the initial configurations of the ligand influence the ability to pass the tunnels.
+For example, the most difficult initial configuration of $\LA$ and $\smin=0.3$ lead to success rate 78~\% (the easiest 
+        initial configuration lead to success rate $100$~\%), but for the scale $\smin=0.4$, the worst success rate is
+only $42$~\% and the best 96~\%.
+The traversability of larger ligands ($\smin=0.4$ vs. $\smin=0.3$) is therefore more sensitive to the initial configuration.
+This shows the importance of testing the traversability from multiple initial configurations.
 The runtime is significantly higher for the $\LB$ ligand, which is caused by the larger number of conformations that need to be
 examined in each expansion.
 
@@ -753,14 +757,14 @@ examined in each expansion.
 
 
 Trajectories for $\LA$ in all detected tunnels were classified as successful if they reached the last sphere of the tunnel
-to distance $\dt=2$~\AA) and they are considered unsuccessful otherwise.
+to distance $\dt=2$~\AA and they were considered unsuccessful otherwise.
 The throughput computed from the trajectories shows that the tunnels are difficult not only around bottlenecks, but
 also in other places.
-The comparison of classic bottleneck and throughput is depicted in Fig.~\ref{fig::tunnel2}a.
+The comparison of the classic bottleneck (i.e., measured by the radius of spherical probe) and throughput is depicted in Fig.~\ref{fig::tunnel2}a.
 The trajectories for $\smin=0.4$ are depicted in Fig.~\ref{fig::tunnel2}b and for $\smin=0.5$ in Fig.~\ref{fig::tunnel2}c.
 The successful trajectories for $\smin=0.4$ reveals that the end of the tunnel No. 3 can be approached by two different pathways.
 The detail of this pathway is depicted in Fig.~\ref{fig::detail}.
-Despite the low bottleneck of this tunnel, the ligand may reach its end using an alternative path way. 
+Despite the low bottleneck of this tunnel, the ligand may reach its end using the alternative path way. 
 This shows the strength of the analysis based on the trajectories and not only on the geometric bottlenecks.
 
 \begin{figure}
@@ -812,24 +816,24 @@ This shows the strength of the analysis based on the trajectories and not only o
 
 The computed trajectories cannot be considered as `real', they should rather be considered as a hint for the biochemists.
 One of the reason is that the trajectories are computed inside a static protein and static tunnels.
-Real proteins are dynamic structures and consequently also the tunnels are dynamic: their move, merge or even disappear due to motions of protein atoms.
-Contrary, usually static tunnels are used in protein engineering, or 
-multiple tunnels are detected separately in each frame of molecular dynamics and the tunnels are then aggregated to a single one.
-Despite this simplification, researches claim that static tunnels help in their research.
+Real proteins are dynamic structures and consequently also the tunnels are dynamic: they move, merge or even disappear due to motions of protein atoms.
+Contrary, usually static tunnels are used in protein engineering.
+%multiple tunnels are detected separately in each frame of molecular dynamics and the tunnels are then aggregated to a single one.
+Despite such a simplification, researches often used information about the static tunnels  to estimate the possibility of chemical reactions
+at the active sites.
 
 The second limitation is caused by the utilization of scaled-down ligands.
 The protein atoms tend to fill the internal void space therefore the tunnels identified inside proteins without ligand tend
 to be very narrow.
 To enable at least some motion of the ligands inside such narrow tunnels, the scaling-down of the ligand atoms is necessary.
 It is used also in other related tool, e.g.~\cite{cortes2005path}.
-By allowing more aggressive scaling-down, more easier a trajectory can be found.
-The tunnels therefore should be always evaluated considering various minimal scales.
+%By allowing more aggressive scaling-down, more easier a trajectory can be found.
+%The tunnels therefore should be always evaluated considering various minimal scales.
 
-Due to the above reasons, the computed trajectories can be considered as too optimistic
-(e.g. because they are computed on such a tunnel that is wide, but will be closed due to molecular dynamics),
-or too pessimistic (e.g. the trajectory is not found because of narrow passage around the tunnel, which can in fact be
-opened in molecular dynamics).
-
+Due to these reasons, the computed trajectories can be considered either as too optimistic
+(e.g. because they are computed on a wide tunnel that can be in fact closed due to molecular dynamics),
+or too pessimistic (e.g. the trajectory is not found because of narrow passage around the tunnel, which can be 
+opened due to the molecular dynamics).
 Despite these limitations, testing the tunnel traversability using motion planning technique can provide chemists more information
 than the simple bottleneck radius, which is used nowadays.
 For example, possible detours from the tunnel can be identified, which suggest that even a tunnel with a small
@@ -842,13 +846,11 @@ bottleneck can be traversed (Fig.~\ref{fig::detail}).
 
 The proposed planner is very simple and it can be improved in many ways: by using a less aggressive scaling-down technique (in order
 to obtain better trajectories) or by using only a subset of conformations and a better expansion (in order to speed it up).
-Having a better planner (in the term of speed or even success rate) however does not mean that the resulting trajectories will help the biochemists more.
+Having a better motion planner (in the term of the speed or even success rate) however does not automatically mean that the resulting trajectories will help the biochemists more.
+The presented work shows possible advantages of the analysis based on ligand trajectories.
+By comparing the planned trajectories with trajectories observed in MD simulations, thresholds for the success rate or minimal tunnel throughput can be set, which will help biochemists to make decisions.
 
-For a daily and practical utilization of here proposed idea, it is 
-necessary to compare trajectories from existing MD simulations with the trajectories obtain using motion planning and find
-suitable parameters and thresholds (e.g. about the throughput) that will be used for making decisions.
 
-Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 
 %The runtime of the planner is currently given mainly by the collision-detection.
 %As the ligand is assumed to travel only along the tunnel centerline (in the distance defined by $\rv$),
@@ -870,16 +872,18 @@ Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 %Only ligand flexibility is included in the current algorithm but the flexibility of amino acid side-chains would greatly improve the prediction. 
 %Moreover, incorporation of some scoring function for energy evaluation would introduce the characterization of not only geometrical but also physico-chemical properties and would further improve the prediction ability of our approach.
 
-Protein tunnels are transporting pathways for ligands towards active sites and nowadays, they traversability is evaluated
-only considering one-atom ligands (probes).
-In this paper, we propose to analyze traversability in tunnels using motion planning, that can consider both shape
+Protein tunnels are transporting pathways for ligands towards active sites.
+In this paper, we propose to analyze the traversability in the tunnels using motion planning, that can consider both shape
 of the protein and ligand.
-We proposed modifications to RRT method to compute trajectories for a ligand represented by a library of common conformations.
-The corresponding configuration space is sampled using guided sampling, where a virtual sphere moves along the tunnel and attracts growth
+We proposed modifications to the RRT method to compute trajectories for a ligand represented by a library of common conformations.
+The corresponding configuration space is sampled using the guided sampling, where a virtual sphere moves along the tunnel and attracts growth
 of the tree towards it.
-The enable trajectory computation in proteins, ligands atomic radii are scaled down.
-Besides classic property like bottleneck radius, the computed trajectories allows us to evaluate traversability of tunnels using
+To enable trajectory computation in narrow tunnels, atomic radii of the ligand are scaled down.
+Computed trajectories allows us to evaluate the traversability of the tunnels using
 accessibility, throughput and also by visualizing typical pathways found by the planner.
+These properties can help to better understand importance of the tunnels.
+
+%which can be useful in the virtual screening
 
 
 
