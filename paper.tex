@@ -673,10 +673,9 @@ In this manner, we are able to convey the information about all different trajec
 \section{Experimental Verification}
 
 The proposed approach has been used to analyze tunnels in Haloalkane dehalogenase protein (PDB ID 1CQW) (Fig.~\ref{fig::tunnel}a).
-The tunnel was computed using CAVER 3.0~\cite{caver3} for the spherical probe of radius 0.9~\AA.
-The tunnel is represented by 760 spheres with average distance $0.05$~\AA.
+Three tunnels were detected using CAVER 3.0~\cite{caver3} for the spherical probe of radius 0.9~\AA.
+The traversability of the first tunnel (represented by $n=76$ spheres), was evaluated for 1-chlorpropan (denoted as $\LA$) with 11 atoms and 
 % from David: m003 je "1-chlorpropan" a m004 "1-chlorbutan"
-The traversability of the tunnel was evaluated for 1-chlorpropan (denoted as $\LA$) with 11 atoms and 
 and 1-chlorbutan (denoted as $\LB$) with 14 atoms.
 $\LA$ was represented by 12 conformations, and $\LB$ by a set of $114$ conformations.
 Examples of three conformations of $\LA$ and $\LB$ are depicted in Fig.~\ref{fig::tunnel}b.
@@ -712,13 +711,14 @@ examined in each expansion.
 \centering
 \begin{tabular}{cc}
 %\includegraphics[width=0.38\textwidth]{fig/protein-tunnel-gray} &
-\includegraphics[width=0.38\textwidth]{fig/t05proteintunnels} &
-\includegraphics[width=0.5\textwidth]{fig/ligAll}  \\
+\includegraphics[width=0.3\textwidth]{fig/t05proteintunnels} &
+\includegraphics[width=0.45\textwidth]{fig/ligAll}  \\
 (a) & (b)                        
 \end{tabular}                       
 \caption{\label{fig::tunnel}
     (a) The protein 1CQW visualized using the cartoon representation (gray) with 
         three tunnels (red, green, blue) detected by CAVER 3.0.
+        The first tunnel is depicted red.
 %        its highest ranked tunnel (green) which was detected using CAVER 3.0.
     (b) Examples of three conformations of $\LA$ (top) and $\LB$ (bottom)
 }
@@ -742,23 +742,17 @@ examined in each expansion.
 
 
 
-\begin{figure}
-\centering
-\begin{tabular}{ccc}
-\includegraphics[width=0.32\textwidth]{fig/tunne4ac}& 
-\includegraphics[width=0.32\textwidth]{fig/tunne4bc} & 
-\includegraphics[width=0.32\textwidth]{fig/tunne4cc} \\
-(a) & (b) & (c)                        
-\end{tabular}
-\caption{\label{fig::t4}
-    todo
-}
-\end{figure}
 
-
-
-Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
-
+Trajectories for $\LA$ in all detected tunnels were classified as successful if they reached the last sphere of the tunnel
+to distance $\dt=2$~\AA) and they are considered unsuccessful otherwise.
+The throughput computed from the trajectories shows that the tunnels are difficult not only around bottlenecks, but
+also in other places.
+The comparison of classic bottleneck and throughput is depicted in Fig.~\ref{fig::tunnel2}a.
+The trajectories for $\smin=0.4$ are depicted in Fig.~\ref{fig::tunnel2}b and for $\smin=0.5$ in Fig.~\ref{fig::tunnel2}c.
+The successful trajectories for $\smin=0.4$ reveals that the end of the tunnel No. 3 can be approached by two different pathways.
+The detail of this pathway is depicted in Fig.~\ref{fig::detail}.
+Despite the low bottleneck of this tunnel, the ligand may reach its end using an alternative path way. 
+This shows the strenght of the analysis based on the trajectories and not only on the geometric bottlenecks.
 
 \begin{figure}
 \centering
@@ -773,7 +767,7 @@ Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 \includegraphics[width=0.38\textwidth]{fig/t05badT} \\ 
 (a) & (b) & (c)                       
 \end{tabular}                       
-\caption{\label{fig::tunnel}
+\caption{\label{fig::tunnel2}
     (a) Classic bottleneck for spherical probe (top) and visualization of throughput (bottom) for the ligand $\LA$.
     (b) Successfull (green, top) trajectories that reached end points of the tunnels,
         and unsuccessful ones (red, bottom) for $\smin=0.4$.
@@ -782,6 +776,21 @@ Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 }
 \end{figure}
 
+
+\begin{figure}
+\centering
+\begin{tabular}{ccc}
+\includegraphics[width=0.32\textwidth]{fig/tunne4ac}& 
+\includegraphics[width=0.32\textwidth]{fig/tunne4bc} & 
+\includegraphics[width=0.32\textwidth]{fig/tunne4cc} \\
+(a) & (b) & (c)                        
+\end{tabular}
+\caption{\label{fig::detail}
+    Detailed view to alternative pathway around the third tunnel in 1CQW.
+    The successful trajectories are in green (a) the unsuccessful in red (b).
+    (c) Shows visualization of protein atoms around the tunnel.
+}
+\end{figure}
 
 
 
@@ -792,7 +801,10 @@ Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 Trajectories computed for a ligand moving in a tunnel can reveal such properties that cannot be computed
 only based on the geometry of the tunnels.
 For example, possible detours from the tunnel can be identified, which suggest that even a tunnel with a small
-bottleneck can be traversed.
+bottleneck can be traversed (Fig.~\ref{fig::detail}).
+
+The achieved results have to be 
+
 The computed trajectories however cannot be considered as `real', as real ligands move inside proteins under influnce
 of many forces.
 
@@ -840,6 +852,9 @@ $\dt$
 
 
 The presented expansion procedure favors the samples with maximal scale (they are tested first), the trajectory contains samples with higher scales at the easy part of the tunnels (e.i., wide areas), and the smaller scales are used only if the ligand has to fit into a narrow space.
+
+
+Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 
 
 \section{Conclusion }
