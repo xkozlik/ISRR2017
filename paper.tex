@@ -720,6 +720,9 @@ examined in each expansion.
 }
 \end{table}
 
+
+
+
 \begin{figure}
 \centering
 \begin{tabular}{ccc}
@@ -740,29 +743,50 @@ Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 
 
 
-\section{Discussion \& Implementation Details}
+\section{Discussion}
 
-Sampling-based motion planning is a powerful tool for computing trajectories for flexible ligands.
-The proposed extensions to the RRT planner have been motivated by the necessity to cope with the narrow passage
-and the high dimensionality of the flexible ligands.
-By scaling-down the geometry of ligand, which is also used in other related tools~\cite{cortes2005path}, 
-the relative volume of the free region of the configuration space increases, which increases the probability of placing
-random samples $\qrand$ into the free region.
-To further cope with the narrow passage problem, the translation part of the random samples is generated using
-the 3D centerline of the tunnel.
-The sampling along the tunnel centerline (in the distance defined by $\rv$) does not only lead to better growth of the tree in the tunnel, but it also limits the maximal deflection of the trajectory from the tunnel.
-Therefore, the bounding box of $\C$ can be defined around the tunnel in the distance $\rv$, which is typically
-smaller than the bounding box of the whole protein.
-This, together with the scaled-down ligand, increases the relative volume of the free configuration space and helps the RRT to
-reach the goal configuration.
+Trajectories computed for a ligand moving in a tunnel can reveal such properties that cannot be computed
+only based on the geometry of the tunnels.
+For example, possible detours from the tunnel can be identified, which suggest that even a tunnel with a small
+bottleneck can be traversed.
+The computed trajectories however cannot be considered as `real', as real ligands move inside proteins under influnce
+of many forces.
+
+This work assumes that the tunnels are computed on a static protein with the ligands, which brings several limitations.
+First of all, proteins are dynamic structures and consequently also the tunnels are dynamic: their move, merge or even disappear due
+to motions of protein atoms.
+Currentt works in protein engineering utilizing tunnels usually employ static tunnels only, or 
+various tunnels are detected separately in each frame of molecular dynamics and the tunnels are aggregated to a single one.
+One of the reason is the difficulty of computing dynamic tunnels with both grid-based and VD-based methods.
+
+The second limitation is caused by the utilization of narrow tunnels.
+The protein atoms tend to fill the internal void space therefore the tunnels identified inside proteins without ligand tend
+to be very narrow.
+To enable at least some motion of the ligands inside such narrow tunnels, the scaling-down of the ligand atoms is necessary and it is used also in other related tool, e.g.~\cite{cortes2005path}.
+Trajectories computed for scaled-down ligands cannot be considered as real trajectories by still they show easy and difficult parts of
+the tunnels.
+Real ligands influence protein atoms and vice versa, which enables the ligand to pass even spaces that seem to be narrow.
+
+Due to the above reasons, the computed trajectories can be considered as too optimistic
+(e.g. because they are computed on such a tunnel that is wide, but will be closed due to molecular dynamics),
+or too pesimistic (e.g. the trajectory is not found because of narrow passage around the tunnel, which can in fact be
+opened in molecular dynamics).
+
+Despite these limitations, testing the tunnel traversability using motion planning technique can provide chemists more information
+than the simple bottleneck radius, which is used nowadays.
+To better utilize the results of motion planning, it is necessary to observe behavior of ligands in many simulations with various
+proteins.
+
+To the best knowledge of the authors, this is the first work attempt to analyze traversability of ligands in protein tunnels.
+Most related works, e.g. those based on motion planning, are usually focused on protein folding, or finding arbitrary pathways
+from proteins~\cite{cortes2010simulating,guieysse2008structure}.
+We approached 
 
 The runtime of the planner is currently given mainly by the collision-detection.
 As the ligand is assumed to travel only along the tunnel centerline (in the distance defined by $\rv$),
 only atoms located in the vicinity of the tunnel can be considered for collision detection.
 Fast collision-detection can be achieved either using fast hierarchical data structures as OBB (implemented, e.g., in~\cite{ozcollide})
     or using collision-detection system developed directly for proteins~\cite{ruiz2005biocd}.
-
-
 We assume that a conformation $l \in \L$ can be switched to all other conformations in $\L$.
 
 
