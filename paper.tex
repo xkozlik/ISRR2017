@@ -9,6 +9,7 @@
 \usepackage[ruled,lined]{algorithm2e}
 \usepackage{multirow}
 \usepackage[bookmarks=false]{hyperref}
+\usepackage{setspace}
 \pdfminorversion=4
 
 \newcommand{\red}[1]{\textcolor{red}{#1}}
@@ -183,17 +184,18 @@ To provide biochemists with a better insight into the behavior of non-spherical 
 
 In this paper, we propose a novel method for computing the trajectories of flexible ligands in a tunnel.
 The proposed work is based on the sampling-based Rapidly Exploring Random Tree (RRT)~\cite{lavalleRRT} planner.
-The main idea of the planner is to generate the random samples around a virtual sphere moving through the tunnel, which
+The main idea of the proposed planner is to generate the random samples around a virtual sphere moving through the tunnel, which
 guides the search in the configuration space.
 This allows us to focus the sampling of the configuration space around the tunnel.
 The flexibility of the ligand is modeled using a predefined set of typical conformations.
 To enable ligand movements in narrow tunnels, a scaled-down version of the ligand is used, similarly, e.g., to~\cite{cortes2005path}.
 It helps to keep also potential solutions which do not fit to the geometric restrains but can be still feasible because of the physico-chemical properties.
-This strategy helps to overcome the limitations of the conformational discretation introduced by the rotamer approximation.
+%This strategy helps to overcome the limitations of the conformational discretation introduced by the rotamer approximation.
 
 The proposed method can be seen as an extension for the traditionally used tunnel detection tools.
-Besides trajectory computation, we also propose methods for their visualization.
+%Besides trajectory computation, visualization of the results in important. %we also propose methods for their visualization.
 Our motivation is to help the biochemists to perform so called virtual screening, where they test the traversability of a ligand through a given tunnel.
+Therefore, methods for visualization of the results  are discussed.
 In order to predict the success of ligand traversability, the virtual screening performs hundreds of thousands of tests and checks if the ligand passed through the tunnel.
 The advantage of the proposed approach is that we can search the ligand path inside a specific tunnel which substantially decreases the computational time and resources required for the virtual screening.
 %We further propose visualization techniques for presenting the results to biochemists.
@@ -244,7 +246,8 @@ Sampling-based motion planning methods are suitable for computing the trajectori
 can cope with many-DOF robots (objects) of arbitrary shapes.
 The flexibility of ligands (or even proteins) can be modeled using a multi-link kinematic chain, where torsional angles
 can change~\cite{songPFpath}.
-This is useful, e.g., in the protein folding studies~\cite{al2012motion,gipson2012computational,amato2002using,raveh2009rapid,novinskaya2015improving,songPFintro} or analysis of loop motions~\cite{cortes2004geometric}.
+This is useful, e.g., in the protein folding studies~\cite{al2012motion,gipson2012computational,amato2002using,raveh2009rapid} or analysis of loop motions~\cite{cortes2004geometric}.
+%This is useful, e.g., in the protein folding studies~\cite{al2012motion,gipson2012computational,amato2002using,raveh2009rapid,novinskaya2015improving,songPFintro} or analysis of loop motions~\cite{cortes2004geometric}.
 %Sampling-based methods have also been used for 
 % tunnel detection~\cite{vonasek2016application,vonasek2017tunnel} and
 % exit pathway computation~\cite{cortes2010simulating,guieysse2008structure}.
@@ -275,7 +278,7 @@ The algorithm terminates if the tree approaches the goal configuration close eno
 %A well known issue of sampling-based planners is the narrow passage problem~\cite{hannaWIS}.
 
 Motion planning for flexible ligands in protein tunnels brings two main issues: 
-the ligand flexiblity increases the dimension of the configuration space, and the necessity to plan in protein tunnels
+the ligand flexibility increases the dimension of the configuration space, and the necessity to plan in protein tunnels
 leads to the narrow passage problem.
 A narrow passage is a region in the configuration space whose removal changes the connectivity of the free space~\cite{hannaWIS}.
 Narrow passages have smaller volume than other regions and it is therefore difficult to sample them dense enough using uniform distribution, that is used in the basic sampling-based planners.
@@ -284,7 +287,7 @@ in order to put enough samples there and it consequently increases the planning 
 Typical tunnels have bottlenecks smaller than $1.0$~\AA, so they can already be considered as narrow passages for ligands with more than two atoms.
 %The protein tunnels have the properties of the narrow passages, as they are very narrow
 To cope with the narrow passages, they have to be sampled more dense.
-For the family of RRT planners, it is usefull to change the distribution of random samples according to the growth of the tree~\cite{vonasek2009rrt,vonasekphd,denny2016dynamic}.
+For the family of RRT planners, it is useful to change the distribution of random samples according to the growth of the tree~\cite{vonasek2009rrt,vonasekphd,denny2016dynamic}.
 %about their 3D position, which is represented by the tunnel centerline.
 %The centerline can be used to guide the growth of the RRT tree through the configuration space~\cite{vonasek2009rrt,denny2016dynamic}.
 
@@ -292,7 +295,7 @@ For the family of RRT planners, it is usefull to change the distribution of rand
 The kinematic chain representation used to model the ligand flexibility can generate all possible conformations but it also increases the dimension of the configuration space.
 Not all of conformations are however feasible and it is therefore necessary to verify the feasibility of a given conformation based on energy, which is time consuming.
 %RRT-based planners are sensitive to the employed metric, that should consider also the flexibility-related DOFs.
-An alterantive solution is to employ a library of known conformations.
+An alternative solution is to employ a library of known conformations.
 The conformation changes of protein amino acids and ligand are represented by so called rotamers, stored in different rotamer libraries (e.g., Dunbrack library~\cite{dunbrack}).
 Rotamers differ in the angles between their atoms.
 Possible rotamer conformations correspond to energetically and geometrically favorable positions.
@@ -403,7 +406,7 @@ position defined by $q$ collides with the protein atoms.
 
 The analysis of tunnel traversability is based on computation of multiple trajectories of the ligand inside the tunnel, which
 requires to generate a set $\QI$ of collision-free initial configurations.
-In this paper we assume that the ligand has to travel from the begining to the end of the tunnel.
+In this paper we assume that the ligand has to travel from the beginning to the end of the tunnel.
 As the tunnel are computed for a spherical probe, the ligand may not fit exactly to the first sphere of the tunnel.
 The initial configurations have to be searched around the first sphere of the tunnel.
 To find a new initial configuration, a random sample $q$ is generated around $c_i$ in the distance $\RI$ (translation and rotation
@@ -416,9 +419,9 @@ Each trajectory is computed using a modified RRT, which is introduced in the fol
 
 \subsection{Computing Single Trajectory of the Ligand}
 
-The task of the trajectory computation is to find a trajectory for the given ligand in the given tunnel, which can be solved
-using RRT~\cite{lavalleRRT}.
-Here, the original RRT is exnteded to cope with the specific requirments needed for the traversability of ligands.
+The task of the trajectory computation is to find a trajectory for the given ligand in the given tunnel. 
+% which can be solved using RRT~\cite{lavalleRRT}.
+Here, the original RRT is extended to cope with the specific requirements needed for the traversability of ligands.
 First, the trajectory has to be found around the given tunnel, but deflection from the tunnel centerline is allowed.
 %The deviation of the trajectory from the tunnel centerline is influenced by the parameter $\rv$.
 %We assume, that the distance of the ligand from the tunnel centerline is at most $\rv$.
@@ -454,7 +457,8 @@ We propose to set this parameter to the average tunnel width.
 
 \linesnumbered
 \begin{algorithm}[h]
-%\setstretch{\straa}
+{\small
+\setstretch{0.88}
 \caption{\label{alg::main}Main loop of the RRT planner}
 \KwIn{
     tunnel $T=( (c_i, r_i) )$, $i=1,\ldots,n$, with spheres centers $c_i \in \R^3$ and radii $r_i$,
@@ -489,6 +493,7 @@ $iteration = 0$\;
     $iteration = iteration+1$\;
 }
 \return $\T$\;
+}
 \end{algorithm}
 
 
@@ -508,11 +513,13 @@ that approach $\qrand$, the distance between newly generated configurations and 
 3D distance between an atom of the ligand placed at $q$ and the 3D position of $\qrand$ ($\da(q,\qrand)$ on line~\ref{alg::expand:a} in
 Alg.~\ref{alg::expand}).
 By computing the distance between the nearest atoms, the shape of the ligand is actually considered.
-As the expansion routine attemts to find such sample that minimizes this distance to $\qrand$, it supports retraction
+As the expansion routine attempts to find such sample that minimizes this distance to $\qrand$, it supports retraction
 of the ligand towards $\qrand$.
 
 
 \begin{algorithm}[h]
+{\small
+\setstretch{0.88}
 %\setstretch{\straa}
 \caption{\label{alg::expand}expand}
 \KwIn{
@@ -550,6 +557,7 @@ of the ligand towards $\qrand$.
         }
     }
 }
+}
 \end{algorithm}
 
 The result of each planning trial is the tree $\T$ of collision-free configurations in which a path
@@ -573,7 +581,7 @@ Three basic characteristics of the tunnel are computed from the trajectories: ac
 The accessibility $A(i)$ of the sphere $i$ is the probability of reaching the sphere by the computed trajectories,
 i.e., $A(i)=N(i) / N$, where $N=K|\QI|$ is the total number of trajectories.
 The accessibility shows how probable it is to pass the tunnel up to the sphere $i$.
-Obviously, the most important is $A(n)$ of the last sphere of the tunnel, which can be considered as the overal difficulty of the tunnel.
+Obviously, the most important is $A(n)$ of the last sphere of the tunnel, which can be considered as the overall difficulty of the tunnel.
 The  ligand passage may however be strongly affected by the first bottleneck, so the parts of the tunnel located behind
 the bottleneck have low accessibility.
 
@@ -606,7 +614,7 @@ Ligand scale $L(i)$ at the tunnel sphere $i$ is the average scale of ligand that
 \subsection{Visualization of Results}
 
 %In order to fursupport the tunnel exploration process performed by biochemists.
-The above defined characteristics can be shown even as a graph, or better, presented visually by mapping then using collors to the tunnel spheres.
+The above defined characteristics can be shown even as a graph, or better, presented visually by mapping then using colors to the tunnel spheres.
  Alternatively, the surface representation can be used to visualize the tunnel.
 In this case, a 3D point on the tunnel surface is colored according to the property value in its nearest tunnel part $i$,  i.e., such part $i$ whose center $c_i$ is the closest to the point among all tunnel parts.
 Examples of color mapping are shown in Fig.~\ref{fig:properties}.
@@ -729,12 +737,13 @@ examined in each expansion.
 \begin{table}
 \centering
 \caption{\label{tab::rrt}
-    Runtime and success ratio of the planner
+    Runtime and success ratio for ligand $\LA$ (left) and $\LB$ (right).
 }
 {
+\small
 \renewcommand{\tabcolsep}{1pt}
 \input table.003.tex
-\hskip 5pt   
+\hskip 4pt   
 \input table.004.tex
 }
 \end{table}
@@ -752,7 +761,7 @@ The trajectories for $\smin=0.4$ are depicted in Fig.~\ref{fig::tunnel2}b and fo
 The successful trajectories for $\smin=0.4$ reveals that the end of the tunnel No. 3 can be approached by two different pathways.
 The detail of this pathway is depicted in Fig.~\ref{fig::detail}.
 Despite the low bottleneck of this tunnel, the ligand may reach its end using an alternative path way. 
-This shows the strenght of the analysis based on the trajectories and not only on the geometric bottlenecks.
+This shows the strength of the analysis based on the trajectories and not only on the geometric bottlenecks.
 
 \begin{figure}
 \centering
@@ -769,9 +778,9 @@ This shows the strenght of the analysis based on the trajectories and not only o
 \end{tabular}                       
 \caption{\label{fig::tunnel2}
     (a) Classic bottleneck for spherical probe (top) and visualization of throughput (bottom) for the ligand $\LA$.
-    (b) Successfull (green, top) trajectories that reached end points of the tunnels,
+    (b) Successful (green, top) trajectories that reached end points of the tunnels,
         and unsuccessful ones (red, bottom) for $\smin=0.4$.
-    (c) Successfull and unsuccessful trajectories for $\smin=0.5$.
+    (c) Successful and unsuccessful trajectories for $\smin=0.5$.
 }
 }
 \end{figure}
@@ -798,69 +807,80 @@ This shows the strenght of the analysis based on the trajectories and not only o
 
 \section{Discussion}
 
-Trajectories computed for a ligand moving in a tunnel can reveal such properties that cannot be computed
-only based on the geometry of the tunnels.
-For example, possible detours from the tunnel can be identified, which suggest that even a tunnel with a small
-bottleneck can be traversed (Fig.~\ref{fig::detail}).
+%Trajectories computed for a ligand moving in a tunnel can reveal such properties that cannot be computed
+%only based on the geometry of the tunnels.
 
-The achieved results have to be 
+The computed trajectories cannot be considered as `real', they should rather be considered as a hint for the biochemists.
+One of the reason is that the trajectories are computed inside a static protein and static tunnels.
+Real proteins are dynamic structures and consequently also the tunnels are dynamic: their move, merge or even disappear due to motions of protein atoms.
+Contrary, usually static tunnels are used in protein engineering, or 
+multiple tunnels are detected separately in each frame of molecular dynamics and the tunnels are then aggregated to a single one.
+Despite this simplification, researches claim that static tunnels help in their research.
 
-The computed trajectories however cannot be considered as `real', as real ligands move inside proteins under influnce
-of many forces.
-
-This work assumes that the tunnels are computed on a static protein with the ligands, which brings several limitations.
-First of all, proteins are dynamic structures and consequently also the tunnels are dynamic: their move, merge or even disappear due
-to motions of protein atoms.
-Currentt works in protein engineering utilizing tunnels usually employ static tunnels only, or 
-various tunnels are detected separately in each frame of molecular dynamics and the tunnels are aggregated to a single one.
-One of the reason is the difficulty of computing dynamic tunnels with both grid-based and VD-based methods.
-
-The second limitation is caused by the utilization of narrow tunnels.
+The second limitation is caused by the utilization of scaled-down ligands.
 The protein atoms tend to fill the internal void space therefore the tunnels identified inside proteins without ligand tend
 to be very narrow.
-To enable at least some motion of the ligands inside such narrow tunnels, the scaling-down of the ligand atoms is necessary and it is used also in other related tool, e.g.~\cite{cortes2005path}.
-Trajectories computed for scaled-down ligands cannot be considered as real trajectories by still they show easy and difficult parts of
-the tunnels.
-Real ligands influence protein atoms and vice versa, which enables the ligand to pass even spaces that seem to be narrow.
+To enable at least some motion of the ligands inside such narrow tunnels, the scaling-down of the ligand atoms is necessary.
+It is used also in other related tool, e.g.~\cite{cortes2005path}.
+By allowing more aggressive scaling-down, more easier a trajectory can be found.
+The tunnels therefore should be always evaluated considering various minimal scales.
 
 Due to the above reasons, the computed trajectories can be considered as too optimistic
 (e.g. because they are computed on such a tunnel that is wide, but will be closed due to molecular dynamics),
-or too pesimistic (e.g. the trajectory is not found because of narrow passage around the tunnel, which can in fact be
+or too pessimistic (e.g. the trajectory is not found because of narrow passage around the tunnel, which can in fact be
 opened in molecular dynamics).
 
 Despite these limitations, testing the tunnel traversability using motion planning technique can provide chemists more information
 than the simple bottleneck radius, which is used nowadays.
-To better utilize the results of motion planning, it is necessary to observe behavior of ligands in many simulations with various
-proteins.
+For example, possible detours from the tunnel can be identified, which suggest that even a tunnel with a small
+bottleneck can be traversed (Fig.~\ref{fig::detail}).
 
-To the best knowledge of the authors, this is the first work attempt to analyze traversability of ligands in protein tunnels.
-Most related works, e.g. those based on motion planning, are usually focused on protein folding, or finding arbitrary pathways
-from proteins~\cite{cortes2010simulating,guieysse2008structure}.
-We approached 
+%To better utilize the results of motion planning, it is necessary to observe behavior of ligands in many simulations with various proteins.
+%To the best knowledge of the authors, this is the first work attempt to analyze traversability of ligands in protein tunnels.
+%Most related works, e.g. those based on motion planning, are usually focused on protein folding, or finding arbitrary pathways
+%from proteins~\cite{cortes2010simulating,guieysse2008structure}.
 
-The runtime of the planner is currently given mainly by the collision-detection.
-As the ligand is assumed to travel only along the tunnel centerline (in the distance defined by $\rv$),
-only atoms located in the vicinity of the tunnel can be considered for collision detection.
-Fast collision-detection can be achieved either using fast hierarchical data structures as OBB (implemented, e.g., in~\cite{ozcollide})
-    or using collision-detection system developed directly for proteins~\cite{ruiz2005biocd}.
-We assume that a conformation $l \in \L$ can be switched to all other conformations in $\L$.
+The proposed planner is very simple and it can be improved in many ways: by using a less aggressive scaling-down technique (in order
+to obtain better trajectories) or by using only a subset of conformations and a better expansion (in order to speed it up).
+Having a better planner (in the term of speed or even success rate) however does not mean that the resulting trajectories will help the biochemists more.
 
-parmas:
-$\RI$
-$\rv$
-$\dt$
-
-
-The presented expansion procedure favors the samples with maximal scale (they are tested first), the trajectory contains samples with higher scales at the easy part of the tunnels (e.i., wide areas), and the smaller scales are used only if the ligand has to fit into a narrow space.
-
+For a daily and practical utilization of here proposed idea, it is 
+necessary to compare trajectories from existing MD simulations with the trajectories obtain using motion planning and find
+suitable parameters and thresholds (e.g. about the throughput) that will be used for making decisions.
 
 Further information can be found at {\url{http://mrs.felk.cvut.cz/isrr2017}}.
 
+%The runtime of the planner is currently given mainly by the collision-detection.
+%As the ligand is assumed to travel only along the tunnel centerline (in the distance defined by $\rv$),
+%only atoms located in the vicinity of the tunnel can be considered for collision detection.
+%Fast collision-detection can be achieved either using fast hierarchical data structures as OBB (implemented, e.g., in~\cite{ozcollide})
+%    or using collision-detection system developed directly for proteins~\cite{ruiz2005biocd}.
+%We assume that a conformation $l \in \L$ can be switched to all other conformations in $\L$.
+
+%parmas:
+%$\RI$
+%$\rv$
+%$\dt$
+%The presented expansion procedure favors the samples with maximal scale (they are tested first), the trajectory contains samples with higher scales at the easy part of the tunnels (e.i., wide areas), and the smaller scales are used only if the ligand has to fit into a narrow space.
+
+
 
 \section{Conclusion }
-In the future, we will focus on the following extensions proposed by the domain experts.
-Only ligand flexibility is included in the current algorithm but the flexibility of amino acid side-chains would greatly improve the prediction. 
-Moreover, incorporation of some scoring function for energy evaluation would introduce the characterization of not only geometrical but also physico-chemical properties and would further improve the prediction ability of our approach.
+%In the future, we will focus on the following extensions proposed by the domain experts.
+%Only ligand flexibility is included in the current algorithm but the flexibility of amino acid side-chains would greatly improve the prediction. 
+%Moreover, incorporation of some scoring function for energy evaluation would introduce the characterization of not only geometrical but also physico-chemical properties and would further improve the prediction ability of our approach.
+
+Protein tunnels are transporting pathways for ligands towards active sites and nowadays, they traversability is evaluated
+only considering one-atom ligands (probes).
+In this paper, we propose to analyze traversability in tunnels using motion planning, that can consider both shape
+of the protein and ligand.
+We proposed modifications to RRT method to compute trajectories for a ligand represented by a library of common conformations.
+The corresponding configuration space is sampled using guided sampling, where a virtual sphere moves along the tunnel and attracts growth
+of the tree towards it.
+The enable trajectory computation in proteins, ligands atomic radii are scaled down.
+Besides classic property like bottleneck radius, the computed trajectories allows us to evaluate traversability of tunnels using
+accessibility, throughput and also by visualizing typical pathways found by the planner.
+
 
 
 \bibliographystyle{plain}
