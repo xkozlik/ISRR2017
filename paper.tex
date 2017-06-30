@@ -329,30 +329,21 @@ metric.
 
 %Ligands are small molecules interacting with the protein. 
 %Due to the interaction, the relative positions of the ligand's atoms can change.
-
 % in cortes2005path:
 %In this paper two kinds of large-amplitude motion are treated: protein loop conformational changes (involving pro-
 %tein backbone flexibility) and ligand trajectories to deep active sites in proteins (involving ligand and protein side-chain flex-
 %ibility). First studies performed using our two-stage approach (geometric search followed by energy refinements) show that,
 %    compared to classical molecular modeling methods, quite   similar results can be obtained with a performance gain of
 % several orders of magnitude. Furthermore, our results also  indicate that the geometric stage can provide highly valuable information to biologists.
-
-
-%The growth of the configuration tree into some regions of the configuration space can however be slowed down due to the narrow passages.
-%A narrow passage is a small region of the configuration space containing part of the solution.
-%As the samples are generated from uniform distribution in RRT, probability of placing the samples into the narrow passages is low and therefore,
-%   the probability of expanding the tree through a narrow passage is small~\cite{hannaWIS}.
-%
 %This technique is similar to generation of samples near the medial exist of the environment
 %medial axis~\cite{wilmarthMAPRM,foskey01hybrid,guibas1999probabilistic,hoff2000interactive,yang2004adapting,amatoOBRRT}.
 %or by guiding the growth of the tree around a general path in the workspace~\cite{vonasek2009rrt,denny2014marrt}.
-
-
 By reducing the scale of the atomic radii, the configuration tree can explore more areas of the configuration space.
 Such techniques have been used for motion planning of deformable objects, 
 e.g., in~\cite{frank2008efficient,bayazit2001ligand,alterovitz2008motion,lamiraux2001flexible,kavraki1998towards,gayle2005path}, 
 and for motion planning of rigid objects among 
 flexible obstacles~\cite{rodriguez2006planning,frank2008efficient,phillips2014representation}.
+The scaling-down technique is used also in other tools like MoMa-LigPath~\cite{cortes2005path}.
 
 
 \section{Traversability of Tunnels}
@@ -361,8 +352,8 @@ flexible obstacles~\cite{rodriguez2006planning,frank2008efficient,phillips2014re
 
 Proteins and ligands are represented by the hard sphere model, where the radius of each sphere (atom) is given by its van der Waals radius.
 The flexibility of a ligand is modeled using the set $\L$ of its conformations.
-The conformations can be prepared, e.g., considering the potential energy.
-We assume that a conformation $l \in \L$ can be switched to all other conformations in $\L$.
+The conformations can be prepared, e.g., considering the potential energy or downloaded from a library~\cite{dunbrack}.
+%We assume that a conformation $l \in \L$ can be switched to all other conformations in $\L$.
 
 %Another approach is to model the ligand flexibility using a predefined set of feasible conformations $\L$
 %To decrease the computational burden, a set of feasible conformations $\L$ is prepared, e.g. using Rosseta tool.
@@ -374,7 +365,7 @@ We assume that a conformation $l \in \L$ can be switched to all other conformati
 
 A protein tunnel is described by a sequence of collision-free spheres 
 $T=( (c_1, r_1),\ldots,(c_n,r_n) )$, where $n$ denotes the number of spheres,
-$c \in \R^3$ is their 3D position and $r_i$ denotes the maximum collision-free radius of a sphere centered at $c_i$. 
+$c_i \in \R^3$ is their 3D position and $r_i > 0$ denotes the maximum collision-free radius of a sphere centered at $c_i$. 
 The tunnels can be found by tunnel detection tools like CAVER 3.0~\cite{caver3}.
 
 %from wiki:
@@ -395,7 +386,6 @@ Depending on the protein, the tunnel bottlenecks can be even less than $1$~\AA, 
 For the purpose of traversability study, the atomic radii of the ligand are scaled down by a factor $s, 0 < s \le 1$.
 A discrete set of scales is used, i.e., $s \in \{\smin, \smin+\sdelta, \ldots, \smax\}$, where 
 $\smin$ is the minimal allowed scale, $\smax=1$ is the maximal allowed scale and $\sdelta$ is the minimal difference between two scales.
-The scaling-down  technique is used also in other tools like MoMa-LigPath~\cite{cortes2005path}.
 
 A configuration of the pseudoflexible ligand $q=(x,y,z,r_x,r_y,r_z,l,s)$  is described
 by the 3D position $(x,y,z)$ of the reference point of the ligand (e.g., its geometric center), rotation around $x$, $y$, and $z$ axes,
@@ -424,9 +414,10 @@ Each trajectory is computed using a modified RRT, which is introduced in the fol
 
 The task of the trajectory computation is to find a trajectory for the given ligand in the given tunnel, which can be solved
 using RRT~\cite{lavalleRRT}.
-The original RRT is exnteded to cope with specific requirmeents needed for traversability of ligands.
+The original RRT is exnteded to cope with specific requirments needed for the traversability of ligands.
 First, the trajectory has to be found around the given tunnel, but deviation from the tunnel centerline are allowed.
-We assume, that the distance of the ligand from the tunnel centerline is at most $\rv$.
+%The deviation of the trajectory from the tunnel centerline is influenced by the parameter $\rv$.
+%We assume, that the distance of the ligand from the tunnel centerline is at most $\rv$.
 Due to this requirement, sampling process of RRT has to be adapted in order to follow the tunnel, and to prevent
 construction of trajectories in the rest of the protein.
 The other modifications aim to cope with various scales of the ligand and multiple conformations,
@@ -452,6 +443,10 @@ from $N(c_v,\Sigma)$, where $\Sigma$ is the diagonal matrix with diagonal entrie
 part of $\qrand$ is generated using techniques described in~\cite{kuffnerES}.
 The other two parameters (ligand index $l$ and scale $s$) of $\qrand$ can be left zero, as these are not used in the employed
 metric for the nearest-neighbor search.
+The parameter $\rv$ influences the distribution of samples around the tunnel centerline. 
+By setting $\rv$ to a small value, the planner attempts to find the trajectories inside the tunnel, while higher values
+of $\rv$ cause  exploration of paths around the tunnel.
+We propose to set this parameter to the average tunnel width.
 
 \linesnumbered
 \begin{algorithm}[h]
@@ -768,6 +763,7 @@ Fast collision-detection can be achieved either using fast hierarchical data str
     or using collision-detection system developed directly for proteins~\cite{ruiz2005biocd}.
 
 
+We assume that a conformation $l \in \L$ can be switched to all other conformations in $\L$.
 
 
 \section{Conclusion }
