@@ -619,40 +619,25 @@ Examples of collow mapping are shown in Fig.~\ref{fig:properties}.
 }
 \end{figure}
 
+\def\cstart{\overline{c_{start}}}
+\def\cend{\overline{c_{end}}}
+
 Besides the color mapping, it is also necessary to show the computed trajectories.
 This is useful for example to find out in which part of the tunnel the trajectories detour.
-The na\"{i}ve visualization of all trajectories is possible, but too slow if we are dealing with thousands of trajectories.
+The simple visualization of all trajectories could however be too slow for an interactive work.
+Therefore, the trajectories are first clustered and then only the clusters are visualized.
+Due to different lengths of the trajectories, they are first converted to a normalized form.
+Let $\cstart$ represent the average starting position of all trajectories and let $d_{max}$ is the 3D Euclidean distance
+of the most distant configuration from $\cstart$ from all trajectories.
+A set of $M$ spheres centered at $\cstart$ are created with radii $r'_i=i {d \over M}$, where $i=0,\ldots, M-1$.
+The trajectory $P=(q_1,\ldots,q_n)$ of length $n$ is represented by the normalized vector $v=(x_1,\ldots,x_M)$ of length $M$,
+where $x_i$ is the 3D position of the nearest configuration $q \in P$ to the surface of the $i$-th sphere with the radius $r'_i$.
+For the purpose of clustering, the distance between two normalized trajectories $v_i$ and $v_j$ is defined as
+$d(v_i, v_j) = \frac{1}{M} \sum_{1 \leq k \leq N} |x_k^i x_k^j|$.
+The clustering is then computed using the UPGMA algorithm~\cite{sokal1958statistical}.
 
-In order to visualize the most typical trajectories, we cluster the trajectories according to their similarity.
-The number of configurations in the trajectories usually differ due to the stochastic nature of RRT and it also depends on the
-initial configurations.
-% by VV ==================================================================
-%For the purpose of clusting, the trajectories have to be first represented by vectors of same length.
-%\def\cstart{\overline{c_{start}}}
-%\def\cend{\overline{c_{end}}}
-%Let $\cstart \in \R^3$ and $\cend \in \R^3$ denote the average starting and ending point of all computed trajectories.
-%A line $x(t) = \cstart + t(\cend - \cstart), 0 \le t \le 1$ is created. For each point on the line, a radius
-%$r(t)$ is assigned as $r(t) = 
-
-
-
-To compare two trajectories  (which are sequences of configurations in the configuration space), they are first converted
-to a vector $v=(x_1,x_2,\ldots,x_M)$, where $x_i \in \R^3$ is a 3D
-point representing the trajectory and $M$ is the parameter determining how precisely we want to represent the trajectories.
-
-%by ADAM ============================================================
-%To obtain the vector $v$ for a given trajectory $P$, first a set of spheres 
- %$S_1, ..., S_M$, where $S_i = (\cstart, r_i)$ where $r_i = i \frac{|\cstart \cend|}{M + 1}$.
- %First, we represent each trajectory $t$ by a vector $v = (x_1, x_2, ..., x_N)$ of $N$ samples where $x_i \in \mathbb{R}^3$.
-%In order to obtain the samples, we find the average starting point $x_s$ of all trajectories and the most distant (w.r.t. $x_s$) ending point $x_e$ also among all trajectories.
-%Using $x_s$ and $x_e$ we define spheres $S_1, ..., S_N$ such that $S_i = (x_s, r_i)$ where $r_i = i \frac{|x_s x_e|}{N + 1}$.
-Then, a vector $v$ for a trajectory $P$ is obtained such that an $i$-th sample $x_i$ in $v$ corresponds to the position in $P$ which is the nearest one to the surface of $S_i$.
-
-
-Finally, we define a metric $d$ for trajectories $P_i$ and $P_j$ as $d(P_i, P_j) = \frac{1}{N} \sum_{1 \leq k \leq N} |x_k^i x_k^j|$.
-The clustering is then computed using the UPGMA clustering algorithm~\cite{sokal1958statistical}.
-When visualizing, we choose a representative from each cluster and depict its trajectory in 3D using a polyline.
-Moreover, we map the representative's cluster size onto the width of the polyline.
+The trajectories are then visualized using representative of each cluster.
+The number of trajectories in each cluster is represented by the width of the polyline.
 In this manner, we are able to convey the information about all different trajectories together (see Fig.~\ref{fig:trajectories} right).
 
 \begin{figure}
@@ -675,20 +660,22 @@ The different line widths represent the number of trajectories in a cluster.
 
 \section{Experimental Verification}
 
-The proposed method has been used to analyze a tunnel in Haloalkane dehalogenase protein (PDB ID 1CQW) (Fig.~\ref{fig::tunnel}a).
+The proposed approach has been used to analyze tunnels in Haloalkane dehalogenase protein (PDB ID 1CQW) (Fig.~\ref{fig::tunnel}a).
 The tunnel was computed using CAVER 3.0~\cite{caver3} for spherical probe of radius 0.9~\AA.
 The tunnel is represented by 760 spheres with average distance $0.05$~\AA.
 % from David: m003 je "1-chlorpropan" a m004 "1-chlorbutan"
-The traversability of the tunnel was evaluated for 1-chlorpropan (denoted as $\LA$) and 1-chlorbutan (denoted as $\LB$).
+The traversability of the tunnel was evaluated for 1-chlorpropan (denoted as $\LA$) with 11 atoms and 
+and 1-chlorbutan (denoted as $\LB$) with 14 atoms.
 $\LA$ was represented by 12 conformations, and $\LB$ by a set of $114$ conformations.
 Examples of three conformations are depicted in Fig.~\ref{fig::tunnel}b.
 
-The tested ligands are bigger than the tunnel with, therefore the ligands were scaled down, and four
-different scales were used: $\smin=\{0.3,0.4,0.5,0.6\}$.
+Both tested ligands have more than 10 atoms and therefore they cannot fit into the tunnel of with 0.9~\AA.
+To find collision-free trajectories, the radii of ligands have to be scaled down. 
+Four different scaling-down factors were used: $\smin=\{0.3,0.4,0.5,0.6\}$.
 No trajectories were found for $\smin > 0.6$.
-For each scale, 50 collision-free initial states were found in the $2$\AA\ radius from the first sphere of the tunnel.
-For each ligand, each minimal scale $\smin$ and each start configuration, 100 trajectories were computed using the proposed planner.
-The parameters of the planner are: $\Imax=10,000$, $m=50$, $\gb=0.9$, $\dt=1.5$\AA.
+For each scale, 50 collision-free initial configurations were found in the $2$\AA\ radius from the first sphere of the tunnel.
+For each ligand, each minimal scale $\smin$ and each initial configuration, 100 trajectories were computed using the proposed planner.
+The parameters of the planner were: $\Imax=10,000$, $m=50$, $\gb=0.9$, $\dt=1.5$\AA.
 For each initial configuration, the success rate is computed as the ratio of trajectories that reached the end of the tunnel (to the distance $\rv$ or less) over 100 trials.
 
 The average runtimes and sizes of the built trees are shown in Tab.~\ref{tab::rrt}.
