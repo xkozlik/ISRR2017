@@ -37,7 +37,7 @@ pic:fig/.done
 	touch fig/.done
 
 fig/.done:
-	$(MAKE) -C $(SUPPORTDIR)/ copy
+#	$(MAKE) -C $(SUPPORTDIR)/ copy
 
 docarc:
 	$(DOCARC_CMD) -b $(DOCARC_BPPATH) fetch $(NAME)
